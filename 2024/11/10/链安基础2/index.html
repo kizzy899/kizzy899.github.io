@@ -1,0 +1,731 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>区块链安全基础二 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="四.数字签名与认证技术消息摘要算法：消息摘要是保证明文无法篡改、完整性的一种算法，消息摘要不是加密明文，也不是加密算法  无论输入的消息有多长，计算出来的消息摘要的长度总是固定的。 消息摘要看起来是“随机的”。 一般地，只要输入的消息不同，对其进行摘要以后产生的摘要消息也必不相同 消息摘要函数是无陷门的单向函数，即只能进行正向的消息摘要而无法从摘要中恢复出任何的消息 好的摘要算法，没有人能从中找到">
+<meta property="og:type" content="article">
+<meta property="og:title" content="区块链安全基础二">
+<meta property="og:url" content="https://kizzy899.github.io/2024/11/10/%E9%93%BE%E5%AE%89%E5%9F%BA%E7%A1%802/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="四.数字签名与认证技术消息摘要算法：消息摘要是保证明文无法篡改、完整性的一种算法，消息摘要不是加密明文，也不是加密算法  无论输入的消息有多长，计算出来的消息摘要的长度总是固定的。 消息摘要看起来是“随机的”。 一般地，只要输入的消息不同，对其进行摘要以后产生的摘要消息也必不相同 消息摘要函数是无陷门的单向函数，即只能进行正向的消息摘要而无法从摘要中恢复出任何的消息 好的摘要算法，没有人能从中找到">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/img/touxiang.png">
+<meta property="article:published_time" content="2024-11-10T04:35:05.000Z">
+<meta property="article:modified_time" content="2024-11-10T13:06:15.335Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="区块链">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/img/touxiang.png"><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2024/11/10/%E9%93%BE%E5%AE%89%E5%9F%BA%E7%A1%802/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '区块链安全基础二',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-10 21:06:15'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover9.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">区块链安全基础二</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">区块链安全基础二</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-11-10T04:35:05.000Z" title="发表于 2024-11-10 12:35:05">2024-11-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-11-10T13:06:15.335Z" title="更新于 2024-11-10 21:06:15">2024-11-10</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="四-数字签名与认证技术"><a href="#四-数字签名与认证技术" class="headerlink" title="四.数字签名与认证技术"></a>四.数字签名与认证技术</h2><h3 id="消息摘要算法："><a href="#消息摘要算法：" class="headerlink" title="消息摘要算法："></a>消息摘要算法：</h3><p>消息摘要是保证明文无法篡改、完整性的一种算法，消息摘要不是加密明文，也不是加密算法</p>
+<ul>
+<li>无论输入的消息有多长，计算出来的消息摘要的长度总是固定的。</li>
+<li>消息摘要看起来是“随机的”。</li>
+<li>一般地，只要输入的消息不同，对其进行摘要以后产生的摘要消息也必不相同</li>
+<li>消息摘要函数是无陷门的单向函数，即只能进行正向的消息摘要而无法从摘要中恢复出任何的消息</li>
+<li>好的摘要算法，没有人能从中找到“碰撞”，虽然“碰撞”是肯定存在的。</li>
+</ul>
+<h4 id="Hash函数："><a href="#Hash函数：" class="headerlink" title="Hash函数："></a>Hash函数：</h4><h5 id="Hash函数特点："><a href="#Hash函数特点：" class="headerlink" title="Hash函数特点："></a>Hash函数特点：</h5><p>（令h表示哈希函数，h满足以下条件）</p>
+<p> 输入可以是任意长度的消息或文件<em>M</em>；</p>
+<p> 输出长度是固定的；</p>
+<p> 给定<em>h</em>和<em>M</em>，计算<em>h</em>(<em>M</em>)是容易的；</p>
+<p> 给定<em>h</em>的描述，找两个不同的消息<em>M</em>1和<em>M</em>2，使得<em>h</em>(<em>M1</em>)<em>&#x3D;h</em>(M2)在计算上是不可行的。 </p>
+<p><strong>Hash函数的安全性</strong>：在现有的计算资源下，找到一个碰撞是不可能的。</p>
+<p>Hash函数在网络安全应用中，<strong>不仅能用于保护消息或文件的完整性，而且也能用作密码信息的安全存储。</strong></p>
+<p>主要Hash算法有MD2、MD4、<strong>MD5、SHA。</strong></p>
+<p>其中，MD5能产生128比特长度的哈希值，它的使用广泛，常用于网络中文件的完整性检查。而SHA在美国政府中使用，作为安全哈希标准，SHA产生的哈希值比MD5长，有160比特。 </p>
+<h3 id="数字签名："><a href="#数字签名：" class="headerlink" title="数字签名："></a>数字签名：</h3><p>数字签名(Digital Signature)是手写签名的电子模拟，是通过电子信息计算处理，产生的一段特殊字符串消息，该消息具有与手写签名一样的特点，<strong>是可信的、不可伪造的、不可重用的、不可抵赖的以及不可修改的。</strong></p>
+<p>数字签名至少应满足以下三个条件：</p>
+<p>　　n 签名者事后不能否认自己的签名；</p>
+<p>　　n 接收者能验证签名，而任何其他人都不能伪造签名；</p>
+<p>　　n当双方就签名的真伪发生争执时，第三方能解决双方之间发生的争执。</p>
+<h4 id="分类："><a href="#分类：" class="headerlink" title="分类："></a>分类：</h4><p>（1）<strong>直接方式的数字签名</strong></p>
+<p>​		  直接方式的数字签名只有通信双方参与，并假定接收一方知道发方的公钥。数字签名的形成方式可以用发方的私钥加密信息。 </p>
+<p>  直接方式的数字签名有一公共弱点，即方案的有效性取决于发方密钥的安全性。 </p>
+<p>（2）<strong>具有仲裁方式的数字签名</strong></p>
+<p>​		发方A对发往收方B的信息签名后，将信息及其签名先发给仲裁者C，C对信息及其签名验证完成后，再连同一个表示已通过验证的指令一起发往收方B。此时由于C的存在，A无法对自己发出的信息予以否认</p>
+<h4 id="特点-组成："><a href="#特点-组成：" class="headerlink" title="特点&amp;组成："></a>特点&amp;组成：</h4><p>一个数字签名方案一般由签名算法和验证算法组成。<strong>签名</strong>算法的<strong>密钥是秘密的</strong>，只有<strong>签名人掌握</strong>；而<strong>验证算法则是公开的</strong>，以便他人验证。</p>
+<p>签名与加密很相似，一般是签名者利用秘密密钥(私钥)对需签名的数据进行加密，验证方利用签名者的公开密钥(公钥)对签名数据做解密运算。<strong>签名与加密的不同之处在于，加密的目的是保护信息不被非授权用户访问，而签名的目的是让消息接收者确信信息的发送者是谁，信息是否被他人篡改。</strong></p>
+<h4 id="数字签名基本流程："><a href="#数字签名基本流程：" class="headerlink" title="数字签名基本流程："></a>数字签名基本流程：</h4><p>（熟悉的Alice和Bob又出现了）</p>
+<p>假设Alice需要签名<strong>发送一份电子合同文件给Bob</strong>。Alice的签名步骤如下： </p>
+<ul>
+<li><p>　　第一步，Alice使用Hash函数将电子合同文件生成一个消息摘要。</p>
+</li>
+<li><p>　　第二步，Alice使用自己的私钥，把消息摘要加密，形成一个数字签名。</p>
+</li>
+<li><p>　　第三步，Alice把电子合同文件和数字签名一同发送给Bob。</p>
+<p> Bob收到Alice发送的电子合同文件及数字签名后，要<strong>验证电子合同文件是Alice所认可</strong>的，验证步骤如下：</p>
+</li>
+<li><p>​    第一步，Bob使用与Alice相同的Hash算法，计算出所收到电子合同文件的消息摘要。</p>
+</li>
+<li><p>　第二步，Bob使用Alice的公钥，解密来自Alice的加密消息摘要，恢复出Alice原来的消息摘要。</p>
+</li>
+<li><p>　第三步，Bob比较自己产生的消息摘要和恢复出来的消息摘要之间的异同。若两个消息摘要相同，则表明电子合同文件来自Alice。如果两个消息摘要的比较结果不一致，则表明电子合同文件已被篡改。</p>
+</li>
+</ul>
+<p>【图片1】</p>
+<h3 id="数字证书（数字标识）："><a href="#数字证书（数字标识）：" class="headerlink" title="数字证书（数字标识）："></a>数字证书（<strong>数字标识</strong>）：</h3><ul>
+<li><p><strong>提供了一种在网络上身份验证的方式，是用来标志和证明网络通信双方身份的数字信息文件</strong>，与司机驾照或日常生活中的身份证相似。</p>
+</li>
+<li><p>由权威公正的第三方机构即CA中心签发。</p>
+</li>
+<li><p>以数字证书为核心的加密技术可以对网络上传输的信息进行加密和解密、数字签名和签名验证，确保网上传递信息的机密性、完整性，以及交易实体身份的真实性，签名信息的不可否认性，从而保障网络应用的安全性。</p>
+</li>
+<li><p>采用公钥密码体制，即利用一对互相匹配的密钥进行加密、解密。通过数字的手段保证加密过程是一个不可逆过程，即只有用私钥才能解密。</p>
+</li>
+<li><p><strong>使用</strong>：当发送一份保密文件时，发送方使用接收方的公钥对数据加密，而接收方则使用自己的私钥解密</p>
+</li>
+<li><p>数字证书能够确认以下两点：</p>
+<p>  ①保证信息是由签名者自己签名发送的，签名者不能否认或难以否认。</p>
+<p>  ②保证信息自签发后到收到为止未曾作过任何修改，签发的文件是真实文件。</p>
+</li>
+</ul>
+<h3 id="认证及认证模型："><a href="#认证及认证模型：" class="headerlink" title="认证及认证模型："></a>认证及认证模型：</h3><p><strong>认证（Authentication）是指核实真实身份的过程，是防止主动攻击的重要技术之一。</strong>计算机只能识别用户的数字身份，所有对用户的授权也是针对用户数字身份的授权。</p>
+<h4 id="认证的用途"><a href="#认证的用途" class="headerlink" title="认证的用途"></a>认证的用途</h4><p>主要用途有三方面：</p>
+<p>（1）验证网络资源访问者的身份，给网络系统访问授权提供支持服务。</p>
+<p>（2）验证网络信息的发送者和接收者的真实性，防止假冒。</p>
+<p>（3）验证网络信息的完整性，防止篡改、重放或延迟。</p>
+<h4 id="认证信息类型"><a href="#认证信息类型" class="headerlink" title="认证信息类型"></a>认证信息类型</h4><p>常用的鉴别信息主要有四种：</p>
+<p>（1）所知道的<strong>秘密</strong>，如用户口令、PIN (Personal Identification Number)。</p>
+<p>（2）所拥有的<strong>实物</strong>，一般是不可伪造的设备，如智能卡、磁卡等。</p>
+<p>（3）<strong>生物特征信息</strong>，如指纹、声音、视网膜等。</p>
+<p>（4）上下文信息，就是认证实体所处的<strong>环境信息</strong>、地理位置、时间等，例如IP地址等。 </p>
+<h4 id="认证方法分类"><a href="#认证方法分类" class="headerlink" title="认证方法分类"></a>认证方法分类</h4><ol>
+<li><h5 id="单向认证"><a href="#单向认证" class="headerlink" title="单向认证"></a><strong>单向认证</strong></h5></li>
+</ol>
+<p> 单向认证是指在网络服务认证过程中，服务方对客户方进行单方面的鉴别，而客户方不需要识别服务方的身份（账号密码）。</p>
+<p><strong>认证过程：</strong></p>
+<p>第一步，客户方向服务器发出访问请求； </p>
+<p>第二步，服务器要求客户方输入ID；</p>
+<p>第三步，客户方向服务器输入ID；</p>
+<p>第四步，服务器要求客户方输入密码；</p>
+<p>第五步，客户方向服务器输入密码；</p>
+<p>第六步，服务器验证ID和密码，如果匹配则允许客户进入系统访问。 </p>
+<ol start="2">
+<li><h5 id="双向认证"><a href="#双向认证" class="headerlink" title="双向认证"></a><strong>双向认证</strong></h5>双向认证是指在网络服务认证过程中，不仅服务方对客户方要进行鉴别，而且客户方也要鉴别服务方的身份。</li>
+</ol>
+<p><strong>认证过程：</strong></p>
+<p>一到六步与单向的过程相同</p>
+<p>第七步，客户提示服务器输入密码；</p>
+<p>第八步，服务器按客户要求输入密码；</p>
+<p>第九步，客户验证服务器。</p>
+<ol start="3">
+<li><p><strong>三方来实现。</strong></p>
+<p>第三方不仅负责维护认证信息，而且还负责验证双方的身份。<strong>每个用户都把自己的ID和密码发送给可信第三方，由第三方负责认证过程</strong>。此方法兼顾了安全性和密码存储的简单易行性。</p>
+</li>
+</ol>
+<h4 id="认证实现技术："><a href="#认证实现技术：" class="headerlink" title="认证实现技术："></a>认证实现技术：</h4><ol>
+<li><p>静态密码: 用户的密码是由用户自己设定的(就是我们平时那个密码)</p>
+</li>
+<li><p>智能卡（IC卡）：一种内置集成电路的芯片，芯片中存有与用户身份相关的数据</p>
+</li>
+<li><p>短信密码：手机短信形式请求包含6位随机数的动态密码（安全、普及、易收费和维护）</p>
+</li>
+<li><p>动态口令牌：生成动态密码的终端</p>
+</li>
+<li><p>USB KEY：软硬件相结合、一次一密的强双因子认证模式</p>
+</li>
+<li><p>数字签名：数字签名又称电子加密，可以区分真实数据与伪造、被篡改过的数据</p>
+</li>
+<li><p>生物识别技术：通过可测量的身体或行为等生物特征进行身份认证的一种技术</p>
+</li>
+</ol>
+<p> （身体特征包括：指纹、掌型、视网膜、虹膜、人体气味、脸型、手的血管和DNA等；）</p>
+<p> （行为特征包括：签名、语音、行走步态等）</p>
+<ol start="8">
+<li><p>双因素身份认证：两种认证方法结合</p>
+</li>
+<li><p>身份的零知识证明：能够不传输这些信息身份进行认证的方法</p>
+</li>
+</ol>
+<p>（ps: 目前部分学者将视网膜识别、虹膜识别和指纹识别等归为高级生物识别技术；将掌型识别、脸型识别、语音识别和签名识别等归为次级生物识别技术；将血管纹理识别、人体气味识别、DNA识别等归为“深奥的”生物识别技术）</p>
+<h4 id="Kerberos技术"><a href="#Kerberos技术" class="headerlink" title="Kerberos技术"></a>Kerberos技术</h4><p>Kerberos的基本原理是<strong>利用对称密码技术</strong>，<strong>使用可信的第三方（刚刚的第三个方法）来认证</strong>服务器的用户身份，并在用户和服务器之间建立安全信道。(<strong>就是基于对称密码技术在网络上实施认证的一种服务协议，它允许一台工作站通过交换加密消息在非安全网络上与另一台工作站相互证明身份</strong>，一旦试图登录上网的用户身份得到验证，Kerberos协议就会给这两台工作站提供密钥，并通过使用密钥和加密算法为用户间的通信加密以进行安全的通信)</p>
+<p>Kerberos系统涉及到</p>
+<h5 id="四个基本实体："><a href="#四个基本实体：" class="headerlink" title="四个基本实体："></a><strong>四个基本实体：</strong></h5><ul>
+<li>　　<strong>Kerberos客户机：</strong>用户用来访问服务器的设备。</li>
+<li>　　<strong>AS</strong>(Authentication Server)：为用户分发TGT(Ticket Granting Ticket)的服务器。用户使用TGT(Ticket Granting Ticket)向TGS(Ticket Granting Server)证明自己的身份。</li>
+<li>　　<strong>TGS</strong>(Ticket Granting Server)：为用户分发到最终目的票据的服务器，用户使用这个票据向自己要求提供服务的服务器证明自己的身份。</li>
+<li>　　<strong>应用服务器</strong>(Application Server)：为用户提供特定服务。</li>
+</ul>
+<h5 id="设计基本思路："><a href="#设计基本思路：" class="headerlink" title="设计基本思路："></a><strong>设计基本思路：</strong></h5><p>①使用一个（或一组）独立的认证服务器（AS—Authentication Server），来为网络中的客户提供	身份认证服务；</p>
+<p>②**认证服务器 (AS)**，用户口令由 AS 保存在数据库中；</p>
+<p>③AS 与每个服务器共享一个唯一的保密密钥（已被安全分发）</p>
+<p>【图片4】</p>
+<h5 id="设计目标："><a href="#设计目标：" class="headerlink" title="设计目标："></a><strong>设计目标：</strong></h5><p>①安全性：能够有效防止攻击者假扮成另一个合法的授权用户。</p>
+<p>②可靠性：分布式服务器体系结构，提供相互备份。</p>
+<p>③对用户透明性</p>
+<p>④可伸缩：能够支持大数量的客户和服务器。</p>
+<p>在实际使用中，会遇到如下问题：</p>
+<p>①用户希望输入口令的次数最少。</p>
+<p>②口令以明文传送会被窃听。</p>
+<p>对于这样的问题，Kerberos的解决办法是：</p>
+<p> ①票据重用（ticket reusable）。</p>
+<p> ②引入票据许可服务器（TGS - ticket-granting server）。用于向用户分发服务器的访问票据；认证服务器 AS 并不直接向客户发放访问应用服务器的票据，而是由 TGS 服务器来向客户发放。</p>
+<h5 id="票据："><a href="#票据：" class="headerlink" title="票据："></a><strong>票据：</strong></h5><p>在Kerberos系统中，<strong>票据</strong>(Ticket)是用于安全传递用户身份所需要的信息的集合。<strong>它不仅包含该用户的身份，而且还包含其他一些相关的信息。一般来说，它主要包括客户方Principal、目的服务方Principal、客户方IP地址、时间戳(分发该Ticket的时间)、Ticket的生存期以及会话密钥等内容。</strong>通常将AS和TGS统称为KDC(Key Distribution Center)。</p>
+<p>【图片2】</p>
+<p>【图片3】</p>
+<h5 id="工作流程："><a href="#工作流程：" class="headerlink" title="工作流程："></a>工作流程：</h5><ul>
+<li>第一步，<strong>Kerberos客户向认证服务器AS申请票据TGT。</strong></li>
+<li>第二步，（AS在认证数据库检查、确认Kerberos客户，并产生一个会话密钥，同时使用Kerberos客户的秘密密钥对会话密钥进行加密，然后）<strong>生成一个票据TGT，AS生成TGT后，把TGT发送给Kerberos客户</strong></li>
+<li>第三步，（Kerberos客户收到AS 发来的TGT后，使用自己的秘密密钥进行）解密，<strong>得到会话密钥，然后利用解密的信息重新构造认证请求单，向TGS发送请求，申请访问</strong>应用服务器AP所需要的<strong>票据</strong>(Ticket)。</li>
+<li>第四步， TGS使用其秘密密钥<strong>对TGT进行解密</strong>，同时使用TGT中的会话密钥<strong>对</strong>Kerberos客户的<strong>请求认证单信息进行解密</strong>，并将解密后的认证单信息与TGT中的信息进行<strong>比较</strong>。然后，TGS生成新的会话密钥以供Kerberos客户和应用服务器使用，并利用各自的秘密密钥加密会话密钥。<strong>最后，生成一个票据</strong>，它由Kerberos客户实体名、地址、时间戳、限制时间、会话密钥组成。<strong>TGS生成TGT完毕后，把TGT发送给Kerberos客户。</strong></li>
+<li>第五步，Kerberos客户收到TGS的响应后，将获得与应用服务器共享的会话密钥。与此同时，Kerberos客户生成一个新的用于访问应用服务器的认证单，并用与应用服务器共享的会话密钥加密，然后与TGS发送来的票据一并传送到应用服务器。</li>
+<li>第六步，应用服务器确认请求。</li>
+</ul>
+<p><strong>优缺点</strong>：</p>
+<p>主要优点是利用相对便宜的技术提供了较好的保护水平</p>
+<p>缺点主要体现在以下3个方面：</p>
+<p>  ① 需要具有很高利用率的可信在线认证服务器（至少在物理上是安全的）；</p>
+<p>  ②重放检测依赖于时间戳，这意味着需要同步和安全的时钟；</p>
+<p>  ③ 如果认证过程中的密钥受到威胁，那么传输在使用该密钥进行认证的任何会话过程中的所有被保护的数据都将受到威胁。</p>
+<h2 id="五-PKI-技术"><a href="#五-PKI-技术" class="headerlink" title="五.PKI 技术"></a>五.PKI 技术</h2><h3 id="基本概念和作用："><a href="#基本概念和作用：" class="headerlink" title="基本概念和作用："></a>基本概念和作用：</h3><p>所谓PKI(Pubic Key Infrastructure)即公钥基础设施，<strong>支持公钥的管理，并提供保密性、完整性、真实性以及可追究性安全服务的具有普适性的安全基础设施</strong></p>
+<ol>
+<li>可提供安全服务</li>
+<li>支持公钥的管理</li>
+<li>利用公钥和其他加密技术的结合。</li>
+</ol>
+<h3 id="主要研究内容及主要服务"><a href="#主要研究内容及主要服务" class="headerlink" title="主要研究内容及主要服务"></a>主要研究内容及主要服务</h3><ul>
+<li>其在计算机和网络环境中得到了广泛应用：如可信计算机的本机认证、网上证券、网上保险；网上办公、网上税务、网上工商、网上海关、网上医院等。</li>
+</ul>
+<h4 id="主要研究内容："><a href="#主要研究内容：" class="headerlink" title="主要研究内容："></a>主要研究内容：</h4><ul>
+<li><p>PKI提供公钥加密和数字签名服务的系统或平台，目的是为了<strong>管理密钥和证书</strong>。通过数字证书，PKI很好的<strong>证明了公钥属于谁</strong>。</p>
+</li>
+<li><p>技术的研究对象包括：数字证书，颁发数字证书的证书认证中心（CA），持有证书的证书持有者和使用证书服务的证书用户等</p>
+</li>
+</ul>
+<h4 id="主要安全服务："><a href="#主要安全服务：" class="headerlink" title="主要安全服务："></a>主要安全服务：</h4><p>1.<strong>认证</strong>——向一个实体确认另一个实体确实是他自己。</p>
+<p>2.<strong>完整性</strong>—— 向一个实体确保数据没有被有意或无意的修改。</p>
+<p>3.<strong>机密性</strong>——向一个实体确保除了接收者，无人能读懂数据的关键部分。</p>
+<p>4.<strong>不可否认</strong>性——通过数字签名机制来提供该服务的。</p>
+<h3 id="pkl的基本结构"><a href="#pkl的基本结构" class="headerlink" title="pkl的基本结构"></a>pkl的基本结构</h3><p><strong>PKI体系结构一般由认证机构和各种终端实体组成</strong><br>（pkl体系建立首先应该关注用户使用证书及相关服务的全面性和便利性）</p>
+<p>建立和设计一个PKI体系必须保证</p>
+<h4 id="相关服务功能的实现"><a href="#相关服务功能的实现" class="headerlink" title="相关服务功能的实现"></a><strong>相关服务功能的实现</strong></h4><p>• 用户身份的可信认证<br>• 制定完整的证书管理政策<br>• 建立高可信度的认证CA中心<br>• 用户实体属性的管理<br>• 用户身份的隐私保护<br>• 证书作废列表处理<br>• 认证机构CA为用户提供证书库及CRL服务的管理</p>
+<h4 id="组成"><a href="#组成" class="headerlink" title="组成"></a><strong>组成</strong></h4><ol>
+<li>Pkl策略</li>
+<li>软硬件系统</li>
+<li>证书机构ca</li>
+<li>注册机构ca</li>
+<li>证书发布系统</li>
+<li>pkl应用</li>
+</ol>
+<h3 id="pkl与数字证书"><a href="#pkl与数字证书" class="headerlink" title="pkl与数字证书"></a>pkl与数字证书</h3><p><strong>数字证书是PKI最基本的元素</strong>，也是承载PKI安全服务的最重要的载体。 在PKI体系中,用户就是通过使用数字证书来保障信息的传输的保密性、发送信息的不<br>可否认性、交易者身份的确定性等安全特性。 数字证书是PKI的核心元素，由权威的、可信认的、公证的第三方机构CA所签发</p>
+<h4 id="数字证书的补充"><a href="#数字证书的补充" class="headerlink" title="数字证书的补充"></a>数字证书的补充</h4><p>用户证书具有下列形式:<br>正在载入… CA《A》&#x3D;CA{V，SN，AI，CA，UCA，A，UA，Ap，TA}<br>这里:<br>V——证书版本号。<br>SN一—证书序列号。<br>AI——用于对证书进行签名的算法的标识符。<br>UCA——CA可选的惟一标识符。<br>UA——用户A可选的唯一标识符。</p>
+<h4 id="数字证书-密钥的生命周期"><a href="#数字证书-密钥的生命周期" class="headerlink" title="数字证书&#x2F;密钥的生命周期"></a>数字证书&#x2F;密钥的生命周期</h4><p><strong>主要三个阶段：</strong></p>
+<ul>
+<li>证书初始化注册阶段</li>
+<li>颁发投入工作阶段</li>
+<li>撤消阶段</li>
+</ul>
+<p>【图片5】</p>
+<h4 id="认证过程"><a href="#认证过程" class="headerlink" title="认证过程"></a>认证过程</h4><ol>
+<li>证书拆封</li>
+</ol>
+<p>用于验证发行者ca的公钥能否正确解开客户实体——证书中的“发行者的数字签名”【即证明该证书是否为可信任的第三方ca机构所签发】<br>2. 序列号验证<br>检查实体证书中的签名实体序列号是否与签发者证书的序列号一致，从而验证证书真伪。<br>3. 有效期验证<br>检查用户证书使用的日期是否合法，有无过期。<br>4.撤销列表查询</p>
+<h4 id="pkl互联"><a href="#pkl互联" class="headerlink" title="pkl互联"></a>pkl互联</h4><p>pkl互通性必须建立在网络互通的基础上</p>
+<p><strong>PKI在全球互通可以有两种实现途径:</strong><br>● 各PKI体系的根CA交叉认证。（一般实现方式）<br>● 建立一个全球性的统一根CA，为各PKI体系的根证书颁发证书。（实现较困难）</p>
+<h4 id="交叉互联"><a href="#交叉互联" class="headerlink" title="交叉互联"></a>交叉互联</h4><p>双子树结构<br>【图片6】</p>
+<h3 id="pkl应用实例"><a href="#pkl应用实例" class="headerlink" title="pkl应用实例"></a>pkl应用实例</h3><h4 id="虚拟专用网络（VPN）"><a href="#虚拟专用网络（VPN）" class="headerlink" title="虚拟专用网络（VPN）"></a>虚拟专用网络（VPN）</h4><p><strong>定义</strong><br>  <strong>架构VPN的基础：基于pkl技术的IPSec协议</strong><br>  是一种架构在公用通信基础设 施上的专用数据通信网络，利用网络层安全协议(尤其是IPSec)和建立在PKI上 的加密与签名技术来获得私有性。<br>  <strong>口令</strong><br>  用来防止未授权的个人直接访问敏感数据<br>  <strong>防火墙</strong><br>  用来防止公司以外的未授权个人访问公司内部信息</p>
+<p>  基于PKI技术的IPSec协议现在已经成为架构VPN 的基础，它可以为路由器之 间、防火墙之间或者路由器和防火墙之间提供经过加密和认证的通信。虽然它的 实现会复杂一些，但其安全性比其他协议都完善得多。<strong>由于IPSec是IP层上的协 议，因此很容易在全世界范围内形成一种规范，具有非常好的通用性，而且IPSec本身就支持面向未来的协议——IPv6</strong>。</p>
+<h4 id="安全电子邮件——-PKI-与S-MIME"><a href="#安全电子邮件——-PKI-与S-MIME" class="headerlink" title="安全电子邮件—— PKI 与S&#x2F;MIME"></a>安全电子邮件—— PKI 与S&#x2F;MIME</h4><p><strong>利用数字证书和私钥，用户可以对他所发的邮件进行数字签名，这样就可以获得认证、完整性和不可否认性，</strong>如果证书是由其所属公司或某一可信第三方颁发的，收到邮件的人就可以信任该邮件的来源，无论他是否认识发邮件的人；另一方面，在政策和法律允许的情况下，用加密的方法就可以保障信息的保密性。</p>
+<p>目前发展很快的安全电子邮件协议是S&#x2F;MIME ，是允许发送加密和有签名邮件的协议。主要依赖技术是pkl。</p>
+<h4 id="Web安全——PKI-与-SSL"><a href="#Web安全——PKI-与-SSL" class="headerlink" title="Web安全——PKI 与 SSL"></a>Web安全——PKI 与 SSL</h4><p>无论是IE还是其他浏览器，都支持SSL协议（The Secure Sockets Layer）。这是一个在传输层和应用层之间的安全通信层，在两个实体进行通信之前，先要建立SSL连接，以此实现对应用层透明的安全通信。<strong>利用PKI技术，服务器和客户端都对对方的证书进行验证，同时客户端生成会话密钥和选择消息摘要算法，利用服务器端的公钥加密会话密钥，传送给服务器，这样SSL协议就允许在浏览器和服务器之间进行加密通信。</strong>SSL利用数字证书保证通信安全，服务器端和浏览器端分别由可信的第三方颁发数字证书，这样在交易时，双方可以通过数字证书确认对方的身份。需要注意的是，SSL协议本身并不能提供对不可否认性的支持，这部分的工作必须由数字证书完成。</p>
+<p>结合SSL协议和数字证书，PKI技术可以保证Web 交易多方面的安全需求，使Web上的交易和面对面的交易一样安全。</p>
+<h2 id="第六章-网络攻击与防御技术"><a href="#第六章-网络攻击与防御技术" class="headerlink" title="第六章 网络攻击与防御技术"></a><strong>第六章 网络攻击与防御技术</strong></h2><h3 id="6-1-攻击技术"><a href="#6-1-攻击技术" class="headerlink" title="6.1 攻击技术"></a>6.1 攻击技术</h3><h4 id="6-1-1-计算机病毒（或称恶意代码）"><a href="#6-1-1-计算机病毒（或称恶意代码）" class="headerlink" title="6.1.1 计算机病毒（或称恶意代码）"></a>6.1.1 计算机病毒（或称恶意代码）</h4><p>•计算机病毒是一种恶意软件，可以通过感染计算机系统并在其中复制自身来破坏计算机系统、窃取信息或进行其他恶意活动。</p>
+<p>•计算机病毒通常通过网络、移动存储设备或恶意软件等途径传播，并且可能造成广泛的破坏和损失。</p>
+<p>计算机病毒根据其传播方式、破坏方式和功能等不同特点，可以分为以下几类主要的分类：</p>
+<ol>
+<li>文件感染型病毒：病毒会感染可执行文件、程序或脚本文件，一旦这些文件运行，病毒就会开始感染系统中的其他文件</li>
+<li>引导型病毒： 感染计算机的引导扇区后，在计算机启动时加载自身到内存中，使得计算机在启动时被感染</li>
+<li>宏病毒：这种病毒主要利用应用程序中的宏功能，感染文档和模板文件，并在用户打开这些文件时执行恶意代码。</li>
+<li>逻辑炸弹（Logic bombs）：逻辑炸弹是一种预设条件触发的恶意代码，可能在特定条件满足时触发破坏性行为。</li>
+<li>蠕虫（Worm）：蠕虫是一种自我复制并通过网络传播的病毒，可以迅速在网络中传播并感染大量系统。</li>
+<li>特洛伊木马（Trojan horse）：特洛伊木马是一种伪装成正常或有用程序，但实际上含有恶意代码的病毒，常常用于窃取信息、监视用户活动等恶意行为。</li>
+<li>Rootkit：Rootkit是植入系统内核或应用程序中的一种恶意软件，目的是隐藏自身活动，绕过系统安全控制。</li>
+<li>勒索软件（Ransomware）：勒索软件是一种加密文件然后勒索用户赎金的恶意软件，对用户和组织造成巨大损失。</li>
+</ol>
+<p>（遇到了再查解释。。）</p>
+<p>计算机病毒发展趋势：</p>
+<ol>
+<li><p>AI和机器学习：恶意软件作者开始利用人工智能和机器学习技术来创建更具破坏性和隐匿性的病毒。这些病毒可能能够自我学习和适应防御系统的智能对抗。</p>
+</li>
+<li><p>指向性攻击：针对特定目标的高度定制化攻击越来越常见，这种攻击可能采用高级持续性威胁（Advanced Persistent Threat，APT）的形式，目的是窃取高价值信息或进行网络间谍活动。</p>
+</li>
+<li><p>IoT和移动设备攻击：随着物联网设备和移动设备的普及，计算机病毒也开始针对这些设备进行攻击，利用它们的弱点来入侵和控制目标系统。</p>
+</li>
+<li><p>加密货币挖矿病毒：近年来，加密货币挖矿病毒成为较为普遍的一种类型，这种病毒会利用感染的计算机资源来挖掘加密货币，占用系统性能和资源。</p>
+</li>
+<li><p>社交工程和钓鱼攻击：计算机病毒作者通过社交工程手段，如伪装成合法的电子邮件或网站，诱导用户点击链接或下载附件，从而传播恶意软件。</p>
+</li>
+</ol>
+<p><strong>网络攻击</strong>一般采用三种技术手段，</p>
+<ul>
+<li><strong>一是利用计算机病毒（或称恶意代码）；</strong></li>
+<li><strong>二是利用系统或者程序中的漏洞，或者协议漏洞；</strong></li>
+<li><strong>三是利用社会工程学。</strong></li>
+</ul>
+<h4 id="6-1-2-漏洞的基本概念"><a href="#6-1-2-漏洞的基本概念" class="headerlink" title="6.1.2 漏洞的基本概念"></a>6.1.2 漏洞的基本概念</h4><p>•漏洞（Vulnerability）是指<strong>计算机系统或软件中存在的未被发现或未被修复的安全弱点</strong>，可以被黑客或恶意用户利用来进行攻击或入侵。漏洞可能导致系统崩溃、数据泄露、远程执行命令等安全问题，对系统和用户的信息安全构成威胁。许多安全漏洞是程序错误导致的，此时可叫做安全缺陷（Security bug），但并不是所有的安全隐患都是程序安全缺陷导致的。</p>
+<p><strong>系统漏洞</strong></p>
+<p>系统漏洞中目前最常见的是Web漏洞，它通常是指网络系统程序上的漏洞，可能是由于代码编写者在编写代码时考虑不周全等原因而造成的漏洞，<strong>常见的Web漏洞有Sql注入、XSS漏洞、上传漏洞等</strong>，具体分类如下：</p>
+<p>•1. XSS（Cross-Site Scripting）跨站脚本，因为缩写和CSS重叠，所以只能叫XSS。跨站脚本是指通过存在安全漏洞的Web网站注册用户的浏览器内运行非法的HTML标签或JavaScript进行的一种。</p>
+<p>•2. SQL注入就是指Web应用程序对用户输入数据的合法性没有判断，前端传入后端的参数是攻击者可控的，并且参数代入数据库查询，攻击者可以通过在不同的SQL语句来实现对数据库的任意操作。</p>
+<p>•3. CSRF（Cross-Site Request Forgery）为跨站请求伪造，通常缩写为CSRF或者XSRF，是一种对网站的恶意利用。CSRF通过伪装成受信任用户请求受信任的网站。CSRF难以防范，危险性比XSS更高。</p>
+<p>•4. SSRF（Server-Side Request Forgery）为服务器端请求伪造，是一种由攻击者构造请求，由服务端发起请求的安全漏洞。一般情况下，SSRF攻击的目标是外网无法访问的内部系统。</p>
+<p>•5. 文件上传漏洞是在上传文件时，如果服务器代码未对客户端上传的文件进行严格的验证和过滤，很容易造成可以上传任意文件的情况，包括上传脚本文件（asp、aspx、php、jsp等格式的文件）。非法用户可以利用上传的恶意脚本文件控制整个网站，甚至控制服务器。这个恶意的脚本文件，又被成为WebShell，也可将WebShell脚本称为一种网页后门，WebShell脚本具有非常强大的功能，比如查看服务器目录、服务器中的文件，执行系统命令等。</p>
+<p>•6. 命令执行应用程序有时需要调用一些执行系统命令的函数，如在PHP中，使用system、exec、shell_exec、passthru、popen、proc_popen等函数可以执行系统命令。当黑客能控制这些函数中的参数时，就可以将恶意的系统命令拼接到正常命令中，从而造成命令执行攻击，这就是命令执行漏洞。</p>
+<p>•7. 逻辑漏洞就是指攻击者利用业务的设计缺陷，获取敏感信息或破坏业务的完整性。一般出现在密码修改、越权访问、密码找回、交易支付金额等功能处。其中越权访问又分为水平越权和垂直越权。</p>
+<h4 id="6-1-3-社会工程学"><a href="#6-1-3-社会工程学" class="headerlink" title="6.1.3 社会工程学"></a>6.1.3 社会工程学</h4><p><strong>社会工程学（攻击）是指在信息安全方面操纵人的心理，使其采取行动或泄露机密信息。有别于社会科学中的社会工程，这是种以收集信息、欺诈或入侵系统为目的的信任骗局，已发展出各种技术手段，并可能用于犯罪。</strong></p>
+<p>各类型的网络犯罪和信息安全威胁，都会用社会工程学学的技巧，尤其是在<strong>目标式攻击</strong>中使用的频率愈来愈高。网络罪犯以往只会用世界杯足球赛或情人节等标题耸动的全球事件或新闻来引诱用户，现在有其他的犯罪手法往往也搭配使用社会工程学学技巧。</p>
+<p>•钓鱼攻击：是一种企图从电子通信中，伪装成信誉卓著的法人媒体以获得用户名、密码和信用卡信息等敏感个人资料的犯罪诈骗过程。大多数的钓鱼攻击都是伪装成银行、学校、软件公司或政府安全机构等可信服务提供者，例如FBI。</p>
+<p>•诱饵计划：在此类型的社会工程学阴谋中，攻击者利用了人们对于例如最新电影或者热门MV的超高关注，从而对这些人进行信息挖掘。这在例如Bit torrent等P2P分享网络中很常见。</p>
+<p>•垃圾邮件：以电子邮件包装着恶意木马程序的电子邮件入侵受害者电脑，例如主旨为美国总统大选结果的电子邮件附件却包含恶意木马程序。</p>
+<p>•电脑蠕虫：不需附在别的程序内，用户不介入操作的情况下也能自我复制或执行。</p>
+<p>•恶意软件。</p>
+<h3 id="6-2-信息收集"><a href="#6-2-信息收集" class="headerlink" title="6.2 信息收集"></a>6.2 信息收集</h3><h4 id="6-2-1-扫描技术"><a href="#6-2-1-扫描技术" class="headerlink" title="6.2.1 扫描技术"></a>6.2.1 扫描技术</h4><p><strong>扫描的目的</strong></p>
+<p>主要有三个:</p>
+<ul>
+<li>查看目标网络中哪些主机是存活的</li>
+<li>查看存活的主机运行了哪些服务</li>
+<li>查看主机提供的服务有无漏洞</li>
+</ul>
+<h5 id="扫描的主要分类："><a href="#扫描的主要分类：" class="headerlink" title="扫描的主要分类："></a><strong>扫描的主要分类：</strong></h5><ul>
+<li><h6 id="IP扫描"><a href="#IP扫描" class="headerlink" title="IP扫描"></a>IP扫描</h6></li>
+</ul>
+<p>​	IP扫描又叫Ping扫描，主要是通过使用系统自带工具Ping完成的</p>
+<p>（基于ICMP协议，其主要思想就是构造一个ICMP包，发送给目的主机，从目的主机生成的响应来进行判断目标主机是否存活）</p>
+<p><strong>Nmap</strong></p>
+<p>Nmap是一个网络连接端口扫描软件，用来扫描目标网络主机的网络连接端口。确定哪些服务正在哪些端口上运行，从此推断运行在目标主机上的操作系统类型。它能很容易并相对较快的对目标地址空间进行ICMP Ping扫描。</p>
+<p>Nmap的官方网址为<a target="_blank" rel="noopener" href="https://nmap.org/">https://nmap.org/</a></p>
+<ul>
+<li><h6 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h6></li>
+</ul>
+<p>​	<strong>端口扫描可以分为TCP扫描和UDP扫描</strong></p>
+<p>​	<strong>1. TCP端口扫描即三次握手</strong></p>
+<p>​	1.第一次握手：客户端向服务器发送报文段1，其中的 SYN 标志位 (前文已经介绍过各种标志位的作用)的值为 1，表示这是一个用于请求发起连接的报文段，其中的序号字段 (Sequence Number，图中简写为seq)被设置为初始序号x (Initial Sequence Number，ISN)，TCP 连接双方均可随机选择初始序号。发送完报文段1之后，客户端进入 SYN-SENT 状态，等待服务器的确认。</p>
+<p>2.第二次握手：服务器在收到客户端的连接请求后，向客户端发送报文段2作为应答，其中 ACK 标志位设置为 1，表示对客户端做出应答，其确认序号字段 (Acknowledgment Number，图中简写为小写 ack) 生效，该字段值为 x + 1，也就是从客户端收到的报文段的序号加一，代表服务器期望下次收到客户端的数据的序号。此外，报文段2的 SYN 标志位也设置为1，代表这同时也是一个用于发起连接的报文段，序号 seq 设置为服务器初始序号y。发送完报文段2后，服务器进入 SYN-RECEIVED 状态。</p>
+<p>3.第三次握手：客户端在收到报文段2后，向服务器发送报文段3，其 ACK 标志位为1，代表对服务器做出应答，确认序号字段 ack 为 y + 1，序号字段 seq 为 x + 1。此报文段发送完毕后，双方都进入 ESTABLISHED 状态，表示连接已建立。</p>
+<p>•<strong>第一步</strong>：客户端进程发出断开连接指令，这将导致客户端的TCP程序创建一个特殊的TCP报文段，发送到服务器。这个报文段的FIN字段被置为1，表示这是一条断开连接的报文；</p>
+<p>•<strong>第二步</strong>：服务器接收到客户端发来的断开连接报文，向客户端回送这个报文的确认报文（ACK字段为1），告诉服务器已经接收到FIN报文，并允许断开连接；</p>
+<p>•<strong>第三步</strong>：服务器发送完确认报文后，服务器的TCP程序创建一条自己的断开连接报文，此报文的FIN字段被置为1，然后发往客户端；</p>
+<p>•<strong>第四步</strong>：客户端接收到服务器发来的FIN报文段，则产生一条确认报文（ACK为1），发送给服务器，告知服务器已经接收到了它的断开报文。服务器接收到这条ACK报文段后，释放TCP连接相关的资源（缓存和变量），而<strong>客户端等待一段时间后</strong>（半分钟、一分钟或两分钟），也释放处于客户端的缓存和变量；</p>
+<p>•<strong>ACK</strong>：只有1 bit的标志位，若为1，表示这个数据段中的确认序号是有效的，即这个数据报是对之前接收到的某个报文的确认（一个TCP报文可以同时作为确认报文和传递数据报文）。</p>
+<p>•<strong>RST</strong>：只有1 bit的标志位，若客户端向服务器的一个端口请求建立TCP连接，但是服务器的那个端口并不允许建立连接（比如没开启此端口），则服务器会回送一个TCP报文，将RST位置为1，告诉客户端不要再向这个端口发起连接；</p>
+<p>•<strong>SYN</strong>：只有1 bit的标志位，若为1，表示这是一条建立连接的TCP报文段；</p>
+<p>•<strong>FIN</strong>：只有1 bit的标志位，若为1，表示这是一条断开连接的TCP报文段；</p>
+<p><strong>UDP扫描</strong></p>
+<ul>
+<li><p>UDP扫描发送空的(没有数据)UDP报头到每个目标端口。 如果返回ICMP端口不可到达错误(类型3，代码3)， 该端口是closed(关闭的)。 其它ICMP不可到达错误(类型3， 代码1，2，9，10，或者13)表明该端口是filtered(被过滤的)。 偶尔地，某服务会响应一个UDP报文，证明该端口是open(开放的)。 如果几次重试后还没有响应，该端口就被认为是 open|filtered(开放|被过滤的)。 这意味着该端口可能是开放的，也可能包过滤器正在封锁通信。 可以用版本扫描(-sV)帮助区分真正的开放端口和被过滤的端口。</p>
+</li>
+<li><p>使用特定的 UDP服务客户端（如 Snmpwalk，dig或Tftp）发送UDP数据包到目标UDP网络服务之后等待确定性的响应信息。</p>
+</li>
+<li><h6 id="漏洞扫描"><a href="#漏洞扫描" class="headerlink" title="漏洞扫描"></a>漏洞扫描</h6></li>
+</ul>
+<p>​	漏洞扫描程序的基本原理：具有漏洞的应用程序在对某些网络请求作答时，与已经安装补丁的程序有所差别；利用这些差别可以识别目标主机上的程序是否存在漏洞。</p>
+<p>​	常用的漏洞扫描工具有Nessus、OpenVAS、X-Scan等</p>
+<h4 id="6-2-2-嗅探技术"><a href="#6-2-2-嗅探技术" class="headerlink" title="6.2.2 嗅探技术"></a>6.2.2 嗅探技术</h4><p>对攻击者来说，通过嗅探技术能以非常隐蔽的方式攫取网络中的大量敏感信息，<strong>与主动扫描相比，嗅探行为更难被察觉，也更容易操作</strong></p>
+<h5 id="嗅探器的作用"><a href="#嗅探器的作用" class="headerlink" title="嗅探器的作用"></a>嗅探器的作用</h5><p><strong>不正当用途</strong>：</p>
+<p> (1) 窃取机密信息，包括各种用户名和口令，电子邮件正文及附件、网络打印的文档等；</p>
+<p> (2) 窥探底层的协议信息，如DNS的IP地址、本机IP地址、网关IP地址等；</p>
+<p> (3) 通过嗅探器获得的数据还可以为攻击者进行中间人攻击篡改数据提供帮助。</p>
+<p><strong>正当用途</strong>：</p>
+<p> (1) 解释网络上传输的数据包的含义；</p>
+<p> (2) 为网络诊断提供参考；</p>
+<p> (3) 为网络性能分析提供参考；</p>
+<p> (4) 发现网络入侵现象，为入侵检测提供参考；</p>
+<p> (5) 将网络事件记入日志。</p>
+<p><strong>常见嗅探工具</strong></p>
+<p>•tcpdump嗅探器软件</p>
+<p> 可以将网络中传送的数据包的包头完全截获下来提供分析。它支持针对网络层、协议、主机、网络或端口的过滤，并提供and、or、not等逻辑语句来帮助去掉无用的信息。同时也是维护的比较好的开源嗅探器软件，官方网址是<a target="_blank" rel="noopener" href="http://www.tcpdump.org/%E3%80%82">http://www.tcpdump.org/。</a></p>
+<p>•wireshark网络数据包分析工具</p>
+<p>主要作用是捕获网络数据包，并尽可能详细地显示数据包的内容，它使用WinPCAP作为接口，直接与网卡进行数据报文交换， wireshark的官方网址是<a target="_blank" rel="noopener" href="https://www.wireshark.org/%E3%80%82">https://www.wireshark.org/。</a></p>
+<p><strong>集线器网络</strong></p>
+<p>【图片8】</p>
+<p>假设机器A上的管理员为了维护机器C，使用了一个FTP命令向机器C进行远程登陆，</p>
+<p>机器B上的管理员想知道究竟登陆机器C上FTP口令，仅仅需要把自己机器上的网卡置于混杂模式，并对接收到的数据帧进行分析。</p>
+<p><strong>交换机网络</strong></p>
+<p>几种在交换网络中实现的嗅探方法：</p>
+<p>•MAC洪泛</p>
+<p> 向交换机发送大量含有虚构的MAC地址和IP地址的包，使交换机无法处理如此多的信息，致使交换机进入了所谓的“打开失效”模式，也就是开始了类似于集线器的工作方式，向网络上所有机器广播数据包</p>
+<p>•MAC欺骗</p>
+<p> 攻击者通过将源MAC地址伪造为目标主机的源MAC地址，并将这样的数据包通过交换机发送出去，使得交换机不断的更新MAC—端口映射表，从而让交换机相信攻击者主机的MAC就是目标主机的MAC，交换机就会把本应发送给目标主机的数据包发送给攻击者</p>
+<p>•ARP欺骗</p>
+<p> 攻击者通过对网关和目标主机进行ARP欺骗，就可以截获两者之间的通信数据，实现嗅探的目的</p>
+<h4 id="6-2-3-其他信息收集技术"><a href="#6-2-3-其他信息收集技术" class="headerlink" title="6.2.3 其他信息收集技术"></a>6.2.3 其他信息收集技术</h4><p><strong>利用公开服务收集信息</strong></p>
+<pre><code> WEB与搜索引擎服务、USENET（新闻组服务）、WhoIs服务
+</code></pre>
+<p><strong>网络拓扑探测</strong></p>
+<p>​	主要方法是路由跟踪，执行路由跟踪的工具是在类UNIX操作系统平台上的traceroute和Windows平台的Tracert客户端程序</p>
+<p><strong>系统类型探测</strong></p>
+<ul>
+<li>利用端口扫描。</li>
+<li>利用Banner</li>
+<li>TCP&#x2F;IP协议栈指纹</li>
+</ul>
+<p>​	TCP&#x2F;IP 堆栈指纹识别是对 TCP&#x2F;IP 堆栈实现的特征的远程检测。然后，参数的组合可用于推断远程机器的操作系统（也称为操作系统指纹），或合并到设备指纹中</p>
+<h4 id="6-2-4-关于漏洞与信息收集的防范"><a href="#6-2-4-关于漏洞与信息收集的防范" class="headerlink" title="6.2.4 关于漏洞与信息收集的防范"></a>6.2.4 关于漏洞与信息收集的防范</h4><p><strong>防范网络扫描：</strong></p>
+<p>•在防火墙及过滤设备上采用严格的过滤规则，禁止扫描的数据包进入系统。</p>
+<p>•主机系统除了必要的网络服务外，禁止其它的网络应用程序。 </p>
+<p>•对于只对内开放的网络服务，更改其提供服务的端口。 </p>
+<p>•抓取扫描时的数据包，对扫描者进行反向追踪。</p>
+<p><strong>防范嗅探</strong>：</p>
+<p>•及时打补丁。 </p>
+<p>•开启本机监控。</p>
+<p>•监控本地局域网的数据帧。</p>
+<p>•对敏感数据加密。</p>
+<p>•使用安全的拓扑结构。</p>
+<p>•安装ARP防火墙。</p>
+<h3 id="6-3-网络欺骗"><a href="#6-3-网络欺骗" class="headerlink" title="6.3 网络欺骗"></a>6.3 网络欺骗</h3><h4 id="6-3-1-IP欺骗"><a href="#6-3-1-IP欺骗" class="headerlink" title="6.3.1 IP欺骗"></a>6.3.1 IP欺骗</h4><p><strong>以其它主机IP作为源IP向目标主机发送数据包</strong></p>
+<p><strong>IP欺骗的危害：</strong></p>
+<p>以可信任的身份与服务器建立连接和伪造源IP地址，隐藏攻击者身份，消除攻击痕迹</p>
+<p><strong>IP 欺骗的两种表现形式：</strong></p>
+<p>•攻击者伪造的IP地址不可达或者根本不存在。</p>
+<p>•攻击者通过在自己发出的IP 包中填入被目标主机所信任的主机的IP来进行冒充。</p>
+<p><strong>IP欺骗的步骤</strong></p>
+<p>•找到一个被目标主机信任的主机；</p>
+<p>•使被信任的主机丧失工作能力；</p>
+<p>•伪装成被信任的主机, 向目标主机发送SYN；</p>
+<p>•猜测或嗅探得到SYN+ACK的值；</p>
+<p>•再向目标主机发送ACK连接建立</p>
+<h4 id="6-3-2-电子邮件欺骗"><a href="#6-3-2-电子邮件欺骗" class="headerlink" title="6.3.2 电子邮件欺骗"></a>6.3.2 电子邮件欺骗</h4><p>•电子邮件欺骗（email spoofing）是伪造电子邮件头，导致信息看起来来源于某个人或某个地方，而实际却不是真实的源地址。</p>
+<p>•这种欺骗发生的主要原因是由于发送电子邮件最主要的协议—简单邮件传输协议（SMTP）不包括认证机制。即使SMTP服务扩展允许SMTP客户端通过邮件服务器来商议安全级别。但这一预防措施并不是总被使用。如果预防措施没有被使用，具备必要知识的任何人都可以连接到服务器，并使用其发送邮件</p>
+<h4 id="6-3-3-Web欺骗"><a href="#6-3-3-Web欺骗" class="headerlink" title="6.3.3 Web欺骗"></a>6.3.3 Web欺骗</h4><p>•攻击者创造了一个表面上看起来完全相同的网站，它拥有相同的网页和链接。然而，攻击者控制着假冒的Web站点，这样被攻击者浏览器和Web服务器之间的所有网络信息完全被攻击者所截获</p>
+<p>•基本原理：在受攻击者和提供真正服务的Web服务器之间设立攻击者的Web服务器，这种攻击种类在安全问题中称为“来自中间的攻击”</p>
+<p><strong>工作流程如下所示</strong>：</p>
+<ul>
+<li><p>用户点击经过改写后的 <a target="_blank" rel="noopener" href="http://www.www.org/http://home.xxx1.com">http://www.www.org/http://home.xxx1.com</a> ；</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.www.org向http//home.xxx1.com">http://www.www.org向http://home.xxx1.com</a> 请求文档；</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://home.xxx1.com向http//www.www.org">http://home.xxx1.com向http://www.www.org</a> 返回文档；</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.www.org/">http://www.www.org</a> 改写文档中的所有URL；</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.www.org/">http://www.www.org</a> 向用户返回改写后的文档。</p>
+</li>
+<li><p>•修改过的文档中的所有URL都指向了<a target="_blank" rel="noopener" href="http://www.org/">www.org</a> ，当用户点击任何一个链接都会直接进入 <a target="_blank" rel="noopener" href="http://www.org/">www.org</a> ，而不会直接进入真正的URL</p>
+</li>
+<li><p>•开始攻击之前，攻击者必须以某种方式引诱受攻击者进入攻击者所创造的错误的Web。黑客往往使用下面三种方法：</p>
+</li>
+<li><p>•把错误的Web链接放到一个热门Web站点上； </p>
+</li>
+<li><p>•如果受攻击者使用基于电子邮件，那么可以将它指向错误的Web； </p>
+</li>
+<li><p>•创建错误的Web索引，指示给搜索引擎</p>
+</li>
+<li><p>•构建自己的DNS服务器，IP地址解析到攻击WEB页面，且将攻击WEB页面伪造成被假冒的页面。</p>
+</li>
+</ul>
+<h4 id="6-3-4-ARP欺骗"><a href="#6-3-4-ARP欺骗" class="headerlink" title="6.3.4 ARP欺骗"></a>6.3.4 ARP欺骗</h4><p>（前文嗅探处有提）</p>
+<p><strong>•ARP原理：</strong></p>
+<p> 主机A要向主机B发送报文，会查询本地的ARP缓存表，找到B的IP地址对应的MAC地址后，就会通过交换机进行数据传输。如果未找到，则广播A一个ARP请求报文（携带主机A的IP地址Ia——物理地址Pa），请求IP地址为Ib的主机B回答物理地址Pb。局域网内所有主机包括B都收到ARP请求，但只有主机B识别自己的IP地址，于是向A主机发回一个ARP响应报文。其中就包含有B的MAC地址，A接收到B的应答后，就会更新本地的ARP缓存。接着使用这个MAC地址发送数据。因此，本地高速缓存的这个ARP cache表是本地网络通讯的基础，这个缓存表是动态更新的。</p>
+<p><strong>典型的ARP欺骗分为两种：</strong></p>
+<ul>
+<li>对路由器ARP cache表的欺骗</li>
+<li>对内网PC的网关欺骗。</li>
+</ul>
+<p>第一种ARP欺骗的原理是截获网关数据。它通知路由器一系列错误的内网MAC地址，并按照一定的频率不断进行，使真实的地址信息无法通过更新保存在路由器的ARP cache中，结果路由器的所有数据只能发送给错误的MAC地址，造成正常PC无法收到信息。</p>
+<p>第二种ARP欺骗的原理是——伪造网关。它的原理是建立假网关，让被它欺骗的PC向假网关发数据，而不是通过正常的网关连接到Internet。从被骗PC角度看，就是上不了网了，“网络掉线了”</p>
+<p><strong>ARP欺骗能够得以实现的主要原因有</strong>：</p>
+<p>•ARP协议设计之初没有考虑安全问题，所以任何计算机都可以发送虚假的ARP数据包；</p>
+<p>•ARP协议的无状态性，响应数据包和请求数据包之间没有什么关系，如果主机收到一个ARP响应却无法知道是否真的发送过对应的ARP请求；</p>
+<p>•ARP缓存需要定时更新，给攻击者以可乘之机。</p>
+<p>•<strong>ARP欺骗的主要环境必须是局域网，也就是说攻击者必须先取得进入局域网的合法身份才能进行ARP欺骗</strong></p>
+<p><strong>网络执法官原理</strong>：</p>
+<p> 在网络执法官中，要想限制某台机器上网，只要点击”网卡”菜单中的”权限”，选择指定的网卡号或在用户列表中点击该网卡所在行，从右键菜单中选择”权限”。在弹出的对话框中即可限制该用户的权限。对于未登记网卡，可以这样限定其上线：只要设定好所有已知用户（登记）后，将网卡的默认权限改为禁止上线即可阻止所有未知的网卡上线。使用这两个功能就可限制用户上网。其原理是通过ARP欺骗发给被攻击的电脑一个假的网关IP地址对应的MAC，使其找不到网关真正的MAC地址，这样就可以禁止其上网。</p>
+<p>【图片9】</p>
+<p>【图片10】</p>
+<h4 id="6-3-5-非技术类欺骗"><a href="#6-3-5-非技术类欺骗" class="headerlink" title="6.3.5 非技术类欺骗"></a>6.3.5 非技术类欺骗</h4><ul>
+<li>社会工程学</li>
+<li>垃圾搜索</li>
+</ul>
+<p>​		•攻击者通过搜索被攻击者的废弃物，得到与攻击系统有关的信息</p>
+<h4 id="6-3-6-关于网络欺骗的防范"><a href="#6-3-6-关于网络欺骗的防范" class="headerlink" title="6.3.6 关于网络欺骗的防范"></a>6.3.6 关于网络欺骗的防范</h4><h5 id="IP欺骗的防范"><a href="#IP欺骗的防范" class="headerlink" title="IP欺骗的防范"></a><strong>IP欺骗的防范</strong></h5><p>•抛弃基于地址的信任策略；</p>
+<p>•进行包过滤，只信任内部主机；</p>
+<p>•利用路由器屏蔽掉所有外部希望向内部发出的连接请求；</p>
+<p>•使用加密传输和验证的方法；</p>
+<p>•使用随机化的初始序列号，使得TCP序列号难以猜测。</p>
+<h5 id="Web欺骗的防范"><a href="#Web欺骗的防范" class="headerlink" title="Web欺骗的防范"></a><strong>Web欺骗的防范</strong></h5><p><strong>短期的解决方案</strong>:</p>
+<p>•禁止浏览器中的javascript功能，那么各类改写信息将原形毕露； </p>
+<p>•确保浏览器的连接状态是可见的，它将给你提供当前位置的各类信息； </p>
+<p>•时刻注意你所点击的URL链接会在位置状态行中得到正确的显示。 </p>
+<p><strong>长期的解决方案</strong>:  </p>
+<p>•改变浏览器，使之具有反映真实URL信息的功能，而不会被蒙蔽； </p>
+<p>•对于通过安全连接建立的Web——浏览器对话，浏览器还应该告诉用户谁在另一端，而不只是表明一种安全连接的状态。</p>
+<p><strong>ARP欺骗的防范</strong></p>
+<p>•网关建立静态IP&#x2F;MAC对应关系,各主机建立MAC数据库</p>
+<p>•建立DHCP服务器</p>
+<p>•IDS（Intrusion Detection System，入侵检测系统）监听网络安全。</p>
+<h3 id="6-4-口令攻击"><a href="#6-4-口令攻击" class="headerlink" title="6.4 口令攻击"></a>6.4 口令攻击</h3><h4 id="6-4-1-常见系统口令机制"><a href="#6-4-1-常见系统口令机制" class="headerlink" title="6.4.1 常见系统口令机制"></a>6.4.1 常见系统口令机制</h4><h5 id="口令的存储："><a href="#口令的存储：" class="headerlink" title="口令的存储："></a><strong>口令的存储</strong>：</h5><p>操作系统一般不存储明文口令，只保存口令散列。</p>
+<p>可以在以下几个地方找到windows系统的口令散列：</p>
+<p> 注册表，HKEY_LOCAL_MACHINE\SAM\SAM；</p>
+<p> SAM文件，位置在%SystemRoot%system32\config\SAM；</p>
+<p> 恢复盘，位置在%SystemRoot%repair</p>
+<h5 id="口令的管理"><a href="#口令的管理" class="headerlink" title="口令的管理"></a>口令的管理</h5><p> Windows 系统使用安全账号管理器的机制来管理用户账号。<strong>安全账号管理器对账号的管理是通过安全标识进行的，安全标识在账号创建时就同时创建，一旦账号被删除，安全标识也同时被删除。</strong>安全标识是唯一的，即使是相同的用户名，在每次创建时获得的安全标识也完全不同。因此，一旦某个账号被删除，他的安全标识也就不存在了。即使重建相同的用户名账号，也会有不同的安全标识，不会保留原来的权限。</p>
+<p><strong>Windows使用两种算法来处理明文口令，即LM算法和NTLM算法。</strong></p>
+<p>•1) LM算法，口令转换为hash值，方法如下：</p>
+<p> (1) 口令变成大写；</p>
+<p> (2) 把口令变成14个字符，或截断或补齐；</p>
+<p> (3) 这14个字符分成两个7字符；</p>
+<p> (4) 用7个字符和DES算法加密一个64位“Magic ”；</p>
+<p> (5) 把两个64位结果拼起来，得到128位值；</p>
+<p> (6) 服务器保存该128位值</p>
+<p>•2) NTLM算法，口令转换为hash值，方法如下：</p>
+<p> (1) 把口令变成Unicode编码；</p>
+<p> (2) 使用SHA256散列算法；</p>
+<p> (3) 保存得到的128位散列值</p>
+<h4 id="6-4-2-口令攻击技术"><a href="#6-4-2-口令攻击技术" class="headerlink" title="6.4.2 口令攻击技术"></a>6.4.2 口令攻击技术</h4><p><strong>根据攻击口令是否以网络连接的交互方式进行，可以将攻击分为在线口令攻击和离线口令攻击：</strong></p>
+<ol>
+<li>在线口令攻击：在线攻击是指在线状态下攻击者对用户口令进行的猜测试探攻击；</li>
+<li>离线攻击：离线攻击是指攻击者通过某些手段进行任意多数量的口令猜测，采用攻击字典和攻击程序，最终获得口令。离线攻击方法是Internet上常用的攻击手段。</li>
+</ol>
+<p><strong>根据攻击手段是否参与实际的身份认证过程，可以将攻击分为主动口令攻击和被动口令攻击：</strong></p>
+<ol>
+<li>主动口令攻击又可以分为以下三种形式：</li>
+</ol>
+<ul>
+<li>•字典攻击：字典攻击是一种把常见的、使用概率较高的口令集中存放在字典文件中，利用字典库中的数据不断的进行用户名和口令的反复测试。缺点是只能发现字典里存在的单词口令。</li>
+<li>•强力攻击：尝试所有的字符组合方式，逐一去模拟口令验证过程，缺点是速度慢。</li>
+<li>•组合攻击：综合了以上两种方法，这种攻击介于字典攻击和强力攻击之间。</li>
+</ul>
+<ol start="2">
+<li>被动口令攻击又可以分为以下三种形式：</li>
+</ol>
+<ul>
+<li>•网络数据流窃听：由于认证信息要通过网络传递，且很多认证系统的口令是未经加密的明文，攻击者通过窃听网络数据，就很容易分辨出某种特定系统的认证数据，并提取出用户名和口令。</li>
+<li>•重放(Record&#x2F;Replay)：有的系统会将认证信息进行简单加密后进行传输，如果攻击者无法用第一种方式推算出口令，可以使用截取&#x2F;重放方式。攻击者仍可以采用离线方式对口令密文实施字典攻击；</li>
+<li>•钓鱼攻击</li>
+</ul>
+<p><strong>口令技术的缺点</strong>：</p>
+<p>•大多数系统的口令是明文传送到验证服务器的，容易被截获。某些系统在建立一个加密链路后再进行口令的传输以解决此问题，如配置链路加密机。 </p>
+<p>•口令维护的成本较高。为保证安全性，口令应当经常更换。另外为避免对口令的字典攻击，口令应当保证一定的长度，并且尽量采用随机的字符。但缺点是难于记忆。</p>
+<p>•口令容易在输入的时候被攻击者偷窥，而且用户无法及时发现。</p>
+<h4 id="6-4-3-关于口令攻击的防范"><a href="#6-4-3-关于口令攻击的防范" class="headerlink" title="6.4.3 关于口令攻击的防范"></a>6.4.3 关于口令攻击的防范</h4><ol>
+<li><strong>选择安全密码</strong></li>
+</ol>
+<ul>
+<li>设置足够长度的口令</li>
+<li>口令中混合使用大小写字母、数字、特殊符号</li>
+</ul>
+<ol start="2">
+<li><strong>防止口令猜测攻击</strong></li>
+</ol>
+<ul>
+<li>硬盘分区采用NTFS格式</li>
+<li>正确设置和管理帐户</li>
+<li>禁止不需要的服务</li>
+<li>关闭不用的端口</li>
+<li>禁止建立空连接</li>
+</ul>
+<ol start="3">
+<li><strong>设置安全策略</strong></li>
+</ol>
+<ul>
+<li>强制密码历史。确定唯一新密码的个数，在重新使用旧密码之前，用户必须使用这些密码。</li>
+<li>密码最长使用期限。确定在要求用户更改密码之前用户可以使用该密码的天数。其值介于 0 和 999 之间；如果该值设置为 0，则密码从不过期。</li>
+<li>密码最短使用期限。确定用户可以更改新密码之前这些新密码必须保留的天数。此设置被设计为与“强制密码历史”设置一起使用，这样用户就不能很快地重置有次数要求的密码并更改回旧密码。</li>
+<li>密码长度最小值。确定密码最少可以有多少个字符。</li>
+</ul>
+<ol start="4">
+<li><strong>采用加密的通信协议</strong>。</li>
+</ol>
+<p> 比如在使用web邮箱时，可以采用更加安全的https。</p>
+<ol start="5">
+<li><strong>使用U盾输入口令，降低键盘记录攻击的威胁。</strong></li>
+</ol>
+<p>  另外，访问网站时，注意区分是否是虚假站点。</p>
+<h3 id="6-5-缓冲区溢出攻击"><a href="#6-5-缓冲区溢出攻击" class="headerlink" title="6.5 缓冲区溢出攻击"></a>6.5 缓冲区溢出攻击</h3><h4 id="6-5-1-缓冲区溢出的概念"><a href="#6-5-1-缓冲区溢出的概念" class="headerlink" title="6.5.1 缓冲区溢出的概念"></a>6.5.1 缓冲区溢出的概念</h4><p><strong>缓冲区</strong>：</p>
+<p> 从程序的角度，缓冲区就是应用程序用来保存用户输入数据和代码的临时数据的内存空间。</p>
+<p><strong>缓冲区溢出</strong>：</p>
+<p> 如果用户输入的数据长度超出了程序为其分配的内存空间，这些数据就会覆盖程序为其它数据分配的内存空间，形成所谓的缓冲区溢出。</p>
+<p><strong>缓冲区溢出的危害</strong>：</p>
+<p> 缓冲区溢出是一种非常普遍、非常危险的漏洞，在各种操作系统和应用软件中广泛存在。利用缓冲区溢出攻击，可以导致程序运行失败、系统当机和重新启动等后果。更为严重的是，可以利用它执行非授权指令，甚至可以取得系统特权，进而进行各种非法操作。</p>
+<h4 id="6-5-2-缓冲区溢出的基本原理"><a href="#6-5-2-缓冲区溢出的基本原理" class="headerlink" title="6.5.2 缓冲区溢出的基本原理"></a>6.5.2 缓冲区溢出的基本原理</h4><p>缓冲溢出通常在程序缓冲区编写超出其长度的代码——造成溢出，从而破坏其堆栈，使程序执行攻击者在程序地址空间中早已安排好的代码以达到其目的。</p>
+<p>由于name只有8字节大小，在进行strcpy前，并没有检测argv[1]的长度，如果argv[1]的长度大于8，则复制时就会覆盖name数组后面的ebp的内容及main函数的返回地址。等函数返回时，程序就会跳转到修改后的地址去执行。</p>
+<p><strong>几种实现缓冲区攻击的方法</strong></p>
+<p> 在程序的地址空间里安排适当的代码</p>
+<ul>
+<li>•植入法。</li>
+<li>•利用已经存在的代码。</li>
+</ul>
+<p> 通过适当的初始化寄存器和内存，让程序跳转到攻击者安排的地址空间执行</p>
+<ul>
+<li>•通过Activation Records（活动记录）改变地址</li>
+<li>•通过Function Pointers（函数指针）改变地址</li>
+<li>•通过Longjmpbuffers（长跳转缓冲区）改变地址</li>
+</ul>
+<h4 id="6-5-3-缓冲区溢出的类型"><a href="#6-5-3-缓冲区溢出的类型" class="headerlink" title="6.5.3 缓冲区溢出的类型"></a>6.5.3 缓冲区溢出的类型</h4><p><strong>按照溢出缓冲区所在的区域类型来划分，可分为栈溢出和堆溢出</strong></p>
+<p>•栈溢出特点：缓冲区在栈中分配；拷贝的数据过长；覆盖了函数的返回地址、其它一些重要数据结构或函数指针</p>
+<p>•堆溢出特点：缓冲区在堆中分配；拷贝的数据过长；覆盖了堆管理结构</p>
+<p>•其他溢出类型中，最典型的就是整型溢出</p>
+<p>•整型数溢出从造成溢出原因的角度来说可以分为三大类：存储溢出、计算溢出和符号问题</p>
+<h4 id="6-5-4-缓冲区溢出的防范"><a href="#6-5-4-缓冲区溢出的防范" class="headerlink" title="6.5.4 缓冲区溢出的防范"></a>6.5.4 缓冲区溢出的防范</h4><p><strong>对缓冲区溢出的防范方法主要有以下几种方式</strong>：</p>
+<p> 编写严格的代码</p>
+<p> 不可执行堆栈数据段</p>
+<p> 利用程序编译器的边界检查</p>
+<p> 指针完整性检查</p>
+<h3 id="6-6-拒绝服务攻击"><a href="#6-6-拒绝服务攻击" class="headerlink" title="6.6 拒绝服务攻击"></a>6.6 拒绝服务攻击</h3><h4 id="6-6-1-拒绝服务攻击的概念"><a href="#6-6-1-拒绝服务攻击的概念" class="headerlink" title="6.6.1 拒绝服务攻击的概念"></a>6.6.1 拒绝服务攻击的概念</h4><p><strong>服务：</strong></p>
+<p> 是指系统提供的，用户需求的一些功能。</p>
+<p><strong>拒绝服务</strong>（DoS）：</p>
+<p> DoS是Denial of Service的简称，即拒绝服务，任何对服务的干涉，使得其可用性降低或者失去可用性均称为拒绝服务。例如一个计算机系统崩溃或其带宽耗尽或其硬盘被填满，导致其不能提供正常的服务，就构成拒绝服务。</p>
+<p><strong>拒绝服务攻击</strong>：</p>
+<p> 造成DoS的攻击行为被称为DoS攻击，其目的是使计算机或网络无法提供正常的服务。</p>
+<p><strong>分布式拒绝服务（DDoS）攻击：</strong></p>
+<p> 如果处于不同位置的多个攻击者同时向一个或数个目标发起攻击，或者一个或多个攻击者控制了位于不同位置的多台机器并利用这些机器对受害者同时实施攻击</p>
+<h4 id="6-6-2-利用系统漏洞进行拒绝服务攻击"><a href="#6-6-2-利用系统漏洞进行拒绝服务攻击" class="headerlink" title="6.6.2 利用系统漏洞进行拒绝服务攻击"></a>6.6.2 利用系统漏洞进行拒绝服务攻击</h4><p>•系统漏洞是包含在操作系统或应用程序中与安全相关的系统缺陷。这些缺陷大多是由于错误的编程、粗心的源代码审核或一些不当的绑定所造成的，常被攻击者利用</p>
+<p> 例如微软的Windows 操作系统中的安全漏洞允许rootkits在使用操作系统的计算机上隐藏起来或者实施拒绝服务器攻击</p>
+<p> Windows GDI Plus library存在处理畸形图象漏洞，可能引起远程拒绝服务</p>
+<p>•解决这类攻击方法只能是不停的修复漏洞，同时加强管理人员对这类问题的重视程度</p>
+<h4 id="6-6-3-利用协议漏洞进行拒绝服务攻击"><a href="#6-6-3-利用协议漏洞进行拒绝服务攻击" class="headerlink" title="6.6.3 利用协议漏洞进行拒绝服务攻击"></a>6.6.3 利用协议漏洞进行拒绝服务攻击</h4><p>•几个典型的利用协议漏洞进行的拒绝服务攻击：</p>
+<p> <strong>SYN Flood</strong></p>
+<p> UDP flood拒绝服务攻击</p>
+<p> <strong>Land攻击</strong></p>
+<p>   这是利用漏洞，进行发送大量的源地址与目的地址相同的包，从而造成服务器解析Land包时占用大量的处理资源，当收到的包达到一定程度时，就会形成拒绝服务攻击。</p>
+<p> <strong>死Ping</strong></p>
+<p>   Ping是通过发送ICMP报文来判断主机是否存活。利用这个命令就能发动一次攻击，当发送超大型这种包时，也就是发送的包超过65535字节会造成服务器重组包时发生缓冲区溢出，从而让服务器崩溃发生拒绝服务。</p>
+<h4 id="6-6-4-对拒绝服务攻击的防范"><a href="#6-6-4-对拒绝服务攻击的防范" class="headerlink" title="6.6.4 对拒绝服务攻击的防范"></a>6.6.4 对拒绝服务攻击的防范</h4><ul>
+<li>•确保所有服务器采用最新系统，并打上安全补丁</li>
+<li>•删除多余的网络服务</li>
+<li>•自己定制防火墙规则</li>
+<li>•确保从服务器相应的目录或文件数据库中删除未使用的服务</li>
+<li>•禁止内部网通过Modem连接至PSTN系统</li>
+<li>•禁止使用网络访问程序如Telnet、Ftp、Rsh、Rlogin和Rcp，以基于PKI的访问程序如SSH取代</li>
+</ul>
+<p>​			（ps: rsh是”remote shell”(远程 shell)的缩写，该命令在指定的远程主机上启动一个shell并执行用户在rsh命令行中指定的命令;如果用户没有给出要执行的命令，rsh就用rlogin命令使用户登录到远程机上。</p>
+<p>​			remote file copy，即远程文件拷贝)</p>
+<ul>
+<li>•限制在防火墙外与网络文件共享</li>
+<li>•在防火墙上运行端口映射程序或端口扫描程序</li>
+<li>•检查所有网络设备和主机&#x2F;服务器系统的日志</li>
+<li>•确保管理员对所有主机进行检查，而不仅针对关键主机</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2024/11/10/%E9%93%BE%E5%AE%89%E5%9F%BA%E7%A1%802/">https://kizzy899.github.io/2024/11/10/%E9%93%BE%E5%AE%89%E5%9F%BA%E7%A1%802/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2024/11/07/solidity%E5%9F%BA%E7%A1%80%EF%BC%881%EF%BC%89/" title="【学习笔记】solidity基础001"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">【学习笔记】solidity基础001</div></div><div class="info-2"><div class="info-item-1">关键词：变量 数值类型 函数 数组 印射仅个人学习使用（WTF学习笔记） 数值类型初始值bytes1 是固定大小的字节类型，表示一个 1 字节的值（8 位）。它的初始值（默认值）是 0x00，即所有位都为 0。 具体解释：  在 Solidity 中，任何未赋值的变量都会有一个默认值。对于 bytes1 类型，它的默认值是一个长度为 1 字节的值，所有的位都被初始化为 0，用十六进制表示为 0x00。 如果用二进制表示，它是 00000000。  值类型初始值  boolean: false  string: “”  int: 0  uint: 0  enum: 枚举中的第一个元素  address: 0x0000000000000000000000000000000000000000 (或 address(0))  function   internal: 空白函数 external: 空白函数    引用类型初始值  映射mapping: 所有元素都为其默认值的mapping  结构体struct: 所有成员设为其默认值的结构体  数组array   动态数组:...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/10/30/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" title="区块链安全基础一"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-30</div><div class="info-item-2">区块链安全基础一</div></div><div class="info-2"><div class="info-item-1">关键词：信息安全  网络安全  （非）对称加密   密钥管理技术一. 信息安全知识基础1.1 信息安全定义&amp;特征1.1.1信息安全的定义：​	a. 信息系统的安全（也称实体安全，系统运行的安全） ​	b. 特定信息体系的安全  系统中信息的安全（用户权限的限制，数据加密） 管理安全（对信息资源和系统运行的管理）  1.1.2信息安全的特征a. 保密性 b. 完整性 c. 可用性 d. 可控性 e. 可审查性 关于五种特征的解释：（1）保密性：保密性是指信息不泄漏给非授权的个人、实体和过程，或供其使用的特性。（2）完整性：完整性是指信息未经授权不能被修改、不被破坏、不被插入、不延迟、不乱序和不丢失的特性。对网络信息安全进行攻击其最终目的就是破坏信息的完整性。（3）...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">welcome~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B-%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E4%B8%8E%E8%AE%A4%E8%AF%81%E6%8A%80%E6%9C%AF"><span class="toc-number">1.</span> <span class="toc-text">四.数字签名与认证技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E6%91%98%E8%A6%81%E7%AE%97%E6%B3%95%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">消息摘要算法：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Hash%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="toc-number">1.1.1.</span> <span class="toc-text">Hash函数：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Hash%E5%87%BD%E6%95%B0%E7%89%B9%E7%82%B9%EF%BC%9A"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">Hash函数特点：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%EF%BC%9A"><span class="toc-number">1.2.</span> <span class="toc-text">数字签名：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E7%B1%BB%EF%BC%9A"><span class="toc-number">1.2.1.</span> <span class="toc-text">分类：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9-%E7%BB%84%E6%88%90%EF%BC%9A"><span class="toc-number">1.2.2.</span> <span class="toc-text">特点&amp;组成：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="toc-number">1.2.3.</span> <span class="toc-text">数字签名基本流程：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%EF%BC%88%E6%95%B0%E5%AD%97%E6%A0%87%E8%AF%86%EF%BC%89%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">数字证书（数字标识）：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A4%E8%AF%81%E5%8F%8A%E8%AE%A4%E8%AF%81%E6%A8%A1%E5%9E%8B%EF%BC%9A"><span class="toc-number">1.4.</span> <span class="toc-text">认证及认证模型：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A4%E8%AF%81%E7%9A%84%E7%94%A8%E9%80%94"><span class="toc-number">1.4.1.</span> <span class="toc-text">认证的用途</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A4%E8%AF%81%E4%BF%A1%E6%81%AF%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.4.2.</span> <span class="toc-text">认证信息类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A4%E8%AF%81%E6%96%B9%E6%B3%95%E5%88%86%E7%B1%BB"><span class="toc-number">1.4.3.</span> <span class="toc-text">认证方法分类</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8D%95%E5%90%91%E8%AE%A4%E8%AF%81"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">单向认证</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%8C%E5%90%91%E8%AE%A4%E8%AF%81"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">双向认证</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A4%E8%AF%81%E5%AE%9E%E7%8E%B0%E6%8A%80%E6%9C%AF%EF%BC%9A"><span class="toc-number">1.4.4.</span> <span class="toc-text">认证实现技术：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Kerberos%E6%8A%80%E6%9C%AF"><span class="toc-number">1.4.5.</span> <span class="toc-text">Kerberos技术</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9B%9B%E4%B8%AA%E5%9F%BA%E6%9C%AC%E5%AE%9E%E4%BD%93%EF%BC%9A"><span class="toc-number">1.4.5.1.</span> <span class="toc-text">四个基本实体：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF%EF%BC%9A"><span class="toc-number">1.4.5.2.</span> <span class="toc-text">设计基本思路：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E7%9B%AE%E6%A0%87%EF%BC%9A"><span class="toc-number">1.4.5.3.</span> <span class="toc-text">设计目标：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A5%A8%E6%8D%AE%EF%BC%9A"><span class="toc-number">1.4.5.4.</span> <span class="toc-text">票据：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="toc-number">1.4.5.5.</span> <span class="toc-text">工作流程：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94-PKI-%E6%8A%80%E6%9C%AF"><span class="toc-number">2.</span> <span class="toc-text">五.PKI 技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%92%8C%E4%BD%9C%E7%94%A8%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">基本概念和作用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E7%A0%94%E7%A9%B6%E5%86%85%E5%AE%B9%E5%8F%8A%E4%B8%BB%E8%A6%81%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.2.</span> <span class="toc-text">主要研究内容及主要服务</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E7%A0%94%E7%A9%B6%E5%86%85%E5%AE%B9%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">主要研究内容：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%AE%89%E5%85%A8%E6%9C%8D%E5%8A%A1%EF%BC%9A"><span class="toc-number">2.2.2.</span> <span class="toc-text">主要安全服务：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pkl%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="toc-number">2.3.</span> <span class="toc-text">pkl的基本结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E6%9C%8D%E5%8A%A1%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.3.1.</span> <span class="toc-text">相关服务功能的实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%84%E6%88%90"><span class="toc-number">2.3.2.</span> <span class="toc-text">组成</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pkl%E4%B8%8E%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6"><span class="toc-number">2.4.</span> <span class="toc-text">pkl与数字证书</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E7%9A%84%E8%A1%A5%E5%85%85"><span class="toc-number">2.4.1.</span> <span class="toc-text">数字证书的补充</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6-%E5%AF%86%E9%92%A5%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">2.4.2.</span> <span class="toc-text">数字证书&#x2F;密钥的生命周期</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A4%E8%AF%81%E8%BF%87%E7%A8%8B"><span class="toc-number">2.4.3.</span> <span class="toc-text">认证过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pkl%E4%BA%92%E8%81%94"><span class="toc-number">2.4.4.</span> <span class="toc-text">pkl互联</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E5%8F%89%E4%BA%92%E8%81%94"><span class="toc-number">2.4.5.</span> <span class="toc-text">交叉互联</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pkl%E5%BA%94%E7%94%A8%E5%AE%9E%E4%BE%8B"><span class="toc-number">2.5.</span> <span class="toc-text">pkl应用实例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E4%B8%93%E7%94%A8%E7%BD%91%E7%BB%9C%EF%BC%88VPN%EF%BC%89"><span class="toc-number">2.5.1.</span> <span class="toc-text">虚拟专用网络（VPN）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E2%80%94%E2%80%94-PKI-%E4%B8%8ES-MIME"><span class="toc-number">2.5.2.</span> <span class="toc-text">安全电子邮件—— PKI 与S&#x2F;MIME</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Web%E5%AE%89%E5%85%A8%E2%80%94%E2%80%94PKI-%E4%B8%8E-SSL"><span class="toc-number">2.5.3.</span> <span class="toc-text">Web安全——PKI 与 SSL</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E7%AB%A0-%E7%BD%91%E7%BB%9C%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1%E6%8A%80%E6%9C%AF"><span class="toc-number">3.</span> <span class="toc-text">第六章 网络攻击与防御技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E6%94%BB%E5%87%BB%E6%8A%80%E6%9C%AF"><span class="toc-number">3.1.</span> <span class="toc-text">6.1 攻击技术</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-1-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%97%85%E6%AF%92%EF%BC%88%E6%88%96%E7%A7%B0%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81%EF%BC%89"><span class="toc-number">3.1.1.</span> <span class="toc-text">6.1.1 计算机病毒（或称恶意代码）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-2-%E6%BC%8F%E6%B4%9E%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">3.1.2.</span> <span class="toc-text">6.1.2 漏洞的基本概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-3-%E7%A4%BE%E4%BC%9A%E5%B7%A5%E7%A8%8B%E5%AD%A6"><span class="toc-number">3.1.3.</span> <span class="toc-text">6.1.3 社会工程学</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">3.2.</span> <span class="toc-text">6.2 信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-1-%E6%89%AB%E6%8F%8F%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.1.</span> <span class="toc-text">6.2.1 扫描技术</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%89%AB%E6%8F%8F%E7%9A%84%E4%B8%BB%E8%A6%81%E5%88%86%E7%B1%BB%EF%BC%9A"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">扫描的主要分类：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#IP%E6%89%AB%E6%8F%8F"><span class="toc-number">3.2.1.1.1.</span> <span class="toc-text">IP扫描</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F"><span class="toc-number">3.2.1.1.2.</span> <span class="toc-text">端口扫描</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F"><span class="toc-number">3.2.1.1.3.</span> <span class="toc-text">漏洞扫描</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-2-%E5%97%85%E6%8E%A2%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.2.</span> <span class="toc-text">6.2.2 嗅探技术</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%97%85%E6%8E%A2%E5%99%A8%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">3.2.2.1.</span> <span class="toc-text">嗅探器的作用</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-3-%E5%85%B6%E4%BB%96%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E6%8A%80%E6%9C%AF"><span class="toc-number">3.2.3.</span> <span class="toc-text">6.2.3 其他信息收集技术</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-4-%E5%85%B3%E4%BA%8E%E6%BC%8F%E6%B4%9E%E4%B8%8E%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E7%9A%84%E9%98%B2%E8%8C%83"><span class="toc-number">3.2.4.</span> <span class="toc-text">6.2.4 关于漏洞与信息收集的防范</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E7%BD%91%E7%BB%9C%E6%AC%BA%E9%AA%97"><span class="toc-number">3.3.</span> <span class="toc-text">6.3 网络欺骗</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-1-IP%E6%AC%BA%E9%AA%97"><span class="toc-number">3.3.1.</span> <span class="toc-text">6.3.1 IP欺骗</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-2-%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E6%AC%BA%E9%AA%97"><span class="toc-number">3.3.2.</span> <span class="toc-text">6.3.2 电子邮件欺骗</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-3-Web%E6%AC%BA%E9%AA%97"><span class="toc-number">3.3.3.</span> <span class="toc-text">6.3.3 Web欺骗</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-4-ARP%E6%AC%BA%E9%AA%97"><span class="toc-number">3.3.4.</span> <span class="toc-text">6.3.4 ARP欺骗</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-5-%E9%9D%9E%E6%8A%80%E6%9C%AF%E7%B1%BB%E6%AC%BA%E9%AA%97"><span class="toc-number">3.3.5.</span> <span class="toc-text">6.3.5 非技术类欺骗</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-6-%E5%85%B3%E4%BA%8E%E7%BD%91%E7%BB%9C%E6%AC%BA%E9%AA%97%E7%9A%84%E9%98%B2%E8%8C%83"><span class="toc-number">3.3.6.</span> <span class="toc-text">6.3.6 关于网络欺骗的防范</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#IP%E6%AC%BA%E9%AA%97%E7%9A%84%E9%98%B2%E8%8C%83"><span class="toc-number">3.3.6.1.</span> <span class="toc-text">IP欺骗的防范</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Web%E6%AC%BA%E9%AA%97%E7%9A%84%E9%98%B2%E8%8C%83"><span class="toc-number">3.3.6.2.</span> <span class="toc-text">Web欺骗的防范</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-%E5%8F%A3%E4%BB%A4%E6%94%BB%E5%87%BB"><span class="toc-number">3.4.</span> <span class="toc-text">6.4 口令攻击</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-4-1-%E5%B8%B8%E8%A7%81%E7%B3%BB%E7%BB%9F%E5%8F%A3%E4%BB%A4%E6%9C%BA%E5%88%B6"><span class="toc-number">3.4.1.</span> <span class="toc-text">6.4.1 常见系统口令机制</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%A3%E4%BB%A4%E7%9A%84%E5%AD%98%E5%82%A8%EF%BC%9A"><span class="toc-number">3.4.1.1.</span> <span class="toc-text">口令的存储：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%A3%E4%BB%A4%E7%9A%84%E7%AE%A1%E7%90%86"><span class="toc-number">3.4.1.2.</span> <span class="toc-text">口令的管理</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-4-2-%E5%8F%A3%E4%BB%A4%E6%94%BB%E5%87%BB%E6%8A%80%E6%9C%AF"><span class="toc-number">3.4.2.</span> <span class="toc-text">6.4.2 口令攻击技术</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-4-3-%E5%85%B3%E4%BA%8E%E5%8F%A3%E4%BB%A4%E6%94%BB%E5%87%BB%E7%9A%84%E9%98%B2%E8%8C%83"><span class="toc-number">3.4.3.</span> <span class="toc-text">6.4.3 关于口令攻击的防范</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-5-%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB"><span class="toc-number">3.5.</span> <span class="toc-text">6.5 缓冲区溢出攻击</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-5-1-%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">3.5.1.</span> <span class="toc-text">6.5.1 缓冲区溢出的概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-5-2-%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">3.5.2.</span> <span class="toc-text">6.5.2 缓冲区溢出的基本原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-5-3-%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="toc-number">3.5.3.</span> <span class="toc-text">6.5.3 缓冲区溢出的类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-5-4-%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA%E7%9A%84%E9%98%B2%E8%8C%83"><span class="toc-number">3.5.4.</span> <span class="toc-text">6.5.4 缓冲区溢出的防范</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-6-%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB"><span class="toc-number">3.6.</span> <span class="toc-text">6.6 拒绝服务攻击</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-6-1-%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">3.6.1.</span> <span class="toc-text">6.6.1 拒绝服务攻击的概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-6-2-%E5%88%A9%E7%94%A8%E7%B3%BB%E7%BB%9F%E6%BC%8F%E6%B4%9E%E8%BF%9B%E8%A1%8C%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB"><span class="toc-number">3.6.2.</span> <span class="toc-text">6.6.2 利用系统漏洞进行拒绝服务攻击</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-6-3-%E5%88%A9%E7%94%A8%E5%8D%8F%E8%AE%AE%E6%BC%8F%E6%B4%9E%E8%BF%9B%E8%A1%8C%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB"><span class="toc-number">3.6.3.</span> <span class="toc-text">6.6.3 利用协议漏洞进行拒绝服务攻击</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-6-4-%E5%AF%B9%E6%8B%92%E7%BB%9D%E6%9C%8D%E5%8A%A1%E6%94%BB%E5%87%BB%E7%9A%84%E9%98%B2%E8%8C%83"><span class="toc-number">3.6.4.</span> <span class="toc-text">6.6.4 对拒绝服务攻击的防范</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/10/%E9%93%BE%E5%AE%89%E5%9F%BA%E7%A1%802/" title="区块链安全基础二">区块链安全基础二</a><time datetime="2024-11-10T04:35:05.000Z" title="发表于 2024-11-10 12:35:05">2024-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/07/solidity%E5%9F%BA%E7%A1%80%EF%BC%881%EF%BC%89/" title="【学习笔记】solidity基础001">【学习笔记】solidity基础001</a><time datetime="2024-11-07T10:21:00.000Z" title="发表于 2024-11-07 18:21:00">2024-11-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/06/penetration_testing_steps/" title="【学习笔记】渗透测试过程1">【学习笔记】渗透测试过程1</a><time datetime="2024-11-05T17:32:00.000Z" title="发表于 2024-11-06 01:32:00">2024-11-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/30/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80/" title="区块链安全基础一">区块链安全基础一</a><time datetime="2024-10-30T12:14:26.000Z" title="发表于 2024-10-30 20:14:26">2024-10-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/23/vlan%E9%85%8D%E7%BD%AE/" title="【学习笔记】简单网络结构的搭建/vlan配置"><img src="/img/cover.jpg" onerror="this.onerror=null;this.src='/img/404page.jpg'" alt="【学习笔记】简单网络结构的搭建/vlan配置"/></a><div class="content"><a class="title" href="/2024/10/23/vlan%E9%85%8D%E7%BD%AE/" title="【学习笔记】简单网络结构的搭建/vlan配置">【学习笔记】简单网络结构的搭建/vlan配置</a><time datetime="2024-10-23T03:02:00.000Z" title="发表于 2024-10-23 11:02:00">2024-10-23</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/title.png);"><div id="footer-wrap"><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
