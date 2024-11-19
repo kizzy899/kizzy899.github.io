@@ -1,0 +1,621 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>【学习笔记】solidity003 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="关键词：ABI  delegatecall create&#x2F;create2  selector try catch ABI编码解码ABI (Application Binary Interface，应用二进制接口)是与以太坊智能合约交互的标准。数据基于他们的类型编码；并且由于编码后不包含类型信息，解码时需要注明它们的类型。 ABI编码： 1.   abi.encode 用于和合约交互，并将">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【学习笔记】solidity003">
+<meta property="og:url" content="https://kizzy899.github.io/2024/11/19/solidity%E5%9F%BA%E7%A1%80%EF%BC%883%EF%BC%89/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="关键词：ABI  delegatecall create&#x2F;create2  selector try catch ABI编码解码ABI (Application Binary Interface，应用二进制接口)是与以太坊智能合约交互的标准。数据基于他们的类型编码；并且由于编码后不包含类型信息，解码时需要注明它们的类型。 ABI编码： 1.   abi.encode 用于和合约交互，并将">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/img/touxiang.png">
+<meta property="article:published_time" content="2024-11-19T05:59:20.000Z">
+<meta property="article:modified_time" content="2024-11-19T08:05:14.842Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="solidity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/img/touxiang.png"><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2024/11/19/solidity%E5%9F%BA%E7%A1%80%EF%BC%883%EF%BC%89/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '【学习笔记】solidity003',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-19 16:05:14'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover9.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">【学习笔记】solidity003</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">【学习笔记】solidity003</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-11-19T05:59:20.000Z" title="发表于 2024-11-19 13:59:20">2024-11-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-11-19T08:05:14.842Z" title="更新于 2024-11-19 16:05:14">2024-11-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>关键词：ABI  delegatecall create&#x2F;create2  selector try catch</p>
+<h2 id="ABI编码解码"><a href="#ABI编码解码" class="headerlink" title="ABI编码解码"></a>ABI编码解码</h2><p>ABI (Application Binary Interface，应用二进制接口)是与以太坊智能合约交互的标准。数据基于他们的类型编码；并且由于编码后不包含类型信息，解码时需要注明它们的类型。</p>
+<p><strong>ABI编码：</strong></p>
+<p><strong>1.</strong>   <strong>abi.encode</strong></p>
+<p><strong>用于和合约交互，并将每个参数填充为32字节的数据，并拼接在一起</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function encode() public view returns(bytes memory result) &#123;</span><br><span class="line"></span><br><span class="line">  result = abi.encode(x, addr, name, array);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>编码的结果为</strong></p>
+<p><code>0x000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000007a58c0be72be218b41c608b7fe7c5bb630736c7100000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000043078414100000000000000000000000000000000000000000000000000000000</code></p>
+<p><strong>由于abi.encode将每个数据都填充为32字节，中间会有很多0。</strong></p>
+<p><strong>2.</strong>   <strong>abi.encodePacked</strong></p>
+<p><strong>将给定参数根据其所需最低空间编码。它类似 abi.encode，但是会把其中填充的很多0省略。比如，只用1字节来编码uint8类型。当你想省空间，并且不与合约交互的时候，可以使用abi.encodePacked，例如算一些数据的hash时</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function encodePacked() public view returns(bytes memory result) &#123;</span><br><span class="line"></span><br><span class="line">  result = abi.encodePacked(x, addr, name, array);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>编码的结果为</p>
+<p><code>0x000000000000000000000000000000000000000000000000000000000000000a7a58c0be72be218b41c608b7fe7c5bb630736c713078414100000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000006</code>，由于abi.encodePacked对编码进行了压缩，长度比abi.encode短很多。</p>
+<p><strong>3.</strong>   <strong>abi.encodeWithSignature</strong></p>
+<p><strong>与abi.encode功能类似，只不过第一个参数为函数签名，比如”foo(uint256,address,string,uint256[2])”。当调用其他合约的时候可以使用。等同于在abi.encode编码结果前加上了4字节的函数选择器。 函数选择器就是通过函数名和参数进行签名处理(Keccak–Sha3)来标识函数，可以用于不同合约之间的函数调用</strong></p>
+<p><strong>4.</strong>   <strong>abi.encodeWithSelector</strong></p>
+<p><strong>与abi.encodeWithSignature功能类似，只不过第一个参数为函数选择器，为函数签名Keccak哈希的前4个字节</strong></p>
+<p><strong>ABI解码：</strong></p>
+<p><strong>abi.decode</strong></p>
+<p>abi.decode用于解码abi.encode生成的二进制编码，将它还原成原本的参数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function decode(bytes memory data) public pure returns(uint dx, address daddr, string memory dname, uint[2] memory darray) &#123;</span><br><span class="line"></span><br><span class="line">  (dx, daddr, dname, darray) = abi.decode(data, (uint, address, string, uint[2]));</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="ABI的使用场景"><a href="#ABI的使用场景" class="headerlink" title="ABI的使用场景"></a>ABI的使用场景</h3><p><strong>1.</strong>   <strong>在合约开发中，ABI常配合call来实现对合约的底层调用。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">bytes4 selector = contract.getValue.selector;</span><br><span class="line"> </span><br><span class="line"> bytes memory data = abi.encodeWithSelector(selector, _x);</span><br><span class="line"> (bool success, bytes memory returnedData) = address(contract).staticcall(data);</span><br><span class="line"> require(success);</span><br><span class="line"> </span><br><span class="line"> return abi.decode(returnedData, (uint256));</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>2.</strong>   <strong>ethers.js中常用ABI实现合约的导入和函数调用。</strong></p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);</span><br><span class="line"> /*</span><br><span class="line">   Call the getAllWaves method from your Smart Contract</span><br><span class="line">   */</span><br><span class="line"> const waves = await wavePortalContract.getAllWaves();</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>3.</strong>   <strong>对不开源合约进行反编译后，某些函数无法查到函数签名，可通过ABI进行调用。</strong></p>
+<h3 id="Hash在solidity的应用"><a href="#Hash在solidity的应用" class="headerlink" title="Hash在solidity的应用"></a><strong>Hash在solidity的应用</strong></h3><p>一个好的哈希函数应该具有以下几个特性：</p>
+<ul>
+<li><p>单向性：从输入的消息到它的哈希的正向运算简单且唯一确定，而反过来非常难，只能靠暴力枚举。</p>
+</li>
+<li><p>灵敏性：输入的消息改变一点对它的哈希改变很大。</p>
+</li>
+<li><p>高效性：从输入的消息到哈希的运算高效。</p>
+</li>
+<li><p>均一性：每个哈希值被取到的概率应该基本相等。</p>
+</li>
+<li><p>抗碰撞性：</p>
+</li>
+<li><ul>
+<li>弱抗碰撞性：给定一个消息x，找到另一个消息x’，使得hash(x) &#x3D; hash(x’)是困难的。</li>
+<li>强抗碰撞性：找到任意x和x’，使得hash(x) &#x3D; hash(x’)是困难的。</li>
+</ul>
+</li>
+<li><p>生成数据唯一标识</p>
+</li>
+<li><p>加密签名</p>
+</li>
+<li><p>安全加密</p>
+</li>
+</ul>
+<h3 id="Solidity中常用的哈希函数："><a href="#Solidity中常用的哈希函数：" class="headerlink" title="Solidity中常用的哈希函数："></a>Solidity中常用的哈希函数：</h3><ol>
+<li>Keccak256</li>
+</ol>
+<p><strong>用法：哈希 &#x3D; keccak256(数据);</strong></p>
+<p>（Sha3和Keccak256不是同一物：Ethereum和Solidity智能合约代码中的SHA3是指Keccak256，而不是标准的NIST-SHA3，为了避免混淆，直接在合约代码中写成Keccak256是最清晰的）</p>
+<ol>
+<li><p><strong>keccak256来生成一些数据的唯一标识</strong></p>
+</li>
+<li><p><strong>弱抗碰撞性</strong>（即给定一个消息x，找到另一个消息x’，使得hash(x) &#x3D; hash(x’)是困难的）</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 弱抗碰撞性</span><br><span class="line"></span><br><span class="line">function weak(</span><br><span class="line"></span><br><span class="line">  string memory string1</span><br><span class="line"></span><br><span class="line">  )public view returns (bool)&#123;</span><br><span class="line"></span><br><span class="line">  return keccak256(abi.encodePacked(string1)) == _msg;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="3">
+<li><strong>强抗碰撞性（</strong>到任意不同的x和x’，使得hash(x) &#x3D; hash(x’)是困难的。）</li>
+</ol>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 强抗碰撞性</span><br><span class="line"></span><br><span class="line">function strong(</span><br><span class="line"></span><br><span class="line">   string memory string1,</span><br><span class="line"></span><br><span class="line">   string memory string2</span><br><span class="line"></span><br><span class="line">  )public pure returns (bool)&#123;</span><br><span class="line"></span><br><span class="line">  return keccak256(abi.encodePacked(string1)) == keccak256(abi.encodePacked(string2));</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Delegatecall"><a href="#Delegatecall" class="headerlink" title="Delegatecall"></a>Delegatecall</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p><strong>是Solidity中地址类型的低级成员函数</strong></p>
+<p><img src="https://s2.loli.net/2024/11/19/vNEoWdRnyQ3xPq4.png" alt="1.png"></p>
+<p><img src="https://s2.loli.net/2024/11/19/QnLzdB6Mj9FPTer.png" alt="2.png"></p>
+<p> <strong>和call不一样，delegatecall在调用合约时可以指定交易发送的gas，但不能指定发送的ETH数额</strong></p>
+<p><strong>注意：delegatecall有安全隐患，使用时要保证当前合约和目标合约的状态变量存储结构相同，并且目标合约安全，不然会造成资产损失。</strong></p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">目标合约地址.delegatecall(二进制编码)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>ps： 二进制编码用结构化编码函数<code>abi.encodeWithSignature</code>获得</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">abi.encodeWithSignature(&quot;函数签名&quot;，逗号分隔的具体参数)</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><ol>
+<li><p>代理合约（Proxy Contract）：将智能合约的存储合约和逻辑合约分开：<strong>代理合约（Proxy Contract）存储所有相关的变量，并且保存逻辑合约的地址；所有函数存在逻辑合约（Logic Contract）里，通过delegatecall执行</strong>。当升级时，只需要将代理合约指向新的逻辑合约即可。</p>
+</li>
+<li><p>EIP-2535 Diamonds（钻石）：钻石是一个支持构建可在生产中扩展的模块化智能合约系统的标准。钻石是具有多个实施合约的代理合约。</p>
+</li>
+</ol>
+<h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><p><strong>call调用&amp;dalecatecall调用</strong></p>
+<p>ps:</p>
+<p>函数签名为”函数名（逗号分隔的参数类型）”。例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">abi.encodeWithSignature(&quot;f(uint256,address)&quot;, _x, _addr)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>首先：写一个被调用的合约C</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">contract C &#123;</span><br><span class="line">    uint public num;</span><br><span class="line">    address public sender;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//将num设定为传入的_num，并且将sender设为msg.sender</span><br><span class="line">    function setVars(uint _num) public payable &#123;</span><br><span class="line">        num = _num;</span><br><span class="line">        sender = msg.sender;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再写：发起调用的合约B</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//合约B必须和目标合约C的变量存储布局必须相同</span><br><span class="line"></span><br><span class="line">contract B&#123;</span><br><span class="line">	uint public num;</span><br><span class="line">    address public sender;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>接下来，分别用<code>call</code>和<code>delegatecall</code>来调用合约<code>C</code>的<code>setVars</code>函数，更好的理解它们的区别</p>
+<h4 id="用call调用："><a href="#用call调用：" class="headerlink" title="用call调用："></a>用call调用：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 通过call来调用C的setVars()函数，将改变合约C里的状态变量</span><br><span class="line"></span><br><span class="line">function callSetVars(address_addr, uint _num) external payable&#123;</span><br><span class="line">//两个参数_addr和_num，分别对应合约C的地址和setVars的参数</span><br><span class="line">	(bool success,bytes memory data) = _addr.call(abi.encodeWithSignature(&quot;setVars(uint256)&quot;, _num)</span><br><span class="line">	);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>​	运行后，合约C中的状态变量将被修改：num被改为10，sender变为合约B的地址</p>
+<h4 id="用dalegatecall调用"><a href="#用dalegatecall调用" class="headerlink" title="用dalegatecall调用"></a>用dalegatecall调用</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 通过delegatecall来调用C的setVars()函数，将改变合约B里的状态变量</span><br><span class="line">function delegatecallSetVars(address _addr, uint _num) external payable&#123;</span><br><span class="line">    // delegatecall setVars()</span><br><span class="line">    (bool success, bytes memory data) = _addr.delegatecall(</span><br><span class="line">        abi.encodeWithSignature(&quot;setVars(uint256)&quot;, _num)</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>由于是delegatecall，上下文为合约B。在运行后，合约B中的状态变量将被修改：num被改为100，sender变为你的钱包地址。合约C中的状态变量不会被修改。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p><span style = "color: blue;">当用户A通过合约B来delegatecall合约C时,执行了(   )          的函数，语境是 (  )        ,msg.sender和msg.value来自(   )         ,并且如果函数改变一些状态变量,产生的效果会作用于(   )            的变量上 </span></p>
+<p>所以答案为：C,B,A,B</p>
+<p>当<strong>用户 A 通过合约 B 使用 delegatecall 调用合约 C</strong> 时，以下情况会发生：</p>
+<ol>
+<li><strong>执行了 C 的函数</strong>：</li>
+</ol>
+<p> delegatecall 会调用目标合约（即合约 C）中的指定函数代码。</p>
+<ol start="2">
+<li><strong>语境是 B</strong>：</li>
+</ol>
+<p> delegatecall 会在调用者合约（即合约 B）的上下文中执行代码。这意味着合约 C 的代码会在合约 B 的存储和上下文中运行，就像这段代码属于 B 一样。</p>
+<ol start="3">
+<li><strong>msg.sender</strong> <strong>和 msg.value 来自 A</strong>：</li>
+</ol>
+<p> delegatecall 保留了原始调用者的信息。也就是说，msg.sender 和 msg.value 都来自于发起调用的用户 A。</p>
+<ol start="4">
+<li><strong>状态变量的影响作用于 B 的变量上</strong>：</li>
+</ol>
+<p> 由于 delegatecall 在调用合约 B 的存储和上下文中执行，所以任何状态变量的修改都只会影响合约 B 中的变量，不会影响合约 C。</p>
+<h2 id="在合约中创建新合约"><a href="#在合约中创建新合约" class="headerlink" title="在合约中创建新合约"></a>在合约中创建新合约</h2><p>智能合约同样也可以创建新的智能合约</p>
+<p>去中心化交易所uniswap就是利用工厂合约（PairFactory）创建了无数个币对合约（Pair）</p>
+<h3 id="关于工厂合约"><a href="#关于工厂合约" class="headerlink" title="关于工厂合约"></a>关于工厂合约</h3><p><code>Pair</code>合约很简单，包含3个状态变量：<strong>factory</strong>，<strong>token0</strong>和<strong>token1</strong>。</p>
+<p>构造函数<strong>constructor</strong>在部署时将<strong>factory</strong>赋值为工厂合约地址。<strong>initialize</strong>函数会由工厂合约在部署完成后手动调用以初始化代币地址，将<strong>token0</strong>和<strong>token1</strong>更新为币对中两种代币的地址。</p>
+<p><strong>工厂合约（PairFactory）有两个状态变量getPair是两个代币地址到币对地址的map，方便根据代币找到币对地址；allPairs是币对地址的数组，存储了所有代币地址。</strong></p>
+<p><strong>PairFactory</strong>合约只有一个<strong>createPair</strong>函数，根据输入的两个代币地址<strong>tokenA</strong>和<strong>tokenB</strong>来创建新的<strong>Pair</strong>合约。其中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Pair pair = new Pair();</span><br></pre></td></tr></table></figure>
+
+<p>就是创建合约的代码</p>
+<p>当 PairFactory 合约调用 new Pair() 来创建一个新的 Pair 合约实例时，Pair 合约的 msg.sender 将是 PairFactory 合约本身</p>
+<h2 id="Create"><a href="#Create" class="headerlink" title="Create"></a>Create</h2><h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//new一个合约，并传入新合约构造函数所需的参数</span><br><span class="line"></span><br><span class="line">Contract x = new Contract&#123;value:_value&#125;(params)</span><br><span class="line"></span><br><span class="line">//其中Contract是要创建的合约名，x是合约对象（地址），如果构造函数是payable，可以创建时转入_value数量的ETH，params是新合约构造函数的参数</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Create2"><a href="#Create2" class="headerlink" title="Create2"></a>Create2</h2><h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>​	<strong>让合约地址独立于未来的事件</strong></p>
+<p>​	不管未来区块链上发生了什么，你都可以把合约部署在事先计算好的地址上。用<strong>CREATE2</strong>创建的合约地址由4个部分决定：</p>
+<p>·      <strong>0xFF：一个常数，避免和CREATE冲突</strong></p>
+<p><strong>·      CreatorAddress: 调用 CREATE2 的当前合约（创建合约）地址。</strong></p>
+<p><strong>·      salt（盐）：一个创建者指定的bytes32类型的值，它的主要目的是用来影响新创建的合约的地址。</strong></p>
+<p><strong>·      initcode: 新合约的初始字节码（合约的Creation Code和构造函数的参数）。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">新地址 = hash(&quot;0xFF&quot;,创建者地址, salt, initcode)</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a><strong>如何使用</strong></h3><p>CREATE2的用法和之前讲的CREATE类似，同样是new一个合约，并传入新合约构造函数所需的参数，<strong>只不过要多传一个salt参数</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Contract x = new Contract&#123;salt: _salt, value: _value&#125;(params)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//其中Contract是要创建的合约名，x是合约对象（地址），_salt是指定的盐；如果构造函数是payable，可以创建时转入_value数量的ETH，params是新合约构造函数的参数。</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="构建工厂合约2"><a href="#构建工厂合约2" class="headerlink" title="构建工厂合约2"></a>构建工厂合约2</h3> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">contract PairFactory2&#123;</span><br><span class="line">    mapping(address =&gt; mapping(address =&gt; address)) public getPair; // 通过两个代币地址查Pair地址</span><br><span class="line">    address[] public allPairs; // 保存所有Pair地址</span><br><span class="line"></span><br><span class="line">    function createPair2(address tokenA, address tokenB) external returns (address pairAddr) &#123;</span><br><span class="line">        require(tokenA != tokenB, &#x27;IDENTICAL_ADDRESSES&#x27;); //避免tokenA和tokenB相同产生的冲突</span><br><span class="line">        // 用tokenA和tokenB地址计算salt</span><br><span class="line">        (address token0, address token1) = tokenA &lt; tokenB ? (tokenA, tokenB) : (tokenB, tokenA); //将tokenA和tokenB按大小排序</span><br><span class="line">        bytes32 salt = keccak256(abi.encodePacked(token0, token1));</span><br><span class="line">        // 用create2部署新合约</span><br><span class="line">        Pair pair = new Pair&#123;salt: salt&#125;(); </span><br><span class="line">        // 调用新合约的initialize方法</span><br><span class="line">        pair.initialize(tokenA, tokenB);</span><br><span class="line">        // 更新地址map</span><br><span class="line">        pairAddr = address(pair);</span><br><span class="line">        allPairs.push(pairAddr);</span><br><span class="line">        getPair[tokenA][tokenB] = pairAddr;</span><br><span class="line">        getPair[tokenB][tokenA] = pairAddr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>工厂合约（PairFactory2）有两个状态变量getPair是两个代币地址到币对地址的map，方便根据代币找到币对地址；allPairs是币对地址的数组，存储了所有币对地址。</p>
+<p>PairFactory2合约只有一个createPair2函数，使用CREATE2根据输入的两个代币地址tokenA和tokenB来创建新的Pair合约。其中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Pair pair = new Pair&#123;salt: salt&#125;(); </span><br></pre></td></tr></table></figure>
+
+
+
+<p>就是利用<strong>CREATE2</strong>创建合约的代码，非常简单，<strong>而salt为token1和token2的hash：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">bytes32 salt = keccak256(abi.encodePacked(token0, token1));</span><br><span class="line">predictedAddress = address(uint160(uint(keccak256(abi.encodePacked(</span><br><span class="line">                bytes1(0xff),</span><br><span class="line">                address(this),</span><br><span class="line">                salt,</span><br><span class="line">                keccak256(abi.encodePacked(type(Pair).creationCode, abi.encode(address(this))))</span><br><span class="line">            )))));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/11/19/eql9IWNVREGadJj.png" alt="3.png"></p>
+<h3 id="实际应用场景"><a href="#实际应用场景" class="headerlink" title="实际应用场景"></a>实际应用场景</h3><ol>
+<li>交易所为新用户预留创建钱包合约地址。</li>
+<li>由 CREATE2 驱动的 factory 合约，在Uniswap V2中交易对的创建是在 Factory中调用CREATE2完成。这样做的好处是: 它可以得到一个确定的pair地址, 使得 Router中就可以通过 (tokenA, tokenB) 计算出pair地址, 不再需要执行一次 Factory.getPair(tokenA, tokenB) 的跨合约调用。</li>
+</ol>
+<h2 id="selfdestruct"><a href="#selfdestruct" class="headerlink" title="selfdestruct"></a>selfdestruct</h2><ul>
+<li><p>selfdestruct命令可以用来删除智能合约，并将该合约剩余ETH转到指定地址。</p>
+</li>
+<li><p>不建议使用</p>
+</li>
+</ul>
+<p>目前来说：</p>
+<ol>
+<li>已经部署的合约无法被<strong>SELFDESTRUCT</strong>了。</li>
+<li>如果要使用原先的<strong>SELFDESTRUCT</strong>功能，必须在同一笔交易中创建并<strong>SELFDESTRUCT</strong></li>
+</ol>
+<h3 id="如何使用-1"><a href="#如何使用-1" class="headerlink" title="如何使用"></a>如何使用</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">selfdestruct(_addr)；</span><br></pre></td></tr></table></figure>
+
+<p>其中_addr是接收合约中剩余ETH的地址。_addr 地址不需要有receive()或fallback()也能接收ETH</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a><strong>注意事项</strong></h3><ol>
+<li><p>对外提供合约销毁接口时，最好设置为只有合约所有者可以调用，可以使用函数修饰符<strong>onlyOwner</strong>进行函数声明。</p>
+</li>
+<li><p>当合约中有<strong>selfdestruct</strong>功能时常常会带来安全问题和信任问题，合约中的selfdestruct功能会为攻击者打开攻击向量(例如使用<strong>selfdestruct</strong>向一个合约频繁转入token进行攻击，这将大大节省了GAS的费用，虽然很少人这么做)，此外，此功能还会降低用户对合约的信心。</p>
+</li>
+</ol>
+<h2 id="函数选择器Selector"><a href="#函数选择器Selector" class="headerlink" title="函数选择器Selector"></a>函数选择器Selector</h2><p><img src="https://s2.loli.net/2024/11/19/nYUMNWopbgLalG9.png" alt="4.png"></p>
+<h3 id="msg-data"><a href="#msg-data" class="headerlink" title="msg.data"></a><strong>msg.data</strong></h3><p><strong>msg.data</strong>是<strong>Solidity</strong>中的一个全局变量，值为完整的<strong>calldata</strong>（调用函数时传入的数据</p>
+<p>举例: </p>
+<p>当参数为<code>0x2c44b726ADF1963cA47Af88B284C06f30380fC78</code>时，输出的<code>calldata</code>为</p>
+<p><code>0x6a6278420000000000000000000000002c44b726adf1963ca47af88b284c06f30380fc78</code></p>
+<p><strong>这段很乱的字节码可以分成两部分：</strong></p>
+<p>前4个字节为函数选择器selector：<br> 0x6a627842</p>
+<p> 后面32个字节为输入的参数：<br> <code>0x0000000000000000000000002c44b726adf1963ca47af88b284c06f30380fc78</code></p>
+<p>其实<strong>calldata</strong>就是告诉智能合约，我要调用哪个函数，以及参数是什么。</p>
+<h3 id="method-id、selector和函数签名"><a href="#method-id、selector和函数签名" class="headerlink" title="method id、selector和函数签名"></a><strong>method id、selector和函数签名</strong></h3><p><strong>method id定义为函数签名的Keccak哈希后的前4个字节，当selector与method id相匹配时，即表示调用该函数，那么函数签名是什么？</strong>**</p>
+<p>简单介绍函数签名: 为**”函数名（逗号分隔的参数类型)”<strong>。举个例子，上面代码中</strong>mint<strong>的函数签名为</strong>“mint(address)”**。在同一个智能合约中，不同的函数有不同的函数签名，因此我们可以通过函数签名来确定要调用哪个函数。</p>
+<p><strong>注意，在函数签名中，uint和int要写为uint256和int256。</strong></p>
+<p>由于计算method id时，需要通过函数名和函数的参数类型来计算。</p>
+<p><strong>在Solidity中，函数的参数类型主要分为：基础类型参数，固定长度类型参数，可变长度类型参数和映射类型参数。</strong></p>
+<ol>
+<li>基础类型参数</li>
+</ol>
+<p>solidity中，基础类型的参数有：uint256(uint8, … , uint256)、bool, address等。在计算method id时，只需要计算<code>bytes4(keccak256(&quot;函数名(参数类型1,参数类型2,...)&quot;))</code></p>
+<ol start="2">
+<li>固定长度类型参数</li>
+</ol>
+<p>通常为固定长度的数组，例如：uint256[5]等因此，在计算该函数的method id时，只需要通过<code>bytes4(keccak256(&quot;fixedSizeParamSelector(uint256[3])&quot;))</code></p>
+<p>即可。</p>
+<ol start="3">
+<li>可变长度类型参数</li>
+</ol>
+<p>通常为可变长的数组，例如：address[]、uint8[]、string等，</p>
+<p>因此在计算该函数的method id时，只需要通过</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bytes4(keccak256(&quot;nonFixedSizeParamSelector(uint256[],string)&quot;))</span><br></pre></td></tr></table></figure>
+
+<p>即可。</p>
+<ol start="4">
+<li>映射类型参数</li>
+</ol>
+<p>映射类型参数通常有：contract、enum、struct等。在计算method id时，需要将该类型转化成为ABI类型。因此，计算该函数的<strong>method id</strong>的代码为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bytes4(keccak256(&quot;mappingParamSelector(address,(uint256,bytes),uint256[],uint8)&quot;))</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="使用selector"><a href="#使用selector" class="headerlink" title="使用selector"></a><strong>使用selector</strong></h3><p>我们可以利用<strong>selector</strong>来调用目标函数。例如我想调用<strong>elementaryParamSelector</strong>函数，我只需要利用<strong>abi.encodeWithSelector</strong>将<strong>elementaryParamSelector</strong>函数的<strong>method id</strong>作为<strong>selector</strong>和参数打包编码，传给<strong>call</strong>函数：</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//使用selector来调用函数</span><br><span class="line">   function callWithSignature() external&#123;</span><br><span class="line">   ...</span><br><span class="line">     //调用elementaryParamSelector函数</span><br><span class="line">     (bool success1, bytes memory data1) = address(this).call(abi.encodeWithSelector(0x3ec37834, 1, 0));</span><br><span class="line">   ...</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="try-Catch"><a href="#try-Catch" class="headerlink" title="try Catch"></a>try Catch</h2><p>在 Solidity 中，try-catch 可以用来捕获以下几种异常：</p>
+<ul>
+<li>**revert()**：手动触发的异常，通常用于返回自定义错误消息。</li>
+<li>**require()**：检查条件，如果条件不满足则触发异常，通常用于输入验证和状态检查。</li>
+<li>**assert()**：用于检查不变量（internal     consistency），如果条件不满足会触发异常，并消耗所有剩余的 gas。这种异常通常表示程序中有严重错误。</li>
+</ul>
+<p>因此，try-catch 可以捕获 <strong>以上所有异常</strong>，但前提是它们发生在<strong>外部调用</strong>时。例如，当调用另一个合约或使用低级调用时发生异常，try-catch 可以捕获这些错误。</p>
+<p><strong>try-catch</strong>只能被用于external函数或创建合约时constructor（被视为external函数）的调用。基本语法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">try externalContract.f() &#123;</span><br><span class="line">   //call成功的情况下 运行一些代码</span><br><span class="line"> &#125; catch &#123;</span><br><span class="line">   // call失败的情况下 运行一些代码</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>其中externalContract.f()是某个外部合约的函数调用，try模块在调用成功的情况下运行，而catch模块则在调用失败时运行。</p>
+<p>同样可以使用this.f()来替代externalContract.f()，this.f()也被视作为外部调用，但不可在构造函数中使用，因为此时合约还未创建。</p>
+<p>如果调用的函数有返回值，那么必须在<strong>try</strong>之后声明<strong>returns(returnType val)<strong>，并且在</strong>try</strong>模块中可以使用返回的变量；如果是创建合约，那么返回值是新创建的合约变量。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">try externalContract.f() returns(returnType val)&#123;</span><br><span class="line">   // call成功的情况下 运行一些代码</span><br><span class="line"> &#125; catch &#123;</span><br><span class="line">   // call失败的情况下 运行一些代码</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，<strong>catch</strong>模块支持捕获特殊的异常原因：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">try externalContract.f() returns(returnType)&#123;</span><br><span class="line"></span><br><span class="line">  // call成功的情况下 运行一些代码</span><br><span class="line"></span><br><span class="line">&#125; catch Error(string memory /*reason*/ ) &#123;</span><br><span class="line"></span><br><span class="line">  // 捕获revert(&quot;reasonString&quot;) 和 require(false, &quot;reasonString&quot;)</span><br><span class="line"></span><br><span class="line">&#125; catch Panic(uint /*errorCode*/) &#123;</span><br><span class="line"></span><br><span class="line">  // 捕获Panic导致的错误 例如assert失败 溢出 除零 数组访问越界</span><br><span class="line"></span><br><span class="line">&#125; catch (bytes memory /*lowLevelData*/) &#123;</span><br><span class="line"></span><br><span class="line">  // 如果发生了revert且上面2个异常类型匹配都失败了 会进入该分支</span><br><span class="line"></span><br><span class="line">  // 例如revert() require(false) revert自定义类型的error</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="题："><a href="#题：" class="headerlink" title="题："></a>题：</h2><ul>
+<li>在代理合约中，存储所有相关的变量的是（），存储所有函数的是（），同时（）</li>
+</ul>
+<p>选择一个答案 </p>
+<p>A. 代理合约; 逻辑合约; 代理合约delegatecall逻辑合约 </p>
+<p>B. 代理合约; 逻辑合约; 逻辑合约delegatecall代理合约 </p>
+<p>C. 逻辑合约; 代理合约; 代理合约delegatecall逻辑合约</p>
+<p>D. 逻辑合约; 代理合约; 逻辑合约delegatecall代理合约</p>
+<p><strong>解析</strong></p>
+<p><strong>在代理合约模式中，通常有两个主要组成部分：代理合约和逻辑合约。它们的职责分配如下：</strong></p>
+<ol>
+<li><strong>代理合约 存储所有相关的变量：</strong></li>
+</ol>
+<p><strong>代理合约负责持有合约的状态（即存储变量）。这意味着合约的状态信息保存在代理合约中。</strong></p>
+<ol start="2">
+<li><strong>逻辑合约 存储所有函数：</strong></li>
+</ol>
+<p><strong>逻辑合约包含具体的业务逻辑和函数实现。它不直接持有状态，而是通过 delegatecall 被代理合约调用。</strong></p>
+<ol start="3">
+<li><strong>代理合约使用 delegatecall 调用逻辑合约：</strong></li>
+</ol>
+<p><strong>代理合约使用 delegatecall 调用逻辑合约中的函数。在这种调用方式下，逻辑合约中的代码在代理合约的上下文中执行，这意味着逻辑合约可以通过代理合约的状态变量进行操作。</strong></p>
+<p><strong>因此，选项 A 是正确的，因为它准确地描述了代理合约和逻辑合约之间的关系和它们各自的职责。</strong></p>
+<hr>
+<ul>
+<li><p>使用delegatecall对当前合约和目标合约的状态变量有什么要求？</p>
+<p>选择一个答案</p>
+<p>A. 变量名、变量类型、声明顺序都必须相同</p>
+<p>B. 变量名可以不同，变量类型、声明顺序必须相同</p>
+<p>C. 变量类型可以不同，变量名、声明顺序必须相同</p>
+<p>D. 声明顺序可以不同，变量名、变量类型必须相同</p>
+</li>
+</ul>
+<p><strong>解析</strong></p>
+<ol>
+<li><strong>状态变量在 delegatecall 中的作用</strong>：</li>
+</ol>
+<p>o 当使用 delegatecall 调用目标合约的函数时，该函数的执行是在调用合约的存储上下文中进行的。这意味着目标合约中使用的状态变量会直接影响调用合约中的状态变量。</p>
+<ol start="2">
+<li><strong>变量名</strong>：</li>
+</ol>
+<p>o 变量名可以不同，这是因为在调用时，delegatecall 是根据存储位置而不是变量名来访问状态变量。只要存储顺序和类型匹配，变量名的不同不会影响操作。</p>
+<ol start="3">
+<li><strong>变量类型</strong>：</li>
+</ol>
+<p>o 变量类型必须相同，因为 delegatecall 需要确保数据的正确解码和存储。若目标合约中使用的变量类型与调用合约的状态变量类型不一致，将导致数据解码错误，从而引发异常。</p>
+<ol start="4">
+<li><strong>声明顺序</strong>：</li>
+</ol>
+<p>声明顺序必须相同，这是因为 Solidity 编译器在生成合约存储布局时是基于变量声明的顺序来分配存储位置的。如果顺序不同，虽然变量名可以不同，但不同的顺序会导致访问错误的数据位置</p>
+<p>综上：选B</p>
+<hr>
+<ul>
+<li>1个工厂合约PairFactory创建Pair合约的最大数量一般由什么决定？</li>
+</ul>
+<p>选择一个答案</p>
+<p>A. 1个PairFactory只能创建1个pari合约</p>
+<p>B. Pair合约逻辑</p>
+<p>C. PairFactory合约逻辑</p>
+<p><strong>解析</strong></p>
+<p><strong>在 Solidity 中，工厂合约（如 PairFactory）的作用通常是用于批量创建和管理其他合约实例（例如 Pair 合约）。工厂合约能够创建的合约数量主要取决于工厂合约自身的逻辑。也就是说，PairFactory 中的代码决定了它创建 Pair 合约的具体规则和限制，例如是否允许创建多个 Pair 实例，或对创建数量施加其他限制。</strong></p>
+<ul>
+<li><strong>A. 1个PairFactory只能创建1个pair合约：不正确。工厂合约一般可以创建多个合约实例，具体数量取决于其逻辑实现。</strong></li>
+<li><strong>B. Pair合约逻辑：不正确。Pair 合约的逻辑通常只影响其自身的行为和状态，而不是 PairFactory 合约创建 Pair 合约的数量。</strong></li>
+<li><strong>C. PairFactory合约逻辑：正确。工厂合约的逻辑直接决定了它可以创建多少个 Pair 合约实例。</strong></li>
+</ul>
+<p><strong>因此，答案是 C。</strong></p>
+<hr>
+<ul>
+<li>删除合约时，可以将合约中剩余的ETH发送出去： 选择一个答案 A. 正确 B. 错误</li>
+</ul>
+<p><strong>解析</strong></p>
+<p><strong>在 Solidity 中使用 selfdestruct 删除合约时，可以将合约中剩余的 ETH 发送到指定的地址。selfdestruct(address payable recipient) 会销毁合约并将其剩余余额发送给 recipient 地址。因此，删除合约时确实可以将合约中的剩余 ETH 发送出去，选A。</strong></p>
+<hr>
+<ul>
+<li><p>当我们调用智能合约时，传递给合约的数据的前若干个字节被称为“函数选择器 (Selector)”，它告诉合约我们想要调用哪个函数。假设我们想要调用的函数在智能合约中定义声明如下： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">solidity Copy code function foo(uint256 n, address sender, string s) public view returns(bool b) </span><br></pre></td></tr></table></figure>
+
+<p>那么该函数对应的函数选择器为： 选择一个答案 </p>
+<p>A.<code> &quot;foo(uint256,address,string)&quot;</code></p>
+<p>B. <code>&quot;foo(uint256 n, address sender, string s)&quot; </code></p>
+<p>C. <code>keccak256(&quot;foo(uint256,address,string)&quot;) </code></p>
+<p>D.<code>keccak256(&quot;foo(uint256 n, address sender, string s)&quot;)</code></p>
+<p>E. <code>bytes4(keccak256(&quot;foo(uint256,address,string)&quot;)) </code></p>
+<p>F. <code>bytes4(keccak256(&quot;foo(uint256 n, address sender, string s)&quot;))</code></p>
+</li>
+</ul>
+<p><strong>解析</strong></p>
+<p><strong>在 Solidity 中，函数选择器是由函数签名（函数名称和参数类型）经过 Keccak-256 哈希运算后生成的前 4 个字节。具体生成步骤如下：</strong></p>
+<p><strong>1.</strong>   <strong>将函数的签名（包括函数名称和参数类型，但不包含参数名称）传入 keccak256 进行哈希计算。</strong></p>
+<p>在这个例子中，函数签名为 <code>&quot;foo(uint256,address,string)&quot;</code></p>
+<p><strong>2.</strong>   <strong>取 keccak256 哈希结果的前 4 个字节，形成 bytes4 类型的数据。</strong></p>
+<p><strong>因此，正确答案是 bytes4(keccak256(“foo(uint256,address,string)”))。</strong></p>
+<hr>
+<ul>
+<li><p>已知函数foo在智能合约中定义声明如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">solidity Copy code function foo(uint256 a) public view</span><br></pre></td></tr></table></figure>
+
+
+
+<p> 而字符串<code>&quot;foo(uint256)&quot;</code>的keccak256哈希值为： <code>0x2fbebd3821c4e005fbe0a9002cc1bd25dc266d788dba1dbcb39cc66a07e7b38b</code> 那么，当我们希望调用函数foo()时，以下生成调用数据的写法中，正确且最节省gas的一项是： 选择一个答案</p>
+<p> A.<code> abi.encodeWithSignature(&quot;foo(uint256)&quot;, a)</code> B.<code>abi.encodeWithSelector(&quot;foo(uint256)&quot;, a)</code></p>
+<p>C.<code>abi.encodeWithSelector(bytes(keccak256(&quot;foo(uint256)&quot;)), a) </code></p>
+<p>D. <code>abi.encodeWithSelector(bytes4(0x2fbebd38), a)</code></p>
+</li>
+</ul>
+<p><strong>解析：</strong></p>
+<p>·    <strong>在 Solidity 中，调用函数时可以通过函数的选择器（selector）生成调用数据。</strong></p>
+<p>·    <strong>题目中已给出 “foo(uint256)” 的哈希值为 0x2fbebd3821c4e005fbe0a9002cc1bd25dc266d788dba1dbcb39cc66a07e7b38b，而选择器就是这个哈希值的前四个字节，即 0x2fbebd38。</strong></p>
+<p>·    <strong>选项 D 使用了 abi.encodeWithSelector(bytes4(0x2fbebd38), a)，直接利用已知的选择器生成调用数据，这是最节省 gas 的写法，因为它避免了重复计算哈希值。</strong></p>
+<p><strong>其他选项分析：</strong></p>
+<p>·    <strong>A</strong> <strong>和 B 会导致额外的 gas 开销，因为它们需要在运行时计算 “foo(uint256)” 的哈希值。</strong></p>
+<p>·    <strong>C</strong> <strong>中的 keccak256(“foo(uint256)”) 也会增加不必要的计算，因此会消耗更多的 gas。</strong></p>
+<p><strong>正确答案选D</strong></p>
+<hr>
+<ul>
+<li>如果对于某个哈希函数，我们统计大量不同字符串对应的哈希值（二进制串），发现其前 n 位全部为 0 的频率恰好约为 1&#x2F;2^n，则我们认为该哈希函数具有良好的：</li>
+</ul>
+<p> 选择一个答案 </p>
+<p>A. 单向性 </p>
+<p>B. 灵敏性 </p>
+<p>C. 高效性 </p>
+<p>D. 均一性 </p>
+<p>E. 抗碰撞性</p>
+<p><strong>解析</strong>：</p>
+<p><strong>·    均一性（Uniformity）指的是哈希函数生成的哈希值在输出空间中均匀分布。若哈希函数具有均一性，则任意特定模式（如前 n 位为 0）在随机情况下出现的概率为 12n\frac{1}{2^n}2n1。</strong></p>
+<p><strong>·    题目中的现象描述了哈希值分布的均匀性，符合均一性的定义。</strong></p>
+<p><strong>其他选项分析：</strong></p>
+<p><strong>·    单向性 是指给定哈希值很难逆向推出原始输入。</strong></p>
+<p><strong>·    灵敏性 是指输入的细微变化（例如一位改变）会显著改变输出（哈希值）。</strong></p>
+<p><strong>·    高效性 指的是哈希函数计算的速度。</strong></p>
+<p><strong>·    抗碰撞性 是指很难找到不同输入生成相同的哈希值。</strong></p>
+<p><strong>因此，D. 均一性 是最符合题意的选项。</strong></p>
+<hr>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function transfer(address recipient, uint amount) external override returns (bool) &#123;</span><br><span class="line"></span><br><span class="line">	balanceOf[msg.sender] -= amount;</span><br><span class="line"></span><br><span class="line">	balanceOf[recipient] += amount;</span><br><span class="line"></span><br><span class="line">	emit Transfer(msg.sender, recipient, amount);</span><br><span class="line"></span><br><span class="line">	return true;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>transfer</strong>函数的函数签名是transfer(address uint256)</p>
+<p><strong>transfer</strong>函数的选择器为0xa9059cbb</p>
+<p><strong>解析</strong></p>
+<p><strong>通过计算 keccak256(“transfer(address,uint256)”) 得到</strong></p>
+<p>计算代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract SelectorCalculator &#123;</span><br><span class="line">    function getTransferSelector() public pure returns (bytes4) &#123;</span><br><span class="line">        return bytes4(keccak256(&quot;transfer(address,uint256)&quot;));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<ul>
+<li>try-catch捕获到异常后是否会使try-catch所在的方法调用失败？</li>
+</ul>
+<p>选择一个答案 A. 会 B. 不会</p>
+<p><strong>解析</strong></p>
+<p> <strong>在 Solidity 中，try-catch 用于捕获外部合约调用或低级调用（如 .call）中可能发生的异常。当 try 块中的调用失败并触发异常时，程序流会进入 catch 块，而不会导致整个 try-catch 所在的函数失败。因此，只要 catch 块正确处理了异常，try-catch 所在的方法可以继续执行，不会因为捕获异常而失败。</strong></p>
+<hr>
+<ul>
+<li>try代码块内的revert是否会被catch本身捕获？</li>
+</ul>
+<p>A. 会 B. 不会</p>
+<p><strong>解析</strong></p>
+<p><strong>因为Solidity 中，try-catch 结构用于捕获由外部调用（如其他合约的函数调用或低级调用）引发的异常。然而，try 代码块内部的 revert 并不会被同一 try-catch 结构的 catch 捕获。这是因为：</strong></p>
+<ul>
+<li><strong>try-catch</strong> <strong>只捕获外部合约调用中的异常。如果 try 块内的代码直接调用 revert()，这将导致该函数的整个执行环境被终止，无法进入 catch 块。</strong></li>
+<li><strong>换句话说，try-catch 结构设计的目的是为了捕获异常以便处理，而 revert() 直接触发的异常会使当前调用栈中的所有状态都回滚，而不会跳转到 catch 块。</strong></li>
+</ul>
+<hr>
+<ul>
+<li>以下异常返回值类型为bytes的是： 选择一个答案 A. revert() B. require() C. assert() D. 以上都是 D是错的</li>
+</ul>
+<p><strong>解析： 在 Solidity 中，revert() 可以返回一个 bytes 类型的错误信息，例如自定义的错误消息，因此 revert() 的返回值类型为 bytes。这是为了提供详细的错误描述。</strong></p>
+<ul>
+<li><strong>require()</strong> <strong>和 assert() 通常不返回详细的错误数据，尤其是 assert()，它直接导致系统错误，并消耗所有剩余的 gas，不返回 bytes 类型的错误信息。</strong></li>
+</ul>
+<p><strong>因此，只有 A. revert() 返回 bytes 类型的错误信息。</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2024/11/19/solidity%E5%9F%BA%E7%A1%80%EF%BC%883%EF%BC%89/">https://kizzy899.github.io/2024/11/19/solidity%E5%9F%BA%E7%A1%80%EF%BC%883%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/solidity/">solidity</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2024/11/18/%E3%80%90%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E3%80%91%E5%8C%BA%E5%9D%97%E9%93%BE%E5%8E%9F%E7%90%86%E2%80%94%E2%80%94%E5%8C%BA%E5%9D%97%E9%93%BE%E6%A6%82%E5%BF%B5/" title="【学习笔记】区块链原理——区块链概念"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">【学习笔记】区块链原理——区块链概念</div></div><div class="info-2"><div class="info-item-1">区块链的基本概念基本定义 从字面上理解，区块链就是由多个记录数据的区块构成的链式数据结构。  从技术角度来看，区块链是一种基于P2P网络架构的分布式账本技术系统：    以“块-链”式数据结构来验证与存储账本数据 使用密码学方法保证数据传输和访问的安全   从应用角度来看，区块链是一种新型的无中介陌生人信任服务应用支撑平台系统。   面向由陌生主体构成的开放网络环境 提供分布式账本记账服务  特点 去&#x2F;弱中心化 可溯源 不可篡改 数字价值唯一性（采用共识机制和密码学方法实现） 智能合约 开放性 去信任  类型 公有链 公有链（Public Blockchain），任何人（任何个体与组织）都可以参与区块链数据的维护和读取，数据完全开放透明，免费开放 目前全球最有影响力的公有链是比特币和以太坊系统。  联盟链 联盟链（Consortium...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/11/07/solidity%E5%9F%BA%E7%A1%80%EF%BC%881%EF%BC%89/" title="【学习笔记】solidity基础001"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-07</div><div class="info-item-2">【学习笔记】solidity基础001</div></div><div class="info-2"><div class="info-item-1">关键词：变量 数值类型 函数 数组 印射仅个人学习使用（WTF学习笔记） 数值类型初始值bytes1 是固定大小的字节类型，表示一个 1 字节的值（8 位）。它的初始值（默认值）是 0x00，即所有位都为 0。 具体解释：  在 Solidity 中，任何未赋值的变量都会有一个默认值。对于 bytes1 类型，它的默认值是一个长度为 1 字节的值，所有的位都被初始化为 0，用十六进制表示为 0x00。 如果用二进制表示，它是 00000000。  值类型初始值  boolean: false  string: “”  int: 0  uint: 0  enum: 枚举中的第一个元素  address: 0x0000000000000000000000000000000000000000 (或 address(0))  function   internal: 空白函数 external: 空白函数    引用类型初始值  映射mapping: 所有元素都为其默认值的mapping  结构体struct: 所有成员设为其默认值的结构体  数组array   动态数组:...</div></div></div></a><a class="pagination-related" href="/2024/11/11/solidity%E5%9F%BA%E7%A1%80%EF%BC%882%EF%BC%89/" title="【学习笔记】solidity基础002"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-11</div><div class="info-item-2">【学习笔记】solidity基础002</div></div><div class="info-2"><div class="info-item-1">关键词：constructor&amp;Modifier  event 继承 接口 异常 重载 库合约 引用 回调 构造函数constructor和修饰器Modifierconstructor  定义：是一种特殊函数 每个合约可以定义一个，并且在部署合约时自动运行一次。 可用于初始化合约参数： 123456789101112131415161718// SPDX-License-Identifier: MITpragma solidity ^0.8.0;contract MyToken &#123;    string public name;    string public symbol;    uint256 public totalSupply;    address public owner;    //带参数的构造函数用于初始化状态变量    constructor(string memory _name, string memory _symbol, uint256 _initialSupply) &#123;        name = _name;      ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">welcome~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ABI%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81"><span class="toc-number">1.</span> <span class="toc-text">ABI编码解码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ABI%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.1.</span> <span class="toc-text">ABI的使用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash%E5%9C%A8solidity%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">1.2.</span> <span class="toc-text">Hash在solidity的应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Solidity%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">Solidity中常用的哈希函数：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Delegatecall"><span class="toc-number">2.</span> <span class="toc-text">Delegatecall</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">2.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">2.3.</span> <span class="toc-text">应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94"><span class="toc-number">2.4.</span> <span class="toc-text">对比</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8call%E8%B0%83%E7%94%A8%EF%BC%9A"><span class="toc-number">2.4.1.</span> <span class="toc-text">用call调用：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8dalegatecall%E8%B0%83%E7%94%A8"><span class="toc-number">2.4.2.</span> <span class="toc-text">用dalegatecall调用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.4.3.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E5%90%88%E7%BA%A6%E4%B8%AD%E5%88%9B%E5%BB%BA%E6%96%B0%E5%90%88%E7%BA%A6"><span class="toc-number">3.</span> <span class="toc-text">在合约中创建新合约</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E5%B7%A5%E5%8E%82%E5%90%88%E7%BA%A6"><span class="toc-number">3.1.</span> <span class="toc-text">关于工厂合约</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Create"><span class="toc-number">4.</span> <span class="toc-text">Create</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%B3%95"><span class="toc-number">4.1.</span> <span class="toc-text">用法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Create2"><span class="toc-number">5.</span> <span class="toc-text">Create2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">5.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8"><span class="toc-number">5.2.</span> <span class="toc-text">如何使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%8E%82%E5%90%88%E7%BA%A62"><span class="toc-number">5.3.</span> <span class="toc-text">构建工厂合约2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">5.4.</span> <span class="toc-text">实际应用场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#selfdestruct"><span class="toc-number">6.</span> <span class="toc-text">selfdestruct</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-1"><span class="toc-number">6.1.</span> <span class="toc-text">如何使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">6.2.</span> <span class="toc-text">注意事项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E9%80%89%E6%8B%A9%E5%99%A8Selector"><span class="toc-number">7.</span> <span class="toc-text">函数选择器Selector</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#msg-data"><span class="toc-number">7.1.</span> <span class="toc-text">msg.data</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#method-id%E3%80%81selector%E5%92%8C%E5%87%BD%E6%95%B0%E7%AD%BE%E5%90%8D"><span class="toc-number">7.2.</span> <span class="toc-text">method id、selector和函数签名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8selector"><span class="toc-number">7.3.</span> <span class="toc-text">使用selector</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#try-Catch"><span class="toc-number">8.</span> <span class="toc-text">try Catch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%98%EF%BC%9A"><span class="toc-number">9.</span> <span class="toc-text">题：</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/19/solidity%E5%9F%BA%E7%A1%80%EF%BC%883%EF%BC%89/" title="【学习笔记】solidity003">【学习笔记】solidity003</a><time datetime="2024-11-19T05:59:20.000Z" title="发表于 2024-11-19 13:59:20">2024-11-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/18/%E3%80%90%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E3%80%91%E5%8C%BA%E5%9D%97%E9%93%BE%E5%8E%9F%E7%90%86%E2%80%94%E2%80%94%E5%8C%BA%E5%9D%97%E9%93%BE%E6%A6%82%E5%BF%B5/" title="【学习笔记】区块链原理——区块链概念">【学习笔记】区块链原理——区块链概念</a><time datetime="2024-11-18T11:51:02.000Z" title="发表于 2024-11-18 19:51:02">2024-11-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/11/solidity%E5%9F%BA%E7%A1%80%EF%BC%882%EF%BC%89/" title="【学习笔记】solidity基础002">【学习笔记】solidity基础002</a><time datetime="2024-11-11T15:50:03.000Z" title="发表于 2024-11-11 23:50:03">2024-11-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/10/%E9%93%BE%E5%AE%89%E5%9F%BA%E7%A1%802/" title="区块链安全基础二">区块链安全基础二</a><time datetime="2024-11-10T04:35:05.000Z" title="发表于 2024-11-10 12:35:05">2024-11-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/07/solidity%E5%9F%BA%E7%A1%80%EF%BC%881%EF%BC%89/" title="【学习笔记】solidity基础001">【学习笔记】solidity基础001</a><time datetime="2024-11-07T10:21:00.000Z" title="发表于 2024-11-07 18:21:00">2024-11-07</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/title.png);"><div id="footer-wrap"><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
