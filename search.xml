@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>WEB安全</title>
+      <link href="/2024/12/01/WEB%E5%AE%89%E5%85%A8/"/>
+      <url>/2024/12/01/WEB%E5%AE%89%E5%85%A8/</url>
+      
+        <content type="html"><![CDATA[<h4 id="如何实施安全评估："><a href="#如何实施安全评估：" class="headerlink" title="如何实施安全评估："></a>如何实施安全评估：</h4><p>资产等级划分—威胁建模—风险分析—设计安全方案</p><ol><li>资产等级划分</li></ol><p><strong>划分信任域</strong></p><p>  根据网络逻辑划分（信任程度：数据库&gt;web应用&gt;Internet）</p><p>互联网安全核心——数据安全</p><ol start="2"><li>威胁建模</li></ol><p><strong>找出威胁</strong></p><p>方法：STRIDE模型</p><table><thead><tr><th>威胁</th><th>定义</th><th>对应安全属性</th></tr></thead><tbody><tr><td>Spoofing(伪装)</td><td>冒充他人身份</td><td>认证</td></tr><tr><td>Tampering（篡改）</td><td>修改数据或代码</td><td>完整性</td></tr><tr><td>Repudiation（抵赖）</td><td>否认做过的事情</td><td>不可抵赖性</td></tr><tr><td>Information Disclosure(信息泄露)</td><td>机密信息泄露</td><td>机密性</td></tr><tr><td>Denial of service(拒绝服务)</td><td>拒绝服务</td><td>可用性</td></tr><tr><td>Elevation of Privilege(提升权限)</td><td>未经授权获得许可</td><td>授权</td></tr></tbody></table><ol start="3"><li>风险分析</li></ol><p><strong>判断风险高低</strong>（风险&#x3D;可能性*潜在危害）</p><p> 方法：DREAD模型</p><ol start="4"><li>设计安全方案</li></ol><p>安全是产品的属性</p><p><strong>优秀安全方案所具备特点：</strong></p><ul><li>能够解决问题</li><li>用户体验好</li><li>高性能</li><li>低耦合</li><li>易于扩展与升级</li></ul><h4 id="安全方案设计原则："><a href="#安全方案设计原则：" class="headerlink" title="安全方案设计原则："></a><strong>安全方案设计原则：</strong></h4><p> 1.“默认安全原则”</p><p>a.    专家系统：黑名单&amp;白名单</p><p>   （白名单-允许&#x2F;黑名单-不允许）</p><p>b.    最小权限原则（不要过度授权）</p><p>c.    “纵深防御”原则——类似圈层防御</p><p>l 从不同层面、不同方面实施安全方案</p><p>具有根本性，针对性</p><p>d.    “数据与代码分离”原则</p><p>这一原则适用于各种由于“注入”而引发安全问题的场景</p><p>Eg:将页面代码中将“<script>”标签变成代码片段的一部分（对<>等符号进行处理）</p><p>e.    “随机性”原则</p><ol><li><p>利用计算的单向（当逆推时，计算变得十分复杂）性，生成随机字符串，攻击者猜中的概率就很小，增加安全性。</p></li><li><p>随机性（不可预测性）——提高篡改、伪造等攻击 的门槛</p></li><li><p>注意计算机中采用的随机数一般是伪随机数</p></li></ol><h4 id="HTTP协议与Web应用"><a href="#HTTP协议与Web应用" class="headerlink" title="HTTP协议与Web应用"></a>HTTP协议与Web应用</h4><p>HTTP协议中与安全有关的知识</p><p> http协议只能由客户端单向发起请求，服务端（一般为浏览器）再响应请求。</p><p>​                               </p><p>出于安全考虑，要遵循以下基本原则：</p><ol><li><p>GET和HEAD方法应当只用于对服务端没有副作用的操作（即“只读”操作）。对于GET请求，浏览器在刷新页面时不会要求用户确认，对于有副作用（即增加，删除，更改数据）的POST请求，在刷新界面时会询问用户是否要重新发送，避免多余操作（重复下单等）</p></li><li><p>PUT和DELETE一般用于直接上传和删除文件（大部分不会用到，且若被攻击时很危险，无需求时应该禁用）</p></li><li><p>尽量用POST提交敏感数据，用GET提交易造成数据的泄露。</p></li><li><p>在服务端获取请求参数时，应当说清是从GET参数还是从POST参数请求</p></li><li><p>TRACE方法通常用于诊断调试，服务端直接返回请求中的内容（生产环境的服务器应当禁用TRACE）</p></li><li><p>CONNECT方法用于在客户端和目标地址之间建立一个TCP隧道，只有初始请求是HTTP协议，后续所有双向流量都是在TCP连接上传输的</p></li></ol><p>Referer头指示了当前请求是从哪个URL页面发起的（URL中一般不要包含敏感信息，可能造成信息泄露）</p><p><strong>关于HTTP响应：</strong></p><p> HTTP响应与请求是一一对应的，响应中版本号不一定要与请求中的版本号一样，但是其大版本号不能高于请求的大版本号，例如请求是HTTP/1.0版本的，服务器响应不能为HTTP/2但是可以为HTTP/1.1版本的</p><p>对<strong>状态码：</strong></p><p>分析状态码可以实现简单的安全监测（Eg:一个访问者在短时间内产生大量404响应，很可能是有攻击者在做网站扫描探测；某页面有大量500响应，可能意味着程序存在BUG等或被攻击行为）</p><p>HTTP的响应头是通过“\r\n”分割的</p><p><img src="https://s2.loli.net/2024/12/01/6EFGWABzYn7tbqU.jpg" alt="1.jpg"></p><p><img src="https://s2.loli.net/2024/12/01/8bog7nRvIpmqFcx.jpg" alt="2.jpg"></p><p><img src="https://s2.loli.net/2024/12/01/24pKLQW9G3XxbiM.jpg" alt="3.jpg"></p><p><img src="https://s2.loli.net/2024/12/01/YCcQRwT6ZD8aej4.jpg" alt="4.jpg"></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>区块链安全基础四</title>
       <link href="/2024/11/29/%E9%93%BE%E5%AE%894/"/>
       <url>/2024/11/29/%E9%93%BE%E5%AE%894/</url>
