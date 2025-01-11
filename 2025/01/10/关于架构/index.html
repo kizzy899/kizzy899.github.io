@@ -1,0 +1,288 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>关于架构 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="企业架构  企业架构是企业进行项目决策的重要依据，同时也是支撑企业后续发展的重要基石。业务架构、数据架构、应用架构和技术架构是企业架构中的四个主要架构，它们在关注的方面和功能上有所不同，但是它们是相互关联和相互支持的，共同构成了企业的总体架构。 企业架构之4A架构4A架构关键词： 业务架构：战略，价值链，端到端，业务流程，业务组件，自上而下分解 应用架构：系统建设，系统集成，中台，自下而上抽象 技">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于架构">
+<meta property="og:url" content="https://kizzy899.github.io/2025/01/10/%E5%85%B3%E4%BA%8E%E6%9E%B6%E6%9E%84/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="企业架构  企业架构是企业进行项目决策的重要依据，同时也是支撑企业后续发展的重要基石。业务架构、数据架构、应用架构和技术架构是企业架构中的四个主要架构，它们在关注的方面和功能上有所不同，但是它们是相互关联和相互支持的，共同构成了企业的总体架构。 企业架构之4A架构4A架构关键词： 业务架构：战略，价值链，端到端，业务流程，业务组件，自上而下分解 应用架构：系统建设，系统集成，中台，自下而上抽象 技">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/img/touxiang.png">
+<meta property="article:published_time" content="2025-01-09T16:06:29.000Z">
+<meta property="article:modified_time" content="2025-01-11T13:00:08.859Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/img/touxiang.png"><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2025/01/10/%E5%85%B3%E4%BA%8E%E6%9E%B6%E6%9E%84/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '关于架构',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-01-11 21:00:08'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover9.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">关于架构</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">关于架构</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-01-09T16:06:29.000Z" title="发表于 2025-01-10 00:06:29">2025-01-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-01-11T13:00:08.859Z" title="更新于 2025-01-11 21:00:08">2025-01-11</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="企业架构"><a href="#企业架构" class="headerlink" title="企业架构"></a>企业架构</h2><p>  企业架构是企业进行项目决策的重要依据，同时也是支撑企业后续发展的重要基石。<strong>业务架构、数据架构、应用架构和技术架构是企业架构中的四个主要架构</strong>，它们在关注的方面和功能上有所不同，但是它们是相互关联和相互支持的，共同构成了企业的总体架构。</p>
+<h3 id="企业架构之4A架构"><a href="#企业架构之4A架构" class="headerlink" title="企业架构之4A架构"></a><strong>企业架构之4A架构</strong></h3><p><strong>4A架构关键词：</strong></p>
+<p><strong>业务架构：</strong>战略，价值链，端到端，业务流程，业务组件，自上而下分解</p>
+<p><strong>应用架构</strong>：系统建设，系统集成，中台，自下而上抽象</p>
+<p><strong>技术架构</strong>：技术选型，框架，PaaS平台，云原生，DevOps，微服务，容器化，部署架构</p>
+<p><strong>数据架构：</strong>数据标准，数据采集加工，数据入湖，数据治理，数据共享服务，数据安全，数据质量，数据架构</p>
+<p>【1】</p>
+<h4 id="业务结构"><a href="#业务结构" class="headerlink" title="业务结构"></a>业务结构</h4><p>业务架构定义了业务策略、治理、组织和关键业务过程。是企业架构的核心内容，承接了企业战略，直接决定企业战略的实现能力，是其他架构领域工作的前置条件。</p>
+<p>主要目标是根据企业战略愿景，分析业务现状，识别现有业务能力及问题，提出业务改进需求，设计目标业务架构。（以价值链梳理分析业务开展流程，识别上下游依赖关系，从业务和产品的视角，描述整个平台或者产品的实现）</p>
+<p><strong>设计步骤：</strong></p>
+<ul>
+<li>识别战略，走访业务部门，问卷调查</li>
+<li>外部因素，根据宏观背景（风口），行业空间（天花板），竞争情况（赛道），上下游产业链做规划</li>
+<li>内部因素，根据商业模式，技术壁垒和资源投入进行规划</li>
+</ul>
+<p><strong>如何绘制业务架构图</strong></p>
+<p>A）根据用户操作流程，罗列功能模块</p>
+<p>B）形成功能矩阵</p>
+<p>C）横向分层，纵向分层</p>
+<h4 id="应用架构"><a href="#应用架构" class="headerlink" title="应用架构"></a><strong>应用架构</strong></h4><p>应用架构为要部署的单个应用系统、它们之间的交互和它们与组织的核心业务流程之间的关系提供蓝图。</p>
+<p>工作主要目标是根据企业现状应用架构需求及业务架构中的数据流分析结果，设计目标应用架构（支持业务和数据处理需要哪些应用系统，完成从业务到IT的转换）</p>
+<p><strong>设计步骤：</strong></p>
+<ul>
+<li>根据业务架构图，做业务到IT的转换，识别应用程序和组件 （上接业务）</li>
+<li>优化应用程序和组件，该拆分就拆分，该聚合就聚合 （核心设计）</li>
+<li>设计应用与业务功能，流程，数据的关系（核心设计）</li>
+<li>设计应用集成，交互，开发 （下接开发）</li>
+</ul>
+<h4 id="技术架构"><a href="#技术架构" class="headerlink" title="技术架构"></a>技术架构</h4><p>技术架构描述了需要支持业务、数据和应用服务的部署的逻辑软硬件能力，包括IT基础设施、中间件、网络、通信、流程、标准等。</p>
+<p>工作主要目标是基于现状技术架构、技术标准、业务&#x2F;应用&#x2F;数据架构要求，设计目标技术架构。梳理AS-IS技术架构，形成平台分解图和技术谱系目录。（支持应用系统所需的技术架构，技术组件，技术选型）</p>
+<p><strong>设计步骤：</strong></p>
+<ul>
+<li>根据应用架构，进行技术支撑分析，识别技术支撑的必要条件</li>
+<li>技术选型，包括开发架构，技术产品，开发技术栈，开发平台，运行平台</li>
+<li>技术影响分析，成本，难易度，规划，治理</li>
+</ul>
+<h4 id="数据架构"><a href="#数据架构" class="headerlink" title="数据架构"></a>数据架构</h4><p>数据架构描述了企业逻辑物理数据资产和数据管理资源的结构。</p>
+<p>工作主要目标是根据企业现状数据架构需求及业务架构中的数据流转，设计目标数据架构。（描述企业数据来源，数据资产管理，数据治理，数据共享开放）</p>
+<p><strong>设计步骤：</strong></p>
+<ul>
+<li>上接业务，分析数据需求，识别数据类型，采集数据</li>
+<li>数据模型设计，概念模型（识别业务域），逻辑模型（实体关系ER），物理模型（表字段）</li>
+<li>数据治理，数据安全合规，数据质量管理</li>
+<li>数据共享开放，支撑业务决策，业务创新</li>
+<li>分析：根据数据应用层、数据接口层、数据层、数据采集层、数据源。</li>
+</ul>
+<h2 id="B-S架构"><a href="#B-S架构" class="headerlink" title="B&#x2F;S架构"></a>B&#x2F;S架构</h2><p><strong>定义：</strong></p>
+<p><strong>即 Browser&#x2F;Server（浏览器 &#x2F; 服务器）架构，是一种网络应用程序架构模式</strong>。（一种基于Web的系统架构，用户通过<strong>浏览器</strong>访问应用程序）</p>
+<p><strong>特点：</strong></p>
+<ul>
+<li><strong>客户端轻量化：</strong> 用户不需要安装任何特定的客户端软件，只需使用标准的Web浏览器即可。</li>
+<li><strong>易于部署和维护：</strong> 所有更新和维护工作都集中在服务器端进行，无需在每个客户端上操作。</li>
+<li><strong>跨平台性：</strong> 只要有Web浏览器和网络连接，就可以从任何设备访问应用。</li>
+</ul>
+<h3 id="架构组成"><a href="#架构组成" class="headerlink" title="架构组成"></a>架构组成</h3><p><strong>客户端（浏览器）</strong><br>用户通过浏览器（如 Chrome、Firefox、Internet Explorer 等）来访问应用程序。浏览器负责向服务器发送请求，并接收和展示服务器返回的数据。这种方式无需在客户端安装专门的软件，只要有浏览器和网络连接，用户就可以随时随地访问应用。<br><strong>服务器端</strong><br>    1. <strong>Web 服务器</strong>：主要负责处理浏览器发来的 HTTP 请求，常见的 Web 服务器有 Apache、Nginx 等。它接收请求后，会根据请求的内容将相应的网页文件发送回浏览器，或者将请求转发给应用服务器处理。<br>    2. <strong>应用服务器</strong>：运行应用程序的业务逻辑。例如，处理用户登录验证、数据查询与处理、业务规则的执行等。常见的应用服务器有 Tomcat（主要用于 Java 应用）、IIS（用于ASP.NET应用）等。<br>    3. <strong>数据库服务器</strong>：用于存储应用程序的数据。它接收来自应用服务器的数据操作请求（如查询、插入、更新、删除等），并对数据库中的数据进行相应的操作。</p>
+<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><ol>
+<li>用户在浏览器中输入应用程序的 URL 地址，浏览器向 Web 服务器发送 HTTP 请求。</li>
+<li>Web 服务器收到请求后，如果是静态网页请求（如 HTML、CSS、JavaScript 文件等），则直接将相应的文件返回给浏览器；如果是动态网页请求（如涉及到数据查询、业务逻辑处理等），则将请求转发给应用服务器。</li>
+<li>应用服务器处理业务逻辑，可能会与数据库服务器交互（查询数据、存储数据等），然后将处理结果生成动态网页内容返回给 Web 服务器。</li>
+<li>Web 服务器将应用服务器返回的内容发送回浏览器，浏览器对收到的内容进行解析和渲染，展示给用户。</li>
+</ol>
+<h2 id="C-S架构"><a href="#C-S架构" class="headerlink" title="C&#x2F;S架构"></a><strong>C&#x2F;S架构</strong></h2><p><strong>定义：</strong></p>
+<ul>
+<li>C&#x2F;S 架构，即 Client&#x2F;Server（客户端 &#x2F; 服务器）架构，是一种常见的软件架构模式。C&#x2F;S 架构是一种传统的分布式应用架构，它将应用程序分为客户端和服务器端两部分。</li>
+<li>客户端负责用户交互界面和一部分业务逻辑，服务器端则主要负责数据管理和核心业务逻辑。</li>
+</ul>
+<p><strong>特点</strong>：</p>
+<ul>
+<li><strong>功能丰富：</strong> 由于客户端可以安装专用的应用程序，因此可以提供更丰富的用户体验和功能。</li>
+<li><strong>性能优势：</strong> 客户端可以利用本地计算资源进行一些计算密集型任务，减轻服务器压力。</li>
+<li><strong>安全性：</strong> 相对于B&#x2F;S架构，C&#x2F;S架构可以通过客户端应用程序更好地控制数据安全。</li>
+<li><strong>部署复杂度：</strong> 需要在每个客户端机器上安装、配置和更新软件，增加了维护成本。</li>
+</ul>
+<h3 id="架构组成-1"><a href="#架构组成-1" class="headerlink" title="架构组成"></a>架构组成</h3><p><strong>客户端（Client）</strong></p>
+<p>客户端是安装在用户终端设备（如个人计算机、移动设备）上的软件。它主要负责向服务器发送请求、接收服务器返回的数据并进行展示和处理。例如，在一款银行客户端软件中，用户通过客户端界面输入账户查询、转账等操作指令，这些指令会被打包成请求发送给服务器。客户端软件通常具有良好的用户界面，能够根据用户操作和服务器返回的数据进行交互展示。</p>
+<p><strong>服务器（Server）</strong></p>
+<ol>
+<li><p><strong>业务逻辑处理服务器</strong>：负责处理客户端发送过来的请求。</p>
+<p>它会根据应用程序的业务规则对请求进行分析和处理。[例如，在一个物流管理系统中，当客户端发送货物运输状态查询请求时，业务逻辑处理服务器会根据存储的物流数据（如货物的发货时间、运输路线、预计到达时间等）进行计算和判断，然后生成相应的结果。]</p>
+</li>
+</ol>
+<hr>
+<ol start="2">
+<li><p><strong>数据存储服务器：</strong>主要用于存储应用程序所涉及的各种数据。这些数据包括用户信息、业务数据等。</p>
+<p>以电商平台为例，数据存储服务器存储了海量的商品信息（如商品名称、价格、库存等）、用户账户信息（如用户名、密码、收货地址等）和订单信息（如订单编号、下单时间、支付状态等）。它通过数据库管理系统来组织和管理这些数据，以便高效地响应服务器的查询和更新请求。</p>
+</li>
+</ol>
+<h3 id="工作原理-1"><a href="#工作原理-1" class="headerlink" title="工作原理"></a>工作原理</h3><ol>
+<li><p><strong>用户通过客户端软件发起操作请求</strong>，例如在一个企业资源规划（ERP）客户端软件中，用户点击查询库存的按钮，<strong>客户端会将</strong>包含库存查询指令的<strong>请求发送给服务器。</strong></p>
+</li>
+<li><p><strong>服务器收到请求后，业务逻辑处理服务器会根据请求的类型和具体内容进行处理。</strong>如果是库存查询请求，它会与数据存储服务器进行交互，从数据库中检索相关的库存数据。</p>
+</li>
+<li><p><strong>业务逻辑处理服务器将从数据存储服务器获取的数据进行处理和整合，生成客户端所需的结果。</strong>例如，将库存数据进行格式化，使其符合客户端软件的展示要求。</p>
+</li>
+<li><p><strong>服务器将处理后的结果返回给客户端，客户端接收到结果后，在软件界面上进行展示。</strong>如在库存查询的例子中，客户端会将收到的库存数量、产品名称等信息以表格或其他直观的形式显示在界面上，供用户查看。</p>
+</li>
+</ol>
+<h2 id="简述C-S架构和B-S架构的区别"><a href="#简述C-S架构和B-S架构的区别" class="headerlink" title="简述C&#x2F;S架构和B&#x2F;S架构的区别"></a>简述C&#x2F;S架构和B&#x2F;S架构的区别</h2><h3 id="联系："><a href="#联系：" class="headerlink" title="联系："></a>联系：</h3><ul>
+<li><p>都属于客户端-服务器架构：无论是B&#x2F;S还是C&#x2F;S架构，其核心都是将应用分为客户端和服务端两部分，客户端负责用户交互，服务端负责数据处理和存储。</p>
+</li>
+<li><p>都需要网络连接：两种架构都需要通过网络来实现客户端与服务器之间的通信。</p>
+</li>
+<li><p>都可以支持多用户访问：这两种架构都能够支持多个客户端同时连接到服务器上进行操作。</p>
+</li>
+</ul>
+<h3 id="区别："><a href="#区别：" class="headerlink" title="区别："></a>区别：</h3><p><strong>客户端形式不同：</strong></p>
+<p>B&#x2F;S架构的客户端是浏览器，用户通过浏览器直接访问Web应用程序。<br>C&#x2F;S架构的客户端是一个独立的应用程序，需要预先安装在用户的计算机上。</p>
+<p><strong>维护成本不同</strong>：</p>
+<ul>
+<li><p>B&#x2F;S架构由于客户端统一为浏览器，因此维护相对简单，只需更新服务器端的应用程序即可。<strong>维护成本相对较低。</strong>例如，一个在线办公网站更新了文档编辑功能，用户再次通过浏览器访问时就能体验到新功能。</p>
+</li>
+<li><p>C&#x2F;S架构可能需要在每个客户端机器上进行软件升级或维护工作，这增加了维护的成本和复杂度。<strong>维护成本较高。</strong>例如，如果企业使用的一款 C&#x2F;S 架构的财务软件需要更新功能，IT 人员需要逐一到每台装有该软件的计算机上去安装更新包。</p>
+</li>
+</ul>
+<p><strong>性能差异</strong>：</p>
+<ul>
+<li><p>B&#x2F;S架构依赖于浏览器的能力，对于复杂的业务逻辑和大量的数据处理可能不如C&#x2F;S架构高效。例如，一些 C&#x2F;S 架构的设计软件，在本地客户端上可以快速进行图形渲染等操作。</p>
+</li>
+<li><p>C&#x2F;S架构可以利用客户端的计算能力，适合处理大量数据和复杂的图形界面，提供更好的用户体验。例如，一些 C&#x2F;S 架构的设计软件，在本地客户端上可以快速进行图形渲染等操作。</p>
+</li>
+</ul>
+<p><strong>安全性差异</strong>：</p>
+<ul>
+<li><p>B&#x2F;S架构中，所有数据和逻辑都在服务器端运行，这通常被认为更安全，因为不需要担心客户端上的数据泄露。但由于是通过浏览器访问，容易受到网络攻击，如跨站脚本攻击（XSS）、SQL 注入等，安全性保障相对复杂，需要采取多种网络安全措施来保护服务器和数据。例如，电商网站需要不断加强安全防护措施来防止用户信息泄露。</p>
+</li>
+<li><p>C&#x2F;S架构可能面临客户端的安全问题，比如客户端软件被恶意篡改等风险。例如，企业内部的 C&#x2F;S 架构管理系统，可以通过设置严格的用户认证和权限管理机制来保障数据安全。</p>
+</li>
+</ul>
+<p><strong>可扩展性</strong>：</p>
+<p>B&#x2F;S架构更容易扩展，因为它只需要更新服务器端，而不需要对客户端进行任何修改。<br>C&#x2F;S架构扩展时可能需要更新客户端软件，这可能会导致一定的延迟。</p>
+<p><strong>平台兼容性</strong>：</p>
+<ul>
+<li><p><strong>B&#x2F;S架构通常具有更好的跨平台兼容性</strong>，因为大多数浏览器都能运行标准的Web技术栈（如HTML、CSS、JavaScript）。例如，用户可以在任何操作系统的浏览器上访问同一个在线学习网站。</p>
+</li>
+<li><p><strong>C&#x2F;S架构可能需要针对不同的操作系统开发不同的客户端版本。</strong>例如，一个 C&#x2F;S 架构的游戏软件，若要在 Windows 和 Mac 系统上都能使用，开发团队可能需要分别为这两个操作系统开发对应的客户端版本。</p>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/01/10/%E5%85%B3%E4%BA%8E%E6%9E%B6%E6%9E%84/">https://kizzy899.github.io/2025/01/10/%E5%85%B3%E4%BA%8E%E6%9E%B6%E6%9E%84/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2024/12/26/FISCOBCOS%E8%81%94%E7%9B%9F%E9%93%BE/" title="FISCO BCOS联盟链"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">FISCO BCOS联盟链</div></div><div class="info-2"><div class="info-item-1">FISCO BCOS介绍FISCO BCOS 是一个稳定、高效、安全的区块链底层平台。联盟链需要多家机构来组成联盟，所以FISCO BCOS 支持多群组概念，这意味着多个组织可以通过FISCOBCOS的联盟链组成多个联盟，而且联盟中可以允许共同的组织节点。如下图所示，在多群组技术下FISCO BCOS可以支持众多应用领域。 逻辑架构以下是FISCO BCOS 的逻辑架构，分为：基础层、互联核心层、链核心层、管理层和接口层。  基础层 基础层提供区块链的基础数据结构和算法库，包括密码学算法、隐私算法等。 链核心层 链核心层主要实现区块链的链式数据结构和数据存储（分布式存储），采用了不同的数据库（LevelDB、MySQL、Qracle）来存储区块数据。 互联核心层 互联核心层实现了区块链的基础 P2P 网络通信、共识机制和区块同步机制。 管理层 相对于区块链基础架构，FISCO BCOS...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/10/23/vlan%E9%85%8D%E7%BD%AE/" title="【学习笔记】简单网络结构的搭建&#x2F;vlan配置"><img class="cover" src="/img/cover.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-23</div><div class="info-item-2">【学习笔记】简单网络结构的搭建&#x2F;vlan配置</div></div><div class="info-2"><div class="info-item-1">(重新粗糙存档一下，过程图基本都丢失了，仅用于个人学习笔记使用)  网络基础架构图 网络通信的原理 软件的使用  ​       a. 关于拓扑图： 接入层交换机，汇聚层交换机 ​        b.技术实现6要求 Vlan trunk 不同vlan间的通信（三层交换技术）交换机的基础命令&#x2F;知识： vlan: 虚拟局域网  vlan trunk stp 链路聚合  hsrp(vrrp)——公司内部的网络系统  将pc1和pc2放入不同vlan可以实现隔离 (同一虚拟网之间的电脑可以通信，不同的不可通信)  vlan范围： 1-4094  关于常见接口类型：   ​	交换机常见接口类型：有Access和trunk ​	Access用来接入终端，电脑，打印机，服务器 ​	trunk用在交换机与交换机之间 ​	trunk技术解决交换机之间传输vlan数据的问题  命令行敲错后，跳出卡顿：ctrl+shift+1   三种模式：  Enable   #  Config    Exit 退出  查看都在#模式中；  配置文件的查看：show run...</div></div></div></a><a class="pagination-related" href="/2024/11/06/penetration_testing_steps/" title="【学习笔记】渗透测试过程1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-06</div><div class="info-item-2">【学习笔记】渗透测试过程1</div></div><div class="info-2"><div class="info-item-1">1. 设置网络环境 将 Kali 虚拟机和靶机的网络适配器改为桥接模式。  在 Kali 虚拟机和靶机相互 ping 通，确保网络连通性。  切换到 root 模式进行操作。  Nmap（用于信息收集 资产探测：ip存活、系统、软件、软件版本、端口）  扫描网段： 1nmap -sn 192.168.42.0/24  查看网段中存活的主机。    全面扫描靶机： 1nmap -A &lt;靶机IP&gt;  在本实验获取数据库端口（1433）。   判断系统类型： 1nmap -O &lt;靶机IP&gt;  在 running: 后面查看主机系统信息。  【图片2】  服务版本扫描(运行软件）： 1nmap -sV &lt;靶机IP&gt;   端口扫描： 1nmap -p1-65535 (目标端口)&lt;靶机IP&gt;   端口 27689 测试：扫描出异常(unknown）端口，在浏览器访问 &lt;靶机IP&gt;:27689。  随机 IP 扫描： 1nmap -v -iR(随机) &lt;数量&gt; -Pn -p...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">welcome~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%81%E4%B8%9A%E6%9E%B6%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">企业架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%81%E4%B8%9A%E6%9E%B6%E6%9E%84%E4%B9%8B4A%E6%9E%B6%E6%9E%84"><span class="toc-number">1.1.</span> <span class="toc-text">企业架构之4A架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%9A%E5%8A%A1%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.1.</span> <span class="toc-text">业务结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.1.2.</span> <span class="toc-text">应用架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84"><span class="toc-number">1.1.3.</span> <span class="toc-text">技术架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%9E%B6%E6%9E%84"><span class="toc-number">1.1.4.</span> <span class="toc-text">数据架构</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B-S%E6%9E%B6%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">B&#x2F;S架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E7%BB%84%E6%88%90"><span class="toc-number">2.1.</span> <span class="toc-text">架构组成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">2.2.</span> <span class="toc-text">工作原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-S%E6%9E%B6%E6%9E%84"><span class="toc-number">3.</span> <span class="toc-text">C&#x2F;S架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E7%BB%84%E6%88%90-1"><span class="toc-number">3.1.</span> <span class="toc-text">架构组成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86-1"><span class="toc-number">3.2.</span> <span class="toc-text">工作原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E8%BF%B0C-S%E6%9E%B6%E6%9E%84%E5%92%8CB-S%E6%9E%B6%E6%9E%84%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">4.</span> <span class="toc-text">简述C&#x2F;S架构和B&#x2F;S架构的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%94%E7%B3%BB%EF%BC%9A"><span class="toc-number">4.1.</span> <span class="toc-text">联系：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%EF%BC%9A"><span class="toc-number">4.2.</span> <span class="toc-text">区别：</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/10/%E5%85%B3%E4%BA%8E%E6%9E%B6%E6%9E%84/" title="关于架构">关于架构</a><time datetime="2025-01-09T16:06:29.000Z" title="发表于 2025-01-10 00:06:29">2025-01-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/26/FISCOBCOS%E8%81%94%E7%9B%9F%E9%93%BE/" title="FISCO BCOS联盟链">FISCO BCOS联盟链</a><time datetime="2024-12-26T08:15:21.000Z" title="发表于 2024-12-26 16:15:21">2024-12-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/20/%E9%93%BE%E5%8E%9F%E2%80%94%E2%80%94Fabric/" title="链原——Fabric">链原——Fabric</a><time datetime="2024-12-20T09:22:41.000Z" title="发表于 2024-12-20 17:22:41">2024-12-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/20/%E9%93%BE%E5%8E%9F%E2%80%94%E2%80%94%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6/" title="链原——共识机制">链原——共识机制</a><time datetime="2024-12-20T09:21:18.000Z" title="发表于 2024-12-20 17:21:18">2024-12-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/16/PBFT%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/" title="PBFT共识算法">PBFT共识算法</a><time datetime="2024-12-16T10:21:00.000Z" title="发表于 2024-12-16 18:21:00">2024-12-16</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/title.png);"><div id="footer-wrap"><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
