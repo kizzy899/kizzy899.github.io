@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Webase | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="WEBASE介绍引入： 中间件（Middleware），是提供系统软件（这里指控制硬件的软件，多指操作系统）和应用软件之间连接的软件，以便于软件各部件之间的沟通，特别是应用软件对于系统软件的集中的逻辑，在现代信息技术应用框架如Web服务、面向服务的体系结构等中应用比较广泛。 (举例： 房屋中介 耦合 ) 定义WeBASE（WeBank Blockchain Application Software">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Webase">
+<meta property="og:url" content="https://kizzy899.github.io/2025/01/10/Webase/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="WEBASE介绍引入： 中间件（Middleware），是提供系统软件（这里指控制硬件的软件，多指操作系统）和应用软件之间连接的软件，以便于软件各部件之间的沟通，特别是应用软件对于系统软件的集中的逻辑，在现代信息技术应用框架如Web服务、面向服务的体系结构等中应用比较广泛。 (举例： 房屋中介 耦合 ) 定义WeBASE（WeBank Blockchain Application Software">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/img/touxiang.png">
+<meta property="article:published_time" content="2025-01-10T10:15:34.000Z">
+<meta property="article:modified_time" content="2025-02-25T12:22:27.303Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="区块链">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/img/touxiang.png"><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2025/01/10/Webase/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Webase',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-02-25 20:22:27'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover9.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">Webase</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Webase</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-01-10T10:15:34.000Z" title="发表于 2025-01-10 18:15:34">2025-01-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-02-25T12:22:27.303Z" title="更新于 2025-02-25 20:22:27">2025-02-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="WEBASE介绍"><a href="#WEBASE介绍" class="headerlink" title="WEBASE介绍"></a>WEBASE介绍</h2><p>引入：</p>
+<p><strong>中间件（Middleware）</strong>，是提供系统软件（这里指控制硬件的软件，多指操作系统）和应用软件之间<strong>连接</strong>的软件，以便于软件各部件之间的沟通，特别是应用软件对于系统软件的集中的逻辑，在现代信息技术应用框架如Web服务、面向服务的体系结构等中应用比较广泛。</p>
+<p>(举例： 房屋中介 耦合 )</p>
+<h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p><strong>WeBASE（WeBank Blockchain Application Software Extension）</strong>是在区块链应用和FISCO-BCOS节点之间搭建的一套通用组件。围绕交易、合约、密钥管理，数据，可视化管理来设计各个模块，开发者可以根据业务所需，选择子系统进行部署。</p>
+<p>WeBASE屏蔽了区块链底层的复杂度，降低开发者的门槛，大幅提高区块链应用的开发效率，包含节点前置、节点管理、交易链路，数据导出，Web管理平台等子系统。</p>
+<h3 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a><strong>整体架构</strong></h3><p><img src="https://s2.loli.net/2025/02/25/yv2fQCqUm9KBtku.png" alt="1.png"></p>
+<p><img src="https://s2.loli.net/2025/02/25/RyDauCIJtjbz2KY.png" alt="2.png"></p>
+<p>【图片3】</p>
+<h2 id="WeBASE-Front"><a href="#WeBASE-Front" class="headerlink" title="WeBASE-Front"></a><strong>WeBASE-Front</strong></h2><p>WeBASE-Front 是一个与 FISCO-BCOS 节点配合使用的子系统，主要特点如下：</p>
+<ol>
+<li><strong>版本支持</strong>：支持 FISCO-BCOS 2.0 及以上版本。</li>
+<li><strong>集成功能</strong>：集成 web3sdk，封装接口，可通过 HTTP 请求与节点通信。</li>
+<li><strong>可视化控制台</strong>：提供控制台用于开发智能合约、部署合约、发送交易，并查看交易和区块详情。</li>
+<li><strong>私钥管理</strong>：支持管理私钥。</li>
+<li><strong>节点监控</strong>：可监控和统计节点健康度。</li>
+</ol>
+<p>部署参考：</p>
+<p> <a target="_blank" rel="noopener" href="https://webasedoc.readthedocs.io/zh_CN/latest/docs/WeBASE-Front/install.html">https://webasedoc.readthedocs.io/zh_CN/latest/docs/WeBASE-Front/install.html</a></p>
+<ol start="6">
+<li><p><strong>部署要求</strong>：需要与节点同机部署。</p>
+</li>
+<li><p><strong>功能定位</strong>：作为 WeBASE 管理平台的前置节点服务。</p>
+</li>
+<li><p><strong>核心功能</strong>：</p>
+</li>
+</ol>
+<ul>
+<li>提供可视化控制台。</li>
+<li>支持智能合约开发、部署和交易发送。</li>
+<li>可查看交易和区块详情。</li>
+</ul>
+<ol start="9">
+<li><strong>管理功能</strong>：</li>
+</ol>
+<ul>
+<li>管理私钥。</li>
+<li>监控和统计节点健康度。</li>
+</ul>
+<p><img src="https://s2.loli.net/2025/02/25/ZEmQceYfiwp9bNv.png" alt="4.png"></p>
+<p><strong>设计原则包括按需部署、微服务、零耦合以及可定制四个部分</strong></p>
+<p><img src="https://s2.loli.net/2025/02/25/Vi6EQFWrx5lTmaO.png" alt="5.png"></p>
+<h2 id="WEBASE管理平台各模块详细介绍"><a href="#WEBASE管理平台各模块详细介绍" class="headerlink" title="WEBASE管理平台各模块详细介绍"></a>WEBASE管理平台各模块详细介绍</h2><p><img src="https://s2.loli.net/2025/02/25/GvRmqjTaL5BPUSn.png" alt="6.png"></p>
+<h3 id="区块链数据概览"><a href="#区块链数据概览" class="headerlink" title="区块链数据概览"></a><strong>区块链数据概览</strong></h3><ol>
+<li><p>数据概览页面，展示了区块链的核心数据指标：节点个数，区块数量，交易数量，通过管理台部署的合约数量。关键监控指标：最近有交易的7天交易量。</p>
+</li>
+<li><p>节点信息列表：展示了节点的ID，节点块高，节点view和运行状态。区块信息展示了最近5个块的概览信息，点击更多可以查看更多历史区块。交易信息展示了最近5个交易的概览信息，点击更多可以查看更多历史交易。</p>
+</li>
+</ol>
+<h3 id="节点管理"><a href="#节点管理" class="headerlink" title="节点管理"></a><strong>节点管理</strong></h3><ol>
+<li>节点管理主要提供了前置列表和节点列表的功能。用户可以通过新增节点前置，把新的节点前置添加到前置列表。系统会默认拉取这些前置所在的群组和各个群组的节点信息。</li>
+</ol>
+<h3 id="合约管理"><a href="#合约管理" class="headerlink" title="合约管理"></a><strong>合约管理</strong></h3><ol>
+<li>提供了一个图形化的合约IDE环境。</li>
+</ol>
+<h3 id="私钥管理"><a href="#私钥管理" class="headerlink" title="私钥管理"></a><strong>私钥管理</strong></h3><ol>
+<li>在私钥管理界面，可以看到合约部署和交易调用功能。这里的私钥管理可以新建私钥用户，然后拿新建用户的私钥来做合约部署和合约交易的签名。</li>
+</ol>
+<h3 id="系统监控"><a href="#系统监控" class="headerlink" title="系统监控"></a>系统监控</h3><p>系统监控主要包括节点监控和主机监控。节点监控主要有区块高度，pbftview，待打包交易。主机监控主要有主机的CPU，内存，网络和硬盘IO。</p>
+<h3 id="交易审计"><a href="#交易审计" class="headerlink" title="交易审计"></a>交易审计</h3><p>辅助监管和审计链上的行为。</p>
+<p><img src="https://s2.loli.net/2025/02/25/xZORTMGuhdBUImV.jpg" alt="7.png"></p>
+<p>交易审计就是结合上面的区块链数据，私钥管理和合约管理三者的数据，以区块链数据为原材料，以私钥管理和合约管理为依据做的一个综合性的数据分析功能。交易审计提供可视化的去中心化合约部署和交易监控、审计功能，方便识别链资源被滥用的情况，为联盟链治理提供依据。</p>
+<h3 id="登陆账号管理"><a href="#登陆账号管理" class="headerlink" title="登陆账号管理"></a><strong>登陆账号管理</strong></h3><h2 id="WeBASE管理平台上的智能合约开发流程"><a href="#WeBASE管理平台上的智能合约开发流程" class="headerlink" title="WeBASE管理平台上的智能合约开发流程"></a><strong>WeBASE管理平台上的智能合约开发流程</strong></h2><ol>
+<li>新建账户</li>
+<li>添加合约</li>
+<li>部署合约</li>
+<li>调用合约</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/01/10/Webase/">https://kizzy899.github.io/2025/01/10/Webase/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/01/11/TEE%E7%9A%84%E5%88%9D%E6%AD%A5%E7%90%86%E8%A7%A3%E4%B8%8E%E8%AE%A4%E8%AF%86/" title="TEE的初步理解与认识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">TEE的初步理解与认识</div></div><div class="info-2"><div class="info-item-1">【论文阅读摘要】 关键词：可信执行环境   定义可信执行环境（trusted execution environment, TEE）技术，用于保护非可信平台中应用和数据可信 执行. TEE 通常采用隔离部分软硬件资源的方法构 建安全区域，确保在其中运行的程序和数据保密性 和完整性不受外部干扰。 一个可靠的TEE 需要提供 4 方面的安全保障 1）数据隔离：一个可信应用使用的数据不能被其他应用访问、修改，包括可信应用的数据对外部操作系统隔离以及多个可信应用之间的数据隔离.。 2）计算隔离：可信应用的计算资源不能被其他应用观测和拦截，同时需要清理可信应用执行后的痕迹，并防御来自侧信道的攻击。 3）通信控制：非可信应用和可信应用、多个可信应用之间的会话和数据交互不能破坏隔离性. 4） 错误隔离：非可信区域的安 全漏洞不能扩散到可信应用中. 实用的 TEE 设计思路是基于硬件隔离基础，通过数据加解密和特权指令执行实现其安 全服务. 特点现有的 TEE 技术具有 3 个明显特点 1）面向用户设计 2）硬件辅助支持设计：从基于 x86 到 RISC-V 架...</div></div></div></a><a class="pagination-related" href="/2025/01/10/%E5%85%B3%E4%BA%8E%E6%9E%B6%E6%9E%84/" title="关于架构"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">关于架构</div></div><div class="info-2"><div class="info-item-1">企业架构 ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/11/10/%E9%93%BE%E5%AE%89%E5%9F%BA%E7%A1%802/" title="区块链安全基础二"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-10</div><div class="info-item-2">区块链安全基础二</div></div><div class="info-2"><div class="info-item-1">四.数字签名与认证技术消息摘要算法：消息摘要是保证明文无法篡改、完整性的一种算法，消息摘要不是加密明文，也不是加密算法  无论输入的消息有多长，计算出来的消息摘要的长度总是固定的。 消息摘要看起来是“随机的”。 一般地，只要输入的消息不同，对其进行摘要以后产生的摘要消息也必不相同 消息摘要函数是无陷门的单向函数，即只能进行正向的消息摘要而无法从摘要中恢复出任何的消息 好的摘要算法，没有人能从中找到“碰撞”，虽然“碰撞”是肯定存在的。  Hash函数：Hash函数特点：（令h表示哈希函数，h满足以下条件）  输入可以是任意长度的消息或文件M；  输出长度是固定的；  给定h和M，计算h(M)是容易的；  给定h的描述，找两个不同的消息M1和M2，使得h(M1)&#x3D;h(M2)在计算上是不可行的。...</div></div></div></a><a class="pagination-related" href="/2024/11/18/%E3%80%90%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E3%80%91%E5%8C%BA%E5%9D%97%E9%93%BE%E5%8E%9F%E7%90%86%E2%80%94%E2%80%94%E5%8C%BA%E5%9D%97%E9%93%BE%E6%A6%82%E5%BF%B5/" title="区块链原理——区块链概念"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-18</div><div class="info-item-2">区块链原理——区块链概念</div></div><div class="info-2"><div class="info-item-1">区块链的基本概念基本定义 从字面上理解，区块链就是由多个记录数据的区块构成的链式数据结构。  从技术角度来看，区块链是一种基于P2P网络架构的分布式账本技术系统：    以“块-链”式数据结构来验证与存储账本数据 使用密码学方法保证数据传输和访问的安全   从应用角度来看，区块链是一种新型的无中介陌生人信任服务应用支撑平台系统。   面向由陌生主体构成的开放网络环境 提供分布式账本记账服务  特点 去&#x2F;弱中心化 可溯源 不可篡改 数字价值唯一性（采用共识机制和密码学方法实现） 智能合约 开放性 去信任  类型 公有链 公有链（Public Blockchain），任何人（任何个体与组织）都可以参与区块链数据的维护和读取，数据完全开放透明，免费开放 目前全球最有影响力的公有链是比特币和以太坊系统。  联盟链 联盟链（Consortium...</div></div></div></a><a class="pagination-related" href="/2024/11/26/%E9%93%BE%E5%AE%893/" title="区块链安全基础三"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-26</div><div class="info-item-2">区块链安全基础三</div></div><div class="info-2"><div class="info-item-1">七.恶意代码及防范技术与漏洞挖掘技术7.1 恶意代码的概念7.1.1常见名词举例计算机病毒： 是一种计算机程序代码，它递归地复制自己或其演化体。病毒感染宿主文件或者某个系统区域，或者仅仅是修改这些对象的引用，来获得控制权并不断地繁殖来产生新的病毒体 蠕虫病毒：  主要在网络上进行复制 逻辑炸弹：  通常是合法的应用程序，在编程时写入一些“恶意功能” 特洛伊木马：  隐藏在一个合法的躯壳下的恶意代码 漏洞利用：  漏洞利用代码（exploit code）针对某一特定  漏洞或一组漏洞 下载器：  通过破坏杀毒软件，然后再从指定的地址下载大量其他病毒、木马进入用户电脑 玩笑程序 7.1.2恶意代码的危害 破坏数据 占用磁盘存储空间 抢占系统资源 影响计算机运行速度  7.1.3恶意代码的命名规则1&lt;病毒前缀&gt;.&lt;病毒名&gt;.&lt;病毒后缀&gt;    病毒前缀是指一个病毒的种类   病毒名是指一个病毒的家族特征，是用来区别和标识病毒家族的   病毒后缀是指一个病毒的变种特征，是用来区别具体某个家族病毒的某个变种的  7.2...</div></div></div></a><a class="pagination-related" href="/2024/11/29/%E9%93%BE%E5%AE%894/" title="区块链安全基础四"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-29</div><div class="info-item-2">区块链安全基础四</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2024/12/08/%E9%93%BE%E5%8E%9F%E2%80%94%E2%80%94%E6%AF%94%E7%89%B9%E5%B8%81%E7%B3%BB%E7%BB%9F/" title="链原——比特币系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-08</div><div class="info-item-2">链原——比特币系统</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2024/12/11/%E9%93%BE%E5%8E%9F%E2%80%94%E2%80%94%E4%BB%A5%E5%A4%AA%E5%9D%8A%E7%B3%BB%E7%BB%9F/" title="链原——以太坊系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-11</div><div class="info-item-2">链原——以太坊系统</div></div><div class="info-2"><div class="info-item-1">以太坊系统以太坊区块链系统架构以太坊区块链系统依然是P2P体系结构，即对等网络结构 以太坊系统每个节点都可以存储完整的区块链与账本数据，每个节点都可以发起和监听以太坊网络上的交易信息，验证每个交易和区块的合法性； 每个节点都可以交易的形式发布智能合约，智能合约将存储于区块链中，加载到每个节点上的以太坊虚拟机EVM中执行 虽然每个以太坊系统节点上都安装了对等的以太坊系统软件，但是每个节点可以自由选择启动以太坊系统的不同功能，从而属于不同的节点类型，在区块链网络中扮演不同的角色。目前，以太坊系统的节点总体上可以分为“全节点”、“轻节点”、“存档节点”等类型，其中发挥核心作用的是全节点。 【1】 系统逻辑架构【2】 以太坊系统的存储层主要采用文件系统和LevelDB...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">welcome~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#WEBASE%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">WEBASE介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">1.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.</span> <span class="toc-text">整体架构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WeBASE-Front"><span class="toc-number">2.</span> <span class="toc-text">WeBASE-Front</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WEBASE%E7%AE%A1%E7%90%86%E5%B9%B3%E5%8F%B0%E5%90%84%E6%A8%A1%E5%9D%97%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D"><span class="toc-number">3.</span> <span class="toc-text">WEBASE管理平台各模块详细介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%9D%97%E9%93%BE%E6%95%B0%E6%8D%AE%E6%A6%82%E8%A7%88"><span class="toc-number">3.1.</span> <span class="toc-text">区块链数据概览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E7%AE%A1%E7%90%86"><span class="toc-number">3.2.</span> <span class="toc-text">节点管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%88%E7%BA%A6%E7%AE%A1%E7%90%86"><span class="toc-number">3.3.</span> <span class="toc-text">合约管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%81%E9%92%A5%E7%AE%A1%E7%90%86"><span class="toc-number">3.4.</span> <span class="toc-text">私钥管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7"><span class="toc-number">3.5.</span> <span class="toc-text">系统监控</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A4%E6%98%93%E5%AE%A1%E8%AE%A1"><span class="toc-number">3.6.</span> <span class="toc-text">交易审计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BB%E9%99%86%E8%B4%A6%E5%8F%B7%E7%AE%A1%E7%90%86"><span class="toc-number">3.7.</span> <span class="toc-text">登陆账号管理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WeBASE%E7%AE%A1%E7%90%86%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%9A%84%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B"><span class="toc-number">4.</span> <span class="toc-text">WeBASE管理平台上的智能合约开发流程</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/17/%E5%B9%B3%E5%8F%B0%E7%BB%B4%E6%8A%A4/" title="平台维护">平台维护</a><time datetime="2025-01-17T10:15:57.000Z" title="发表于 2025-01-17 18:15:57">2025-01-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/15/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%A2%98%E8%A7%A3/" title="记一次题解">记一次题解</a><time datetime="2025-01-15T10:35:50.000Z" title="发表于 2025-01-15 18:35:50">2025-01-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/11/TEE%E7%9A%84%E5%88%9D%E6%AD%A5%E7%90%86%E8%A7%A3%E4%B8%8E%E8%AE%A4%E8%AF%86/" title="TEE的初步理解与认识">TEE的初步理解与认识</a><time datetime="2025-01-11T10:20:01.000Z" title="发表于 2025-01-11 18:20:01">2025-01-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/10/Webase/" title="Webase">Webase</a><time datetime="2025-01-10T10:15:34.000Z" title="发表于 2025-01-10 18:15:34">2025-01-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/10/%E5%85%B3%E4%BA%8E%E6%9E%B6%E6%9E%84/" title="关于架构">关于架构</a><time datetime="2025-01-09T16:06:29.000Z" title="发表于 2025-01-10 00:06:29">2025-01-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/title.png);"><div id="footer-wrap"><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
