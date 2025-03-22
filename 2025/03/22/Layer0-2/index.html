@@ -1,0 +1,712 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Layer0-2 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="项目举例Cosmos设计目的  Cosmos 的设计目标是成为可以建立各类区块链通信、共享的底层架构。 Cosmos SDK 是一套具有开箱即用的共识和执行工具，允许任何人创建自己的 PoA&#x2F;PoS 区块链。   Cosmos 不是 ETH 这个 L1 的 L0。  Cosmos 上可以建立自己的 L1，主要分为：  平台类的链（如 Terra） 应用链（App Chain）   各类链">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Layer0-2">
+<meta property="og:url" content="https://kizzy899.github.io/2025/03/22/Layer0-2/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="项目举例Cosmos设计目的  Cosmos 的设计目标是成为可以建立各类区块链通信、共享的底层架构。 Cosmos SDK 是一套具有开箱即用的共识和执行工具，允许任何人创建自己的 PoA&#x2F;PoS 区块链。   Cosmos 不是 ETH 这个 L1 的 L0。  Cosmos 上可以建立自己的 L1，主要分为：  平台类的链（如 Terra） 应用链（App Chain）   各类链">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/img/touxiang.png">
+<meta property="article:published_time" content="2025-03-22T04:17:46.000Z">
+<meta property="article:modified_time" content="2025-03-22T14:50:02.746Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="区块链">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/img/touxiang.png"><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2025/03/22/Layer0-2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Layer0-2',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-22 22:50:02'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover9.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">Layer0-2</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Layer0-2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-22T04:17:46.000Z" title="发表于 2025-03-22 12:17:46">2025-03-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-22T14:50:02.746Z" title="更新于 2025-03-22 22:50:02">2025-03-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="项目举例"><a href="#项目举例" class="headerlink" title="项目举例"></a>项目举例</h2><h3 id="Cosmos"><a href="#Cosmos" class="headerlink" title="Cosmos"></a>Cosmos</h3><p><strong>设计目的</strong></p>
+<ul>
+<li>Cosmos 的设计目标是成为可以建立各类区块链通信、共享的底层架构。</li>
+<li>Cosmos SDK 是一套具有开箱即用的共识和执行工具，允许任何人创建自己的 PoA&#x2F;PoS 区块链。</li>
+</ul>
+<ul>
+<li><p>Cosmos <strong>不是</strong> ETH 这个 L1 的 L0。</p>
+</li>
+<li><p>Cosmos 上可以建立自己的 L1，主要分为：</p>
+<ul>
+<li><strong>平台类的链</strong>（如 Terra）</li>
+<li><strong>应用链</strong>（App Chain）</li>
+</ul>
+</li>
+<li><p>各类链通过 <strong>IBC（Inter-Blockchain Communication Protocol）</strong> 连接 Cosmos Hub。</p>
+</li>
+<li><p>Cosmos 的设计前提：</p>
+<ul>
+<li>基于智能合约的虚拟机在灵活性、主权和性能上受限。</li>
+<li>Cosmos 不是建立一个可运行多应用的单一虚拟机，而是鼓励和促进为每个用例创建单独的区块链。</li>
+<li>应用程序开发者可以灵活选择架构、语言等，最后通过 Cosmos 的多链通信层 IBC 实现互操作性。</li>
+</ul>
+</li>
+</ul>
+<h3 id="术语"><a href="#术语" class="headerlink" title="术语"></a>术语</h3><ul>
+<li>单个区块链被称为：<strong>区（zone）</strong></li>
+<li>连接模块被称为：<strong>中心（hub）</strong></li>
+</ul>
+<p><strong>关于Cosmos</strong></p>
+<ul>
+<li>Cosmos打造了全套的标准化开发工具，降低开者发门槛，实现公链开发的标准化以及公链网络互通，包括Tendermint共识引擎，Cosmos SDK 的模块化开发框架，IBC通信协议，同时自己建立了一条枢纽链，称为Cosmos Hub，连接所有Cosmos生态公链</li>
+<li>Tendermint共识引擎:提供了通用的网络层和共识层，基于POS机制，开发者可以直接采用，专心设计应用层</li>
+<li>Cosmos SDK:包含各种应用层常用模块，开发者可以直接调用IBC通信协议:Cosmos生态链间的网络传输协议</li>
+<li>枢纽Cosmos Hub:更新所有Zone的区块头作为验证的信息，记录所有链的数据和交易记录，作为不同的Zone间的通信枢纽分区Zone:连接到枢纽的各条公链也被称为分区(Zone)</li>
+</ul>
+<p><strong>关于波卡</strong></p>
+<ul>
+<li>波卡打造了基于Substrate创的主链称为中继链，中继链配有被称作“插槽”的接口，让其他公链通过插槽接入中继链，通过插槽与中继链链接的公链称为平行链(parachains)</li>
+<li>中继链:验证各个平行链给出来的区块，并给出最终确定性的证明，接入中继链的公链可以以任何自治方式产生区块</li>
+<li>平行链:主要负责数据的运算和交易信息的处理，通过多条平行链，就可以完成区块链的横向扩展，解决区块链的性能问题</li>
+<li>Substrate:波卡设计的开发模板</li>
+</ul>
+<hr>
+<h1 id="Cosmos与波卡（Polkadot）区别"><a href="#Cosmos与波卡（Polkadot）区别" class="headerlink" title="Cosmos与波卡（Polkadot）区别"></a>Cosmos与波卡（Polkadot）区别</h1><h3 id="1-安全性"><a href="#1-安全性" class="headerlink" title="1.安全性"></a>1.安全性</h3><h4 id="🌐Polkadot-共享全局安全"><a href="#🌐Polkadot-共享全局安全" class="headerlink" title="🌐Polkadot - 共享全局安全"></a>🌐<strong>Polkadot - 共享全局安全</strong></h4><ul>
+<li><strong>平行链（Parachain）</strong>：独立的状态机，拥有自定义规则、共识算法和手续费结构。</li>
+<li><strong>中继链（Relay Chain）</strong>：母链，负责维护所有平行链的“全局状态”。</li>
+<li><strong>GRANDPA 共识机制</strong>：快速确认平行链区块，保障网络安全性。</li>
+<li><strong>共享安全性</strong>：中继链的验证者数量越多（如1000名验证者），平行链的安全性越高。</li>
+<li><strong>缺点</strong>：<ul>
+<li>平行链状态需由中继链验证者确认，存在被恶意拒绝的风险。</li>
+<li>为降低风险，Polkadot 会对验证者进行混洗，随机分配验证任务。</li>
+</ul>
+</li>
+<li><strong>Fishermen（渔夫）机制</strong>：专门监控验证者行为，防止作恶。</li>
+</ul>
+<hr>
+<h4 id="🌐-Cosmos-独立的局部安全"><a href="#🌐-Cosmos-独立的局部安全" class="headerlink" title="🌐 Cosmos - 独立的局部安全"></a>🌐 <strong>Cosmos - 独立的局部安全</strong></h4><ul>
+<li><strong>每条链完全独立</strong>，有自己专属的共识机制和验证者集合。</li>
+<li><strong>安全性独立</strong>：每条链需自己保障安全，验证者只保护本链。</li>
+<li><strong>中心枢纽-分区模型（Hub &amp; Zone）</strong>：通过中心枢纽（Hub）实现不同区块链（Zone）之间的通信。</li>
+<li><strong>IBC 协议（跨链通信）</strong>：实现链与链之间的消息和代币转移，初期支持代币传输，后续支持更多消息类型。</li>
+<li><strong>优缺点对比</strong>：<ul>
+<li><strong>优点</strong>：应用链控制力强，适合大公司（如币安、Telegram）自己主导和管理。</li>
+<li><strong>缺点</strong>：小型应用难以搭建强大的验证者集，安全性难以保障。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>✅ <strong>总结核心区别</strong>：</p>
+<ul>
+<li><strong>Polkadot</strong>：统一共享安全，弱化单链控制力，适合需要安全保障和互操作性的应用。</li>
+<li><strong>Cosmos</strong>：每链独立，安全性自负，适合想要完全掌控自己链的企业或项目。</li>
+</ul>
+<h3 id="2-治理和参与"><a href="#2-治理和参与" class="headerlink" title="2.治理和参与"></a>2.治理和参与</h3><h3 id="📌-参与规则差异"><a href="#📌-参与规则差异" class="headerlink" title="📌 参与规则差异"></a>📌 <strong>参与规则差异</strong></h3><h4 id="✅-Polkadot"><a href="#✅-Polkadot" class="headerlink" title="✅ Polkadot"></a>✅ <strong>Polkadot</strong></h4><ul>
+<li>结构固定：中继链 + 最多约 100 条平行链（数量未来可能调整）。</li>
+<li><strong>平行链使用权通过竞拍获得</strong>：<ul>
+<li>采用拍卖机制，最高出价者中标。</li>
+<li>中标者需锁定大量 <strong>DOT</strong>（原生代币）。</li>
+<li>竞拍成功后，可在一定期限内使用平行链。</li>
+<li><strong>退出规则</strong>：只有不再使用平行链时，才能解锁 DOT。</li>
+</ul>
+</li>
+</ul>
+<h4 id="✅-Cosmos"><a href="#✅-Cosmos" class="headerlink" title="✅ Cosmos"></a>✅ <strong>Cosmos</strong></h4><ul>
+<li>结构灵活开放：任何人都可创建中心枢纽（Hub）或分区（Zone）。</li>
+<li>不设上限或统一竞拍机制，开放参与。</li>
+<li>示例：<ul>
+<li><strong>Cosmos Hub</strong>（由 Tendermint 团队开发）</li>
+<li><strong>Iris Hub</strong>（面向中国及亚洲市场）</li>
+</ul>
+</li>
+<li>中心枢纽-分区模型简化跨链通信，避免链链直连。</li>
+</ul>
+<hr>
+<h3 id="📌-治理流程差异"><a href="#📌-治理流程差异" class="headerlink" title="📌 治理流程差异"></a>📌 <strong>治理流程差异</strong></h3><h4 id="✅-Polkadot-1"><a href="#✅-Polkadot-1" class="headerlink" title="✅ Polkadot"></a>✅ <strong>Polkadot</strong></h4><ul>
+<li><strong>治理依赖 DOT 质押量</strong>：<ul>
+<li>投票权重按持有和质押的 DOT 数量决定。</li>
+</ul>
+</li>
+<li><strong>设立治理委员会</strong>：<ul>
+<li>代表不活跃的 DOT 持有者投票。</li>
+<li>委员会从 6 人开始，每两周增加 1 人，最多 24 人。</li>
+</ul>
+</li>
+<li><strong>治理功能强大</strong>，可调整：<ul>
+<li>中继链参数（如出块时间、区块奖励等）</li>
+<li>平行链竞拍规则及所需 DOT 数量</li>
+</ul>
+</li>
+<li><strong>DOT 持有者无权强制下架某条平行链</strong>：<ul>
+<li>只能改变后续的参与流程。</li>
+<li>平行链租期内享有完整使用权，受保护。</li>
+</ul>
+</li>
+</ul>
+<h4 id="✅-Cosmos-1"><a href="#✅-Cosmos-1" class="headerlink" title="✅ Cosmos"></a>✅ <strong>Cosmos</strong></h4><ul>
+<li><strong>无统一治理</strong>，各 Hub 和 Zone 自治。</li>
+<li><strong>Cosmos Hub 的治理流程</strong>（代表性示例）：<ul>
+<li>任何人可提交提案。</li>
+<li>ATOM 质押者按质押量投票，决定提案是否通过。</li>
+</ul>
+</li>
+<li>治理规则完全由各自链决定，灵活度高。</li>
+<li>示例文档：Chorus One 的《Cosmos Hub 治理机制》详细介绍了流程。</li>
+</ul>
+<h3 id="3-跨链通信对比"><a href="#3-跨链通信对比" class="headerlink" title="3. 跨链通信对比"></a>3. 跨链通信对比</h3><h3 id="📌-设计目标与通信方式"><a href="#📌-设计目标与通信方式" class="headerlink" title="📌 设计目标与通信方式"></a>📌 <strong>设计目标与通信方式</strong></h3><h4 id="✅-Polkadot-2"><a href="#✅-Polkadot-2" class="headerlink" title="✅ Polkadot"></a>✅ <strong>Polkadot</strong></h4><ul>
+<li>目标：实现 <strong>任意消息传递</strong>（不仅限于资产转移）<ul>
+<li>平行链 A 可直接调用平行链 B 的智能合约，转账或传递任意数据</li>
+</ul>
+</li>
+<li>通信协议：<strong>ICMP</strong>（Inter-Chain Message Passing）</li>
+<li>所有平行链共享同一中继链的安全性</li>
+</ul>
+<h4 id="✅-Cosmos-2"><a href="#✅-Cosmos-2" class="headerlink" title="✅ Cosmos"></a>✅ <strong>Cosmos</strong></h4><ul>
+<li>目标：聚焦 <strong>资产转移</strong><ul>
+<li>优先实现代币跨链转账</li>
+</ul>
+</li>
+<li>通信协议：<strong>IBC</strong>（Inter-Blockchain Communication）</li>
+<li>每条链独立，通信时需信任目标链的验证者集</li>
+</ul>
+<hr>
+<h3 id="📌-安全性设计与挑战"><a href="#📌-安全性设计与挑战" class="headerlink" title="📌 安全性设计与挑战"></a>📌 <strong>安全性设计与挑战</strong></h3><h4 id="✅-Polkadot-3"><a href="#✅-Polkadot-3" class="headerlink" title="✅ Polkadot"></a>✅ <strong>Polkadot</strong></h4><ul>
+<li><strong>共享安全性</strong>：<ul>
+<li>所有平行链安全等级一致，可互相信任</li>
+</ul>
+</li>
+<li>解决分叉与重组问题：<ul>
+<li>如果平行链出现无效区块，<strong>Fisherman（渔夫）机制</strong> 可举报并回滚全网状态</li>
+</ul>
+</li>
+<li><strong>数据可用性挑战</strong>：<ul>
+<li>验证者随机分配至不同平行链，需频繁下载新链状态，带来巨大技术难题</li>
+</ul>
+</li>
+<li>如果中继链出现错误，全网所有平行链都会受影响（牵一发动全身）</li>
+</ul>
+<h4 id="✅-Cosmos-3"><a href="#✅-Cosmos-3" class="headerlink" title="✅ Cosmos"></a>✅ <strong>Cosmos</strong></h4><ul>
+<li><strong>各链独立安全</strong>：<ul>
+<li>每条分区链有自己的验证者集</li>
+<li>通信时，必须信任对方分区的验证者</li>
+</ul>
+</li>
+<li><strong>分叉和双花风险</strong>：<ul>
+<li>如果目标分区（如 Ethermint）验证者恶意，可能双花代币</li>
+<li>风险仅限于该分区及持有该分区代币的其他分区用户</li>
+<li>Cosmos 架构设计为 <strong>“局部受损可控”</strong>，防止恶意行为蔓延至全网</li>
+</ul>
+</li>
+</ul>
+<p>还有共识算法，SDK等</p>
+<hr>
+<h1 id="什么是应用链（App-Chain）"><a href="#什么是应用链（App-Chain）" class="headerlink" title="什么是应用链（App Chain）"></a>什么是应用链（App Chain）</h1><h2 id="📌定义"><a href="#📌定义" class="headerlink" title="📌定义"></a>📌定义</h2><p><strong>应用链（Appchain）</strong>，全称 <strong>“应用专属链”</strong>，是为特定应用（DApp）量身打造的区块链，专门服务于某个应用或某一类应用场景。</p>
+<p>与以太坊等通用公链不同，应用链并不追求通用性和兼容所有应用，而是聚焦在某个特定业务领域，优化性能、费用、交互体验、安全性等方面。</p>
+<hr>
+<h2 id="核心特点："><a href="#核心特点：" class="headerlink" title="核心特点："></a>核心特点：</h2><ol>
+<li><strong>专为特定 DApp 或垂直行业设计</strong><ul>
+<li>例如 GameFi、DeFi、NFT、社交、支付等场景；</li>
+<li>性能、规则、经济模型完全围绕目标应用优化。</li>
+</ul>
+</li>
+<li><strong>性能更优</strong><ul>
+<li>高吞吐、低延迟、低 gas 费，满足 Web3 中的 Web2 级体验需求；</li>
+<li>适合高频交易场景，如游戏、社交等。</li>
+</ul>
+</li>
+<li><strong>更灵活的治理和经济模型</strong><ul>
+<li>应用方（DApp 项目方）拥有更强的自主权；</li>
+<li>设计自己的 token 经济模型、手续费规则。</li>
+</ul>
+</li>
+<li><strong>安全模型可依托主链或自建</strong><ul>
+<li>可以依附在 Cosmos、Polkadot 这样的跨链生态，享受共享安全；</li>
+<li>也可以自建共识和安全机制。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="举例理解："><a href="#举例理解：" class="headerlink" title="举例理解："></a>举例理解：</h4><ul>
+<li><strong>Yuga Labs 的 ApeChain（BAYC 背后的专属链）</strong><ul>
+<li>BAYC 社区因 NFT 链上交易费用高，转而建设自己的应用链；</li>
+<li>所有 BAYC 生态内的交易、NFT 发行、游戏运行全在 ApeChain 上完成，降低费用、提升体验。</li>
+</ul>
+</li>
+<li><strong>Oasys 专门为游戏打造的链</strong><ul>
+<li>设计为玩家免 gas 费，适合高频互动的区块链游戏环境。</li>
+</ul>
+</li>
+</ul>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2><h2 id="📈-应用链优势"><a href="#📈-应用链优势" class="headerlink" title="📈 应用链优势"></a>📈 应用链优势</h2><ul>
+<li>可以满足 <strong>Dapp 的高吞吐量要求和低费用要求</strong>，在无需许可的 Web3 环境中需要 Web2 性能的应用程序应运而生，将感应性应用作为第一实验场景。<strong>Gamefi 应用</strong>是最显性的例子，大部分 Gamefi 需要极高的吞吐量来支撑用户的实时体验与高频交互功能。</li>
+<li>若 Dapp 需一种子链上存在的证明技术，那么另一种选择是构建另一条实现该技术的应用链：<ul>
+<li>例子如知识证明，如 zk-Snarks 或 zk-Starks。</li>
+<li>关注点是给到 Dapp 或证明用户外与构建区块无关、而是生成证明用的高效计算，并且这条链的安全性用原链来担保。</li>
+</ul>
+</li>
+<li>Oasys 提出的应用链可以免去终端用户交互时支付 Gas 的困扰：<ul>
+<li>当用户操作 Dapp 时，用户向 Dapp 支付费用，费用再由 Dapp 汇总后统一支付 Gas。</li>
+</ul>
+</li>
+<li>应用链模式的核心思想是为了解决 Dapp 的链资源的经济没有衡量、代表处在 Dapp 中提供的经济价值的交易并以相应的形式支付给公共链的问题。<ul>
+<li>代表 Dapp 经济体必不可少、代表 Dapp 经济的支付通道。</li>
+</ul>
+</li>
+<li>垂直应用链能在 Dapp 的应用需求内应用 Dapp 的所有功能，应用链的建设交付形式灵活：<ul>
+<li>Yuga Labs 将 BAYC 生态系统作为一条链的主要组成部分。</li>
+<li>在项目的 NFT 收购期，BAYC 社区因此支付了巨额费用，交易数量支持他们的 <strong>ApeChain</strong> 被议论甚至使用在 <strong>BAYC 的经济体系中</strong>。</li>
+</ul>
+</li>
+</ul>
+<h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><ul>
+<li>公链通用性强，但性能、费用、定制化等方面存在瓶颈；</li>
+<li>DApp 越来越复杂、用户量越来越大，跑在以太坊等主链上成本太高；</li>
+<li>应用链可以：<ul>
+<li>降低用户使用门槛（如免 gas 费）</li>
+<li>提升性能（高 TPS）</li>
+<li>灵活设计规则，服务专属生态。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="📉-应用链的劣势"><a href="#📉-应用链的劣势" class="headerlink" title="📉 应用链的劣势"></a>📉 应用链的劣势</h2><ul>
+<li><strong>安全性在应用侧</strong>的设计上，安全性很大程度上取决于 Dapp 的采用和 Dapp 原生代币的价格。</li>
+<li>跨链交互和合作，每个 Dapp 都与其他 Dapp 隔离，交互需要跨链传输或应用链交互。</li>
+<li>跨链风险。</li>
+</ul>
+<p>在 L0 架构上，开发者的风险不会被绑定在某一条链上。当底层链发生变动时，应用几乎可以零成本地迁移到另一条链上。</p>
+<h1 id="-1"><a href="#-1" class="headerlink" title=""></a></h1><h2 id="防欺诈证明（Fraud-Proof）"><a href="#防欺诈证明（Fraud-Proof）" class="headerlink" title="防欺诈证明（Fraud Proof）"></a>防欺诈证明（Fraud Proof）</h2><ul>
+<li>机制：将数据重新记录</li>
+<li>示例：Plasma</li>
+</ul>
+<p>“<strong>防欺诈证明（Fraud Proof）</strong>” 是区块链 <strong>Layer 2 扩容方案</strong> 中的重要概念，尤其出现在 <strong>Optimistic Rollup（乐观汇总）</strong> 机制中。它的核心作用是：<br> ✅ <strong>检测欺诈</strong>，✅ <strong>确保安全性</strong>，✅ <strong>防止恶意行为者提交错误的区块或交易数据</strong>。</p>
+<hr>
+<h4 id="📖-防欺诈证明的原理："><a href="#📖-防欺诈证明的原理：" class="headerlink" title="📖 防欺诈证明的原理："></a>📖 防欺诈证明的原理：</h4><p>在 <strong>Optimistic Rollup</strong> 中，链下批量处理了大量交易后，把交易结果直接提交到以太坊主链上，但默认“乐观”地假设这些交易都是有效的。</p>
+<p>为了防止有人作恶，系统设计了 <strong>“挑战期（Challenge Period）”</strong>，在这期间：</p>
+<ul>
+<li><strong>任何人</strong>（通常是验证者）都可以对 Rollup 提交的交易结果发起“欺诈挑战”；</li>
+<li>如果发现数据有假、状态计算有错或存在双花，就提交 <strong>Fraud Proof（欺诈证明）</strong>。</li>
+</ul>
+<hr>
+<h4 id="⚙-举个例子："><a href="#⚙-举个例子：" class="headerlink" title="⚙ 举个例子："></a>⚙ 举个例子：</h4><p>假设有一批交易被打包上链，但里面有人试图把自己的 1 ETH 变成 10 ETH。<br> 1️⃣ 骗子把假数据提交上主链；<br> 2️⃣ 在挑战期内，有人发现了这个问题；<br> 3️⃣ 这名挑战者提交 <strong>Fraud Proof</strong>，证明那条交易有错；<br> 4️⃣ 以太坊主链验证无误后，撤销这批错误交易，并奖励挑战者。</p>
+<h2 id="关于侧链（Side-Chain）"><a href="#关于侧链（Side-Chain）" class="headerlink" title="关于侧链（Side Chain）"></a>关于侧链（Side Chain）</h2><h4 id="📌-工作原理（How-does-it-work-）"><a href="#📌-工作原理（How-does-it-work-）" class="headerlink" title="📌 工作原理（How does it work?）"></a>📌 <strong>工作原理（How does it work?）</strong></h4><ul>
+<li><strong>双向锚定（Two-way peg）</strong></li>
+<li><strong>第三方参与（Presence of the third-party）</strong></li>
+<li><strong>简单支付验证（SPV 证明）：主链锁仓，侧链使用（Simple Payment Verification proof: coins locked on the mainchain for sidechain）</strong></li>
+</ul>
+<hr>
+<h4 id="✅-优点（Pros）"><a href="#✅-优点（Pros）" class="headerlink" title="✅ 优点（Pros）"></a>✅ <strong>优点（Pros）</strong></h4><ul>
+<li><strong>提升交易吞吐量（Increase transaction throughput）</strong></li>
+<li><strong>降低交易费用（Reduce transaction fee）</strong></li>
+<li><strong>保持交易隐私（The privacy of the transactions can be maintained）</strong></li>
+</ul>
+<hr>
+<h4 id="❌-缺点（Cons）"><a href="#❌-缺点（Cons）" class="headerlink" title="❌ 缺点（Cons）"></a>❌ <strong>缺点（Cons）</strong></h4><ul>
+<li><strong>更中心化，由第三方控制（More centralised, controlled by third-party）</strong></li>
+<li><strong>桥被多次攻击（The bridge has been hacked many times）</strong></li>
+</ul>
+<hr>
+<h4 id="📖-总结归纳："><a href="#📖-总结归纳：" class="headerlink" title="📖 总结归纳："></a>📖 <strong>总结归纳：</strong></h4><p>这是典型的“跨链桥”或“侧链”运行机制：</p>
+<ul>
+<li><strong>核心机制</strong>：双向锚定 + 第三方监管 + SPV 证明</li>
+<li><strong>优势</strong>：提高性能、降低费用、保护隐私</li>
+<li><strong>劣势</strong>：中心化风险较高、桥容易被黑（安全性隐患）</li>
+</ul>
+<h2 id="Merkle-Proof-相关"><a href="#Merkle-Proof-相关" class="headerlink" title="Merkle Proof 相关"></a>Merkle Proof 相关</h2><p><em>（原文无详细内容，分类占位）</em></p>
+<hr>
+<h2 id="L2-扩容方案"><a href="#L2-扩容方案" class="headerlink" title="L2 扩容方案"></a>L2 扩容方案</h2><ul>
+<li>将交易放在线下（L2）计算，如 <strong>State Channel</strong>。</li>
+<li>只有交易始末状态在 L1 上做记录。</li>
+</ul>
+<h3 id="主流-L2：Rollup"><a href="#主流-L2：Rollup" class="headerlink" title="主流 L2：Rollup"></a>主流 L2：Rollup</h3><h4 id="✅-优点（Pros）-1"><a href="#✅-优点（Pros）-1" class="headerlink" title="✅ 优点（Pros）"></a>✅ <strong>优点（Pros）</strong></h4><ul>
+<li>上传到主链的数据量非常少（Data posted on the mainchain is the minimum）</li>
+<li>执行后的交易打包成批次上传到主链（Each batch of executed transactions is bundled and is posted on the mainchain）</li>
+<li>只需要验证 Rollups 中的交易（Validate the rollups transaction required）</li>
+<li>安全性更高（Much more secured）</li>
+</ul>
+<hr>
+<h4 id="❌-缺点（Cons）-1"><a href="#❌-缺点（Cons）-1" class="headerlink" title="❌ 缺点（Cons）"></a>❌ <strong>缺点（Cons）</strong></h4><ul>
+<li><strong>乐观 Rollup（Optimistic Rollups）</strong> 的主要缺点是<strong>提现时间长</strong>（A major limitation of Optimistic rollups is the longer withdrawal time）</li>
+<li><strong>ZK Rollup 仍在成长和完善中</strong>（Still in the middle of maturing for zkRollup）</li>
+</ul>
+<h3 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h3><p><img src="https://s2.loli.net/2025/03/22/pKOzlZLJrCQTXEk.png" alt="1.png"></p>
+<ul>
+<li>在 L1 上写一个合约，主要功能：<ul>
+<li>将所有要打包的交易做成一个 <strong>Merkle Tree</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="Rollup-类型"><a href="#Rollup-类型" class="headerlink" title="Rollup 类型"></a>Rollup 类型</h3><ul>
+<li><strong>ZK Rollup</strong></li>
+<li><strong>Optimistic Rollup（O_Rollup）</strong></li>
+</ul>
+<h4 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h4><p>✅ <strong>ZK Rollup（Zero-Knowledge Rollup）</strong></p>
+<p><strong>原理：</strong></p>
+<ul>
+<li>使用 <strong>零知识证明（ZK Proof）</strong>，将大量交易打包后生成一份数学证明，上传主链。</li>
+<li>主链验证这份证明即可，无需验证每笔交易。</li>
+</ul>
+<p><strong>优点：</strong></p>
+<ul>
+<li>提现快，几乎<strong>即时到账</strong>（因为有数学证明保障）</li>
+<li><strong>安全性强</strong>，难以作恶</li>
+<li>数据上链少，<strong>效率高</strong></li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>技术复杂，开发难度大</li>
+<li>支持的智能合约类型有限（目前难以处理复杂合约逻辑）</li>
+<li>仍在完善和成熟中（如图所示）</li>
+</ul>
+<hr>
+<p>✅ <strong>Optimistic Rollup（O_Rollup）</strong></p>
+<p><strong>原理：</strong></p>
+<ul>
+<li>假设所有交易都是有效的（**”乐观假设”**）</li>
+<li>只有在<strong>有人质疑时</strong>，才会触发欺诈证明（Fraud Proof）验证</li>
+</ul>
+<p><strong>优点：</strong></p>
+<ul>
+<li>支持复杂的 EVM 智能合约，兼容性好</li>
+<li>技术成熟度较高，已有很多项目部署（如 Arbitrum、Optimism）</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li><strong>提现等待时间长</strong>（通常 7 天）——需要给挑战者时间提出质疑</li>
+<li>安全性依赖欺诈证明机制，挑战者必须在线监督</li>
+</ul>
+<p><img src="https://s2.loli.net/2025/03/22/xjfaEvQ4J8OXhqR.png" alt="2.png"></p>
+<hr>
+<h2 id="Validium-与-Volition"><a href="#Validium-与-Volition" class="headerlink" title="Validium 与 Volition"></a>Validium 与 Volition</h2><ul>
+<li><strong>Validium</strong>：计算与数据存储在线下</li>
+<li><strong>Volition</strong>：更灵活的整体解决方案</li>
+</ul>
+<h3 id="StarkEx"><a href="#StarkEx" class="headerlink" title="StarkEx"></a>StarkEx</h3><ul>
+<li><p>StarkEx 是 Validium 和 Volition 的典型实现项目</p>
+<p><img src="https://s2.loli.net/2025/03/22/QRq86HGIxaYLemP.png" alt="3.png"></p>
+</li>
+</ul>
+<p>在区块链设计中，<strong>性能（Performance）</strong>、<strong>可组合性（Composability）</strong>、<strong>去中心化（Decentralization）</strong> 三者很难同时兼顾，通常只能兼得其中两个，牺牲一个。</p>
+<p><strong>三个维度代表的内容：</strong></p>
+<ol>
+<li><strong>Performance（性能）</strong><ul>
+<li>高吞吐量、低延迟</li>
+<li>代表：BSC、Polygon、xDAI（性能高，但去中心化较弱）</li>
+</ul>
+</li>
+<li><strong>Composability（可组合性）</strong><ul>
+<li>合约之间自由组合、无缝调用，DeFi 项目互通</li>
+<li>代表：Uniswap、Compound、Aave、Curve（DeFi 协议）</li>
+</ul>
+</li>
+<li><strong>Decentralization（去中心化）</strong><ul>
+<li>强安全性、抗审查、真正的无中心化控制</li>
+<li>代表：ZK Rollups（Starkware）、Optimism、Arbitrum</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>图中项目归类示例：</strong></p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>项目示例</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>性能优先</strong></td>
+<td>BSC、Polygon、xDAI</td>
+<td>高吞吐，低 Gas，但中心化程度高</td>
+</tr>
+<tr>
+<td><strong>去中心化优先</strong></td>
+<td>dYdX、DeversiFi、Sorare、StarkWare ZK rollup</td>
+<td>高安全、抗审查，但性能受限</td>
+</tr>
+<tr>
+<td><strong>可组合性优先</strong></td>
+<td>Uniswap、Compound、Aave、Curve</td>
+<td>协议可叠加组合，DeFi 乐高，但可能性能瓶颈</td>
+</tr>
+<tr>
+<td><strong>平衡点靠近去中心化一侧</strong></td>
+<td>Optimism、Arbitrum</td>
+<td>采用 Optimistic Rollup，试图兼顾可组合性和去中心化</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="以太坊与-L2-扩展"><a href="#以太坊与-L2-扩展" class="headerlink" title="以太坊与 L2   扩展"></a>以太坊与 L2   扩展</h2><p><strong>1️⃣ Ethereum and Its Limitations（以太坊及其局限）</strong></p>
+<p><strong>✨ 以太坊优点：</strong></p>
+<ul>
+<li>支持复杂智能合约，功能强大；</li>
+<li>生态最繁荣，DeFi、NFT、DApp、GameFi 项目众多；</li>
+<li>安全性极高，去中心化程度优秀。</li>
+</ul>
+<p><strong>⚠ 局限与瓶颈：</strong></p>
+<ul>
+<li><strong>TPS（每秒交易量）低</strong>：原生 L1 只有 15-30 TPS；</li>
+<li><strong>Gas 费用高</strong>：网络一拥堵，交易费可达几十甚至上百美金；</li>
+<li><strong>延迟高</strong>：交易确认慢，用户体验差；</li>
+<li><strong>不适合高频、低价值交易场景</strong>（比如链上游戏、社交）。</li>
+</ul>
+<hr>
+<p><strong>2️⃣ Blockchain Scaling Landscape（区块链扩容全景）</strong></p>
+<p>扩容是为了提升区块链性能，降低费用，提升用户体验。区块链扩容方法大致分为两大类：</p>
+<p><strong>Layer 1 扩容（直接升级主链）</strong></p>
+<ul>
+<li>升级共识机制（如以太坊从 PoW 转向 PoS）</li>
+<li>分片（Shard）</li>
+<li>优化底层架构</li>
+</ul>
+<p><strong>Layer 2 扩容（主流方向）</strong></p>
+<ul>
+<li>把计算或交易放到“主链之外”处理，再将结果提交到主链</li>
+<li>保持以太坊安全性，但提高 TPS、降低费用</li>
+</ul>
+<hr>
+<p><strong>3️⃣ Layer 2 Scaling Solutions（Layer 2 扩容方案）</strong></p>
+<p>Layer2 是目前解决以太坊扩容最热门和成熟的路线。主流 Layer2 方案有：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>代表项目</th>
+<th>原理</th>
+<th>优点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Rollups</strong></td>
+<td>Arbitrum, Optimism</td>
+<td>批量打包交易后上传主链</td>
+<td>安全性强，生态成熟</td>
+</tr>
+<tr>
+<td><strong>ZK Rollups</strong></td>
+<td>zkSync, StarkNet</td>
+<td>零知识证明+打包</td>
+<td>安全强，数据隐私好，技术门槛高</td>
+</tr>
+<tr>
+<td><strong>Plasma</strong></td>
+<td>OMG</td>
+<td>定期提交子链状态</td>
+<td>简单轻量，适合特定场景</td>
+</tr>
+<tr>
+<td><strong>Validium</strong></td>
+<td>Immutable X</td>
+<td>类 ZK Rollup，数据不上链</td>
+<td>超低费用，适合 NFT 游戏</td>
+</tr>
+<tr>
+<td><strong>State Channels</strong></td>
+<td>Celer, Raiden</td>
+<td>双方链下互操作，最后上链</td>
+<td>快速，适合小游戏</td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>4️⃣ The Trilemma Choice of Layer 2（Layer 2 的三难选择）</strong></p>
+<p><strong>区块链三难问题（Scalability Trilemma）</strong>： </p>
+<p><strong>安全性（Security）</strong> </p>
+<p><strong>去中心化（Decentralization）</strong>  </p>
+<p><strong>可扩展性（Scalability）</strong></p>
+<p>理论上很难三者兼顾，Layer2 设计时也面临类似的选择：</p>
+<table>
+<thead>
+<tr>
+<th>选重安全</th>
+<th>选重可扩展性</th>
+<th>选重去中心化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ZK Rollup</td>
+<td>Validium、侧链</td>
+<td>Plasma、部分 Rollup</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>核心内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ethereum and its limitations</td>
+<td>以太坊性能差、贵、慢，不适合大规模应用</td>
+</tr>
+<tr>
+<td>Blockchain scaling landscape</td>
+<td>扩容方法全景：L1 扩容 vs L2 扩容</td>
+</tr>
+<tr>
+<td>Layer 2 scaling solutions</td>
+<td>主流 L2 技术：Rollup、ZK Rollup、Plasma 等</td>
+</tr>
+<tr>
+<td>The trilemma choice of Layer 2</td>
+<td>Layer2 设计必须在安全、去中心化、可扩展之间权衡</td>
+</tr>
+</tbody></table>
+<h2 id="IBC-指数"><a href="#IBC-指数" class="headerlink" title="IBC 指数"></a>IBC 指数</h2><h4 id="什么是-IBC？"><a href="#什么是-IBC？" class="headerlink" title="什么是 IBC？"></a><strong>什么是 IBC？</strong></h4><p>IBC（Inter-Blockchain Communication Protocol）即 <strong>跨链通信协议</strong>，是 <strong>Cosmos 生态核心功能</strong>，用于连接不同的区块链（被称为“Zone”）实现：</p>
+<ul>
+<li>跨链资产转移</li>
+<li>跨链消息传递</li>
+<li>互操作性（Interoperability）</li>
+</ul>
+<p>Cosmos 的愿景就是通过 IBC 把不同的应用链连接起来，形成“区块链互联网”。</p>
+<hr>
+<h4 id="IBC-指数的含义（行业用法）"><a href="#IBC-指数的含义（行业用法）" class="headerlink" title="IBC 指数的含义（行业用法）"></a><strong>IBC 指数的含义（行业用法）</strong></h4><p><strong>IBC 指数</strong> 通常用于衡量：</p>
+<ul>
+<li>接入 IBC 协议的链数量</li>
+<li>跨链交易次数和活跃度</li>
+<li>跨链资产流通量</li>
+<li>生态增长速度（比如 Cosmos Hub、Osmosis、Juno 等链的活跃程度）</li>
+</ul>
+<h4 id="IBC-指数的价值"><a href="#IBC-指数的价值" class="headerlink" title="IBC 指数的价值"></a><strong>IBC 指数的价值</strong></h4><table>
+<thead>
+<tr>
+<th>优势</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>衡量 Cosmos 生态繁荣度</td>
+<td>参与 IBC 的链越多，生态网络效应越强</td>
+</tr>
+<tr>
+<td>帮助投资者和开发者决策</td>
+<td>哪些链活跃、哪个 DApp 适合部署</td>
+</tr>
+<tr>
+<td>反映真实链间交互</td>
+<td>比单链交易量更能反映“跨链生态”的活跃度</td>
+</tr>
+</tbody></table>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/03/22/Layer0-2/">https://kizzy899.github.io/2025/03/22/Layer0-2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/03/13/%E5%A4%96%E9%83%A8app%E4%B8%8E%E5%8C%BA%E5%9D%97%E9%93%BE%E8%BF%9B%E8%A1%8C%E4%BA%A4%E4%BA%92/" title="外部app与区块链进行交互"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">外部app与区块链进行交互</div></div><div class="info-2"><div class="info-item-1">外部应用程序与区块链进行交互案例与流程案例大致目标 掌握FISCO BCOS应用环境的搭建与使用（FISCO BCOS+WeBASE）  掌握基于Java + SpringBoot的应用程序后端项目搭建与开发。  掌握应用程序后端与FISCO BCOS链的交互。  掌握应用程序前端项目搭建与开发   应用开发整体架构示例 应用开发整体流程示例【2】 步骤一：构建区块链应用环境。搭建FISCO BCOS环境，搭建WeBASE-Front平台实现，部署示例智能合约。 步骤二：构建应用程序后端。通过WeBASE- Front导出后端项目，基于WeBASE Front API开发示例智能合约使用接口。 步骤三：构建应用程序前端。下载示例前端代码模板，区块链功能应用开发。 步骤搭建FISCO BCOS区块链实现步骤：  下载build_chain.sh工具  使用build_chain.sh配置区块链  使用build_chain.sh启动区块链   命令如下： 123456mkdir -p ~/fiscocd ~/fiscocurl -#LO...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/11/10/%E9%93%BE%E5%AE%89%E5%9F%BA%E7%A1%802/" title="区块链安全基础二"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-10</div><div class="info-item-2">区块链安全基础二</div></div><div class="info-2"><div class="info-item-1">四.数字签名与认证技术消息摘要算法：消息摘要是保证明文无法篡改、完整性的一种算法，消息摘要不是加密明文，也不是加密算法  无论输入的消息有多长，计算出来的消息摘要的长度总是固定的。 消息摘要看起来是“随机的”。 一般地，只要输入的消息不同，对其进行摘要以后产生的摘要消息也必不相同 消息摘要函数是无陷门的单向函数，即只能进行正向的消息摘要而无法从摘要中恢复出任何的消息 好的摘要算法，没有人能从中找到“碰撞”，虽然“碰撞”是肯定存在的。  Hash函数：Hash函数特点：（令h表示哈希函数，h满足以下条件）  输入可以是任意长度的消息或文件M；  输出长度是固定的；  给定h和M，计算h(M)是容易的；  给定h的描述，找两个不同的消息M1和M2，使得h(M1)&#x3D;h(M2)在计算上是不可行的。...</div></div></div></a><a class="pagination-related" href="/2024/11/18/%E3%80%90%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E3%80%91%E5%8C%BA%E5%9D%97%E9%93%BE%E5%8E%9F%E7%90%86%E2%80%94%E2%80%94%E5%8C%BA%E5%9D%97%E9%93%BE%E6%A6%82%E5%BF%B5/" title="区块链原理——区块链概念"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-18</div><div class="info-item-2">区块链原理——区块链概念</div></div><div class="info-2"><div class="info-item-1">区块链的基本概念基本定义 从字面上理解，区块链就是由多个记录数据的区块构成的链式数据结构。  从技术角度来看，区块链是一种基于P2P网络架构的分布式账本技术系统：    以“块-链”式数据结构来验证与存储账本数据 使用密码学方法保证数据传输和访问的安全   从应用角度来看，区块链是一种新型的无中介陌生人信任服务应用支撑平台系统。   面向由陌生主体构成的开放网络环境 提供分布式账本记账服务  特点 去&#x2F;弱中心化 可溯源 不可篡改 数字价值唯一性（采用共识机制和密码学方法实现） 智能合约 开放性 去信任  类型 公有链 公有链（Public Blockchain），任何人（任何个体与组织）都可以参与区块链数据的维护和读取，数据完全开放透明，免费开放 目前全球最有影响力的公有链是比特币和以太坊系统。  联盟链 联盟链（Consortium...</div></div></div></a><a class="pagination-related" href="/2024/11/26/%E9%93%BE%E5%AE%893/" title="区块链安全基础三"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-26</div><div class="info-item-2">区块链安全基础三</div></div><div class="info-2"><div class="info-item-1">七.恶意代码及防范技术与漏洞挖掘技术7.1 恶意代码的概念7.1.1常见名词举例计算机病毒： 是一种计算机程序代码，它递归地复制自己或其演化体。病毒感染宿主文件或者某个系统区域，或者仅仅是修改这些对象的引用，来获得控制权并不断地繁殖来产生新的病毒体 蠕虫病毒：  主要在网络上进行复制 逻辑炸弹：  通常是合法的应用程序，在编程时写入一些“恶意功能” 特洛伊木马：  隐藏在一个合法的躯壳下的恶意代码 漏洞利用：  漏洞利用代码（exploit code）针对某一特定  漏洞或一组漏洞 下载器：  通过破坏杀毒软件，然后再从指定的地址下载大量其他病毒、木马进入用户电脑 玩笑程序 7.1.2恶意代码的危害 破坏数据 占用磁盘存储空间 抢占系统资源 影响计算机运行速度  7.1.3恶意代码的命名规则1&lt;病毒前缀&gt;.&lt;病毒名&gt;.&lt;病毒后缀&gt;    病毒前缀是指一个病毒的种类   病毒名是指一个病毒的家族特征，是用来区别和标识病毒家族的   病毒后缀是指一个病毒的变种特征，是用来区别具体某个家族病毒的某个变种的  7.2...</div></div></div></a><a class="pagination-related" href="/2024/11/29/%E9%93%BE%E5%AE%894/" title="区块链安全基础四"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-29</div><div class="info-item-2">区块链安全基础四</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2024/12/08/%E9%93%BE%E5%8E%9F%E2%80%94%E2%80%94%E6%AF%94%E7%89%B9%E5%B8%81%E7%B3%BB%E7%BB%9F/" title="链原——比特币系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-08</div><div class="info-item-2">链原——比特币系统</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a><a class="pagination-related" href="/2024/12/11/%E9%93%BE%E5%8E%9F%E2%80%94%E2%80%94%E4%BB%A5%E5%A4%AA%E5%9D%8A%E7%B3%BB%E7%BB%9F/" title="链原——以太坊系统"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-11</div><div class="info-item-2">链原——以太坊系统</div></div><div class="info-2"><div class="info-item-1">以太坊系统以太坊区块链系统架构以太坊区块链系统依然是P2P体系结构，即对等网络结构 以太坊系统每个节点都可以存储完整的区块链与账本数据，每个节点都可以发起和监听以太坊网络上的交易信息，验证每个交易和区块的合法性； 每个节点都可以交易的形式发布智能合约，智能合约将存储于区块链中，加载到每个节点上的以太坊虚拟机EVM中执行 虽然每个以太坊系统节点上都安装了对等的以太坊系统软件，但是每个节点可以自由选择启动以太坊系统的不同功能，从而属于不同的节点类型，在区块链网络中扮演不同的角色。目前，以太坊系统的节点总体上可以分为“全节点”、“轻节点”、“存档节点”等类型，其中发挥核心作用的是全节点。 【1】 系统逻辑架构【2】 以太坊系统的存储层主要采用文件系统和LevelDB...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">welcome~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E4%B8%BE%E4%BE%8B"><span class="toc-number">1.</span> <span class="toc-text">项目举例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Cosmos"><span class="toc-number">1.1.</span> <span class="toc-text">Cosmos</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AF%E8%AF%AD"><span class="toc-number">1.2.</span> <span class="toc-text">术语</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Cosmos%E4%B8%8E%E6%B3%A2%E5%8D%A1%EF%BC%88Polkadot%EF%BC%89%E5%8C%BA%E5%88%AB"><span class="toc-number"></span> <span class="toc-text">Cosmos与波卡（Polkadot）区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AE%89%E5%85%A8%E6%80%A7"><span class="toc-number">0.1.</span> <span class="toc-text">1.安全性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%8C%90Polkadot-%E5%85%B1%E4%BA%AB%E5%85%A8%E5%B1%80%E5%AE%89%E5%85%A8"><span class="toc-number">0.1.1.</span> <span class="toc-text">🌐Polkadot - 共享全局安全</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%8C%90-Cosmos-%E7%8B%AC%E7%AB%8B%E7%9A%84%E5%B1%80%E9%83%A8%E5%AE%89%E5%85%A8"><span class="toc-number">0.1.2.</span> <span class="toc-text">🌐 Cosmos - 独立的局部安全</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%B2%BB%E7%90%86%E5%92%8C%E5%8F%82%E4%B8%8E"><span class="toc-number">0.2.</span> <span class="toc-text">2.治理和参与</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%93%8C-%E5%8F%82%E4%B8%8E%E8%A7%84%E5%88%99%E5%B7%AE%E5%BC%82"><span class="toc-number">0.3.</span> <span class="toc-text">📌 参与规则差异</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%85-Polkadot"><span class="toc-number">0.3.1.</span> <span class="toc-text">✅ Polkadot</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%85-Cosmos"><span class="toc-number">0.3.2.</span> <span class="toc-text">✅ Cosmos</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%93%8C-%E6%B2%BB%E7%90%86%E6%B5%81%E7%A8%8B%E5%B7%AE%E5%BC%82"><span class="toc-number">0.4.</span> <span class="toc-text">📌 治理流程差异</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%85-Polkadot-1"><span class="toc-number">0.4.1.</span> <span class="toc-text">✅ Polkadot</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%85-Cosmos-1"><span class="toc-number">0.4.2.</span> <span class="toc-text">✅ Cosmos</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%B7%A8%E9%93%BE%E9%80%9A%E4%BF%A1%E5%AF%B9%E6%AF%94"><span class="toc-number">0.5.</span> <span class="toc-text">3. 跨链通信对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%93%8C-%E8%AE%BE%E8%AE%A1%E7%9B%AE%E6%A0%87%E4%B8%8E%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F"><span class="toc-number">0.6.</span> <span class="toc-text">📌 设计目标与通信方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%85-Polkadot-2"><span class="toc-number">0.6.1.</span> <span class="toc-text">✅ Polkadot</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%85-Cosmos-2"><span class="toc-number">0.6.2.</span> <span class="toc-text">✅ Cosmos</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%93%8C-%E5%AE%89%E5%85%A8%E6%80%A7%E8%AE%BE%E8%AE%A1%E4%B8%8E%E6%8C%91%E6%88%98"><span class="toc-number">0.7.</span> <span class="toc-text">📌 安全性设计与挑战</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%85-Polkadot-3"><span class="toc-number">0.7.1.</span> <span class="toc-text">✅ Polkadot</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%85-Cosmos-3"><span class="toc-number">0.7.2.</span> <span class="toc-text">✅ Cosmos</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%BA%94%E7%94%A8%E9%93%BE%EF%BC%88App-Chain%EF%BC%89"><span class="toc-number"></span> <span class="toc-text">什么是应用链（App Chain）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%8C%E5%AE%9A%E4%B9%89"><span class="toc-number">1.</span> <span class="toc-text">📌定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%89%B9%E7%82%B9%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">核心特点：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E7%90%86%E8%A7%A3%EF%BC%9A"><span class="toc-number">2.0.1.</span> <span class="toc-text">举例理解：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%88-%E5%BA%94%E7%94%A8%E9%93%BE%E4%BC%98%E5%8A%BF"><span class="toc-number">4.</span> <span class="toc-text">📈 应用链优势</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">4.0.1.</span> <span class="toc-text">作用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%89-%E5%BA%94%E7%94%A8%E9%93%BE%E7%9A%84%E5%8A%A3%E5%8A%BF"><span class="toc-number">5.</span> <span class="toc-text">📉 应用链的劣势</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#-1"><span class="toc-number"></span> <span class="toc-text"></span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E6%AC%BA%E8%AF%88%E8%AF%81%E6%98%8E%EF%BC%88Fraud-Proof%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">防欺诈证明（Fraud Proof）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%93%96-%E9%98%B2%E6%AC%BA%E8%AF%88%E8%AF%81%E6%98%8E%E7%9A%84%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-number">1.0.1.</span> <span class="toc-text">📖 防欺诈证明的原理：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9A%99-%E4%B8%BE%E4%B8%AA%E4%BE%8B%E5%AD%90%EF%BC%9A"><span class="toc-number">1.0.2.</span> <span class="toc-text">⚙ 举个例子：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E4%BE%A7%E9%93%BE%EF%BC%88Side-Chain%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">关于侧链（Side Chain）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%93%8C-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%88How-does-it-work-%EF%BC%89"><span class="toc-number">2.0.1.</span> <span class="toc-text">📌 工作原理（How does it work?）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%85-%E4%BC%98%E7%82%B9%EF%BC%88Pros%EF%BC%89"><span class="toc-number">2.0.2.</span> <span class="toc-text">✅ 优点（Pros）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9D%8C-%E7%BC%BA%E7%82%B9%EF%BC%88Cons%EF%BC%89"><span class="toc-number">2.0.3.</span> <span class="toc-text">❌ 缺点（Cons）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%93%96-%E6%80%BB%E7%BB%93%E5%BD%92%E7%BA%B3%EF%BC%9A"><span class="toc-number">2.0.4.</span> <span class="toc-text">📖 总结归纳：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Merkle-Proof-%E7%9B%B8%E5%85%B3"><span class="toc-number">3.</span> <span class="toc-text">Merkle Proof 相关</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#L2-%E6%89%A9%E5%AE%B9%E6%96%B9%E6%A1%88"><span class="toc-number">4.</span> <span class="toc-text">L2 扩容方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E6%B5%81-L2%EF%BC%9ARollup"><span class="toc-number">4.1.</span> <span class="toc-text">主流 L2：Rollup</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9C%85-%E4%BC%98%E7%82%B9%EF%BC%88Pros%EF%BC%89-1"><span class="toc-number">4.1.1.</span> <span class="toc-text">✅ 优点（Pros）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%9D%8C-%E7%BC%BA%E7%82%B9%EF%BC%88Cons%EF%BC%89-1"><span class="toc-number">4.1.2.</span> <span class="toc-text">❌ 缺点（Cons）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="toc-number">4.2.</span> <span class="toc-text">实现方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Rollup-%E7%B1%BB%E5%9E%8B"><span class="toc-number">4.3.</span> <span class="toc-text">Rollup 类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB"><span class="toc-number">4.3.1.</span> <span class="toc-text">区别</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Validium-%E4%B8%8E-Volition"><span class="toc-number">5.</span> <span class="toc-text">Validium 与 Volition</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#StarkEx"><span class="toc-number">5.1.</span> <span class="toc-text">StarkEx</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5%E5%A4%AA%E5%9D%8A%E4%B8%8E-L2-%E6%89%A9%E5%B1%95"><span class="toc-number">6.</span> <span class="toc-text">以太坊与 L2   扩展</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.1.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IBC-%E6%8C%87%E6%95%B0"><span class="toc-number">7.</span> <span class="toc-text">IBC 指数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-IBC%EF%BC%9F"><span class="toc-number">7.0.1.</span> <span class="toc-text">什么是 IBC？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#IBC-%E6%8C%87%E6%95%B0%E7%9A%84%E5%90%AB%E4%B9%89%EF%BC%88%E8%A1%8C%E4%B8%9A%E7%94%A8%E6%B3%95%EF%BC%89"><span class="toc-number">7.0.2.</span> <span class="toc-text">IBC 指数的含义（行业用法）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#IBC-%E6%8C%87%E6%95%B0%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="toc-number">7.0.3.</span> <span class="toc-text">IBC 指数的价值</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/22/Layer0-2/" title="Layer0-2">Layer0-2</a><time datetime="2025-03-22T04:17:46.000Z" title="发表于 2025-03-22 12:17:46">2025-03-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/13/%E5%A4%96%E9%83%A8app%E4%B8%8E%E5%8C%BA%E5%9D%97%E9%93%BE%E8%BF%9B%E8%A1%8C%E4%BA%A4%E4%BA%92/" title="外部app与区块链进行交互">外部app与区块链进行交互</a><time datetime="2025-03-13T10:15:13.000Z" title="发表于 2025-03-13 18:15:13">2025-03-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/06/%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86%E4%B8%8E%E6%B5%8B%E8%AF%95/" title="配置管理与测试">配置管理与测试</a><time datetime="2025-03-06T10:18:42.000Z" title="发表于 2025-03-06 18:18:42">2025-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/02/25/Webase/" title="WeBASE相关">WeBASE相关</a><time datetime="2025-02-25T10:15:34.000Z" title="发表于 2025-02-25 18:15:34">2025-02-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/17/%E5%B9%B3%E5%8F%B0%E7%BB%B4%E6%8A%A4/" title="平台维护">平台维护</a><time datetime="2025-01-17T10:15:57.000Z" title="发表于 2025-01-17 18:15:57">2025-01-17</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/title.png);"><div id="footer-wrap"><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
