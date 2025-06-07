@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>ERC721</title>
+      <link href="/2025/06/07/ERC721/"/>
+      <url>/2025/06/07/ERC721/</url>
+      
+        <content type="html"><![CDATA[<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import &quot;@openzeppelin/contracts/token/ERC721/ERC721.sol&quot;;</span><br><span class="line"></span><br></pre></td></tr></table></figure><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>非同质化代币（也称为契约）的标准接口。</p><p>每个符合 ERC-721 的合约都必须实现<code>ERC721</code>和<code>ERC165</code>接口</p><ul><li><p>它更大的想象空间在于将物理世界的资产映射到区块链上。</p></li><li><p>谜恋猫是第一个实现了ERC721 标准的去中心化应用</p></li><li><p>ERC20代币是可置换的，且可细分为N份（1 &#x3D; 10 * 0.1）, 而ERC721的Token最小的单位为1，无法再分割。</p></li></ul><blockquote><p>如果同一个集合的两个物品具有不同的特征，这两个物品是非同质的，而同质是某个部分或数量可以被另一个同等部分或数量所代替。</p></blockquote><h3 id="钱包接口"><a href="#钱包接口" class="headerlink" title="钱包接口"></a>钱包接口</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/// @dev Note: the ERC-165 identifier for this interface is 0x150b7a02.</span><br><span class="line">interface ERC721TokenReceiver &#123;</span><br><span class="line">    /// @notice Handle the receipt of an NFT</span><br><span class="line">    /// @dev The ERC721 smart contract calls this function on the recipient</span><br><span class="line">    ///  after a `transfer`. This function MAY throw to revert and reject the</span><br><span class="line">    ///  transfer. Return of other than the magic value MUST result in the</span><br><span class="line">    ///  transaction being reverted.</span><br><span class="line">    ///  Note: the contract address is always the message sender.</span><br><span class="line">    /// @param _operator The address which called `safeTransferFrom` function</span><br><span class="line">    /// @param _from The address which previously owned the token</span><br><span class="line">    /// @param _tokenId The NFT identifier which is being transferred</span><br><span class="line">    /// @param _data Additional data with no specified format</span><br><span class="line">    /// @return `bytes4(keccak256(&quot;onERC721Received(address,address,uint256,bytes)&quot;))`</span><br><span class="line">    ///  unless throwing</span><br><span class="line">    function onERC721Received(address _operator, address _from, uint256 _tokenId, bytes _data) external returns(bytes4);</span><br></pre></td></tr></table></figure><p>参考：<a href="https://learnblockchain.cn/article/33">https://learnblockchain.cn/article/33</a></p><h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><p><strong>基于OpenZeppelin的ERC721智能合约MyERC721Token</strong></p><p>参考<a href="https://learnblockchain.cn/article/14779">https://learnblockchain.cn/article/14779</a></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 区块链 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Hardhat框架</title>
       <link href="/2025/05/24/Hardhat/"/>
       <url>/2025/05/24/Hardhat/</url>
