@@ -1,0 +1,369 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>DAI | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="DAI 是Maker Protocol的主要产品，Maker Protoco 是由Maker DAO来管理和维护的。 DAI的供应量控制贷款利率： Stability fee 存款利率： DAI Saving Rate(DSR) 通过控制这两个利率，来控制供应量（类似于“升息降息”） DAI的收入来源是什么？   收入来源 简介 是否主要收入来源    稳定费 用户铸造 DAI 时支付的利息 ✅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DAI">
+<meta property="og:url" content="https://kizzy899.github.io/2025/07/21/DAI/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="DAI 是Maker Protocol的主要产品，Maker Protoco 是由Maker DAO来管理和维护的。 DAI的供应量控制贷款利率： Stability fee 存款利率： DAI Saving Rate(DSR) 通过控制这两个利率，来控制供应量（类似于“升息降息”） DAI的收入来源是什么？   收入来源 简介 是否主要收入来源    稳定费 用户铸造 DAI 时支付的利息 ✅">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/img/touxiang.png">
+<meta property="article:published_time" content="2025-07-21T11:32:12.000Z">
+<meta property="article:modified_time" content="2025-07-21T13:07:26.386Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="DeFi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/img/touxiang.png"><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2025/07/21/DAI/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DAI',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-07-21 21:07:26'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover9.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">DAI</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/sreach/"><i class="fa-fw fas fa-sreach"></i><span> Sreach</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/draw/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">DAI</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-21T11:32:12.000Z" title="发表于 2025-07-21 19:32:12">2025-07-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-21T13:07:26.386Z" title="更新于 2025-07-21 21:07:26">2025-07-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>DAI 是Maker Protocol的主要产品，Maker Protoco 是由Maker DAO来管理和维护的。</p>
+<h4 id="DAI的供应量控制"><a href="#DAI的供应量控制" class="headerlink" title="DAI的供应量控制"></a>DAI的供应量控制</h4><p><strong>贷款利率</strong>： Stability fee</p>
+<p><strong>存款利率</strong>： DAI Saving Rate(DSR)</p>
+<p>通过控制这两个利率，来控制供应量（类似于“升息降息”）</p>
+<h3 id="DAI的收入来源是什么？"><a href="#DAI的收入来源是什么？" class="headerlink" title="DAI的收入来源是什么？"></a><strong>DAI的收入来源是什么？</strong></h3><table>
+<thead>
+<tr>
+<th>收入来源</th>
+<th>简介</th>
+<th>是否主要收入来源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>稳定费</td>
+<td>用户铸造 DAI 时支付的利息</td>
+<td>✅ 是</td>
+</tr>
+<tr>
+<td>现实世界资产收益</td>
+<td>投资国债、协议贷款等带来的实际利息收入</td>
+<td>✅ 是</td>
+</tr>
+<tr>
+<td>清算惩罚收入</td>
+<td>抵押资产清算时收取的惩罚费用</td>
+<td>⚠️ 次要</td>
+</tr>
+<tr>
+<td>储蓄率利差</td>
+<td>DAI 储户收益与实际投资收益之间的利差</td>
+<td>⚠️ 次要</td>
+</tr>
+</tbody></table>
+<h2 id="🔰-一、什么是-Maker-Buffer？"><a href="#🔰-一、什么是-Maker-Buffer？" class="headerlink" title="🔰 一、什么是 Maker Buffer？"></a>🔰 一、什么是 Maker Buffer？</h2><p><strong>Maker Buffer</strong> 是 MakerDAO 协议的“储备金账户”，是一个专门用来应对系统风险的<strong>资金缓冲池</strong>。</p>
+<h4 id="资金来源："><a href="#资金来源：" class="headerlink" title="资金来源："></a>资金来源：</h4><ul>
+<li>用户铸造 DAI 时支付的 <strong>Stability Fee（稳定费）</strong></li>
+<li>用户抵押品被清算时的 <strong>Penalty Fee（清算罚金）</strong></li>
+<li>投资资产的 <strong>利差收益（如 RWA 收益）中保留的一部分</strong></li>
+</ul>
+<p>这些收入不会马上分发给 MKR 持有人，而是先进入 Maker Buffer，积累成“应急备用金”。</p>
+<hr>
+<h3 id="二、Maker-Buffer-的核心作用"><a href="#二、Maker-Buffer-的核心作用" class="headerlink" title="二、Maker Buffer 的核心作用"></a>二、Maker Buffer 的核心作用</h3><table>
+<thead>
+<tr>
+<th>作用</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🩹 1. <strong>弥补清算亏空</strong></td>
+<td>当某笔抵押贷款在清算时 ETH 跌太狠，卖出的钱还不够还债时（比如差 500 DAI），Maker Buffer 会补上这笔缺口，防止系统坏账。</td>
+</tr>
+<tr>
+<td>💸 2. <strong>作为 DSR 支付资金池</strong></td>
+<td>给用户发放 DAI 储蓄利率（DAI Savings Rate, DSR）时，部分资金来自 Buffer。</td>
+</tr>
+<tr>
+<td>🏦 3. <strong>支撑协议运营&#x2F;治理提案</strong></td>
+<td>有时社区治理会决定拿一部分 Buffer 中的资金做协议开发、流动性激励等用途。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="三、风险与挑战"><a href="#三、风险与挑战" class="headerlink" title="三、风险与挑战"></a>三、风险与挑战</h3><table>
+<thead>
+<tr>
+<th>风险点</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>🧨 清算集中爆发</td>
+<td>如果市场剧烈下跌，大量抵押仓同时爆仓，Maker Buffer 可能被迅速耗尽。</td>
+</tr>
+<tr>
+<td>🪙 Buffer 不足时会铸 MKR 融资</td>
+<td>若 Buffer 钱不够，系统会启动“<strong>债务拍卖</strong>”，铸造新的 MKR 卖掉换 DAI 补窟窿，这会稀释 MKR 持有者利益。</td>
+</tr>
+<tr>
+<td>📉 收入减少时补偿能力下降</td>
+<td>如果稳定费和罚金收得少（比如没人清算、利率设得很低），Buffer 增长变慢，抗风险能力减弱。</td>
+</tr>
+</tbody></table>
+<hr>
+<p>✅ 总结一句话：</p>
+<p><strong>Maker Buffer 就像是 DAI 系统的安全垫和应急钱包</strong>，用来应对贷款清算亏损和支付协议运行成本，是保持 DAI 稳定和系统健康的关键一环。但一旦 Buffer 被耗尽，就可能触发更严重的机制，比如增发 MKR 来“救火”，从而影响整条链的稳定和投资者信心。</p>
+<h2 id="案例分析"><a href="#案例分析" class="headerlink" title="案例分析"></a>案例分析</h2><p>假设1ETH&#x3D;2000 USD，质押了5个ETH 到Maker Vault，按照150%的超额抵押率，最多可以借出10000&#x2F;150%&#x3D;6666.67 个DAI。保险起见，用户借出5000 DAI，其余1666.67为缓冲区。</p>
+<p>情形1:ETH 涨价到 3000 USD。此时5ETH&#x3D;15000USD，基于150%的抵押率，用户最多可以借出10000 DAI.</p>
+<p>情形2:ETH跌到1500USD，此时5ETH&#x3D;7500USD,7500 USD&#x2F;5000 DAI&#x3D;150%。用户面临三个选择:<br>1.往Maker Vault <strong>质押更多</strong>的 ETH；（若不想被清算，就要提高抵押率）<br>2.<strong>还回（所有</strong>）5000 DAl+Stability Fee,拿回5个 ETH; （损失利息）<br>3.还回**部分 **DAl+Stability Fee，增加自己的缓冲区</p>
+<h3 id="DAI的防护网之一-——-Colleteral-Auction"><a href="#DAI的防护网之一-——-Colleteral-Auction" class="headerlink" title="DAI的防护网之一 —— Colleteral Auction"></a><strong>DAI的防护网之一 —— Colleteral Auction</strong></h3><p>情形3:ETH 跌到1200 USD，此时5ETH&#x3D;6000 USD.触发清算，Keeper 介入清算流程;</p>
+<ol>
+<li><p>5个ETH 按照市价折扣3%进行拍卖，每次增加0.5%，直到拍卖成功;</p>
+</li>
+<li><p>Keeper 使用 DAI 来竞拍，价高者得;</p>
+</li>
+<li><p>扣除 5000 DAl+ Penalty Fee 等费用，其余 ETH 返回给用户;</p>
+<blockquote>
+<p>Penalty Fee惩罚费</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="解释："><a href="#解释：" class="headerlink" title="解释："></a>解释：</h4><p>你之前用 <strong>5 个 ETH 抵押，借了 5000 个 DAI</strong>。系统要求你要保持足够高的抵押率（比如 150%），但现在 <strong>ETH 跌到了 1200 美元&#x2F;个</strong>，所以：</p>
+<p>🚨 情况触发：抵押率不够，系统自动清算你</p>
+<hr>
+<p><strong>步骤详解</strong></p>
+<p>1️⃣ 系统把你的 5 个 ETH 拿去拍卖</p>
+<ul>
+<li>拍卖起始价打个 <strong>97 折</strong>（也就是 3% 折扣）吸引人参与；</li>
+<li>如果没人出价，**每次加价 0.5%**，直到有人愿意买；</li>
+<li>目的：快速把 ETH 卖掉，换回 DAI，偿还你的欠款。</li>
+</ul>
+<p>2️⃣ Keeper 是谁？他们做什么？</p>
+<ul>
+<li>Keeper 就是链上的“机器人”或者参与者；</li>
+<li>他们会用自己的 <strong>DAI 来参与竞拍</strong> ETH，谁出价最高，谁就拿走 ETH；</li>
+<li>他们之所以愿意买，是因为 ETH 起拍价低，有套利空间。</li>
+</ul>
+<p>3️⃣ 清算后的处理方式：</p>
+<ul>
+<li>系统用拍卖得来的 <strong>DAI 先还你的 5000 DAI 债务</strong>；</li>
+<li>然后还要收你一笔 <strong>清算罚金（Penalty Fee）</strong>，比如 13%；</li>
+<li><strong>剩下的 ETH（如果有多余）会还给你</strong>；<ul>
+<li>如果拍得价格高，那 ETH 卖得好，可能还有剩；</li>
+<li>如果拍得低，那你就亏了更多。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>✅ 举个具体数字例子：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>你抵押的 ETH</td>
+<td>5 个</td>
+</tr>
+<tr>
+<td>当前 ETH 价格</td>
+<td>$1200</td>
+</tr>
+<tr>
+<td>总价值</td>
+<td>$6000</td>
+</tr>
+<tr>
+<td>你欠的 DAI</td>
+<td>5000</td>
+</tr>
+<tr>
+<td>拍卖起始价</td>
+<td>5 ETH 按 $1164&#x2F;ETH（3% 折扣）开始</td>
+</tr>
+</tbody></table>
+<ul>
+<li>如果 Keeper 拍到了 5 ETH，支付了 $6100 的 DAI，系统拿出其中：<ul>
+<li>5000 DAI 用来还你的贷款，</li>
+<li>比如 650 DAI 作为罚金，</li>
+<li>剩下的那点（如 450 DAI 相当的 ETH）退还你。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>💡总结一句话</strong>：</p>
+<p>ETH 跌了，你抵押不够了，系统强制清算你，拍卖掉你的 ETH，先还你的欠款和罚金，<strong>剩下的才还你，不一定有剩，你可能亏钱。</strong></p>
+<h3 id="DAI的防护网之二-Maker-Buffer"><a href="#DAI的防护网之二-Maker-Buffer" class="headerlink" title="DAI的防护网之二-Maker Buffer"></a><strong>DAI的防护网之二-Maker Buffer</strong></h3><p>Stability Fee&#x2F;Penalty Fee等缓慢积攒;</p>
+<p>情形4: ETH 跌到 900 USD，此时5 ETH&#x3D;4500 USD，拍卖后的缺口为 500 USD;</p>
+<p>​			从Maker Buffer 支付 500弥补缺口;</p>
+<h4 id="解释：-1"><a href="#解释：-1" class="headerlink" title="解释："></a>解释：</h4><p><strong>🛡 DAI 的防护网之二 —— Maker Buffer 是什么？</strong></p>
+<p>想象一下 Maker 协议有个“<strong>小金库</strong>”，这个金库就叫 <strong>Maker Buffer</strong>。<br> 它是通过系统运行时收取的 <strong>利息（Stability Fee）</strong> 和 <strong>清算罚金（Penalty Fee）</strong> 一点点积累起来的。</p>
+<p>就像你平时把赚的钱攒起来，留着应急用。</p>
+<hr>
+<p><strong>🚨 情景 4：ETH 大跌，清算后还差钱怎么办？</strong></p>
+<ul>
+<li>原本你用 <strong>5 个 ETH 抵押，借了 5000 个 DAI</strong>；</li>
+<li>现在 ETH <strong>跌到 900 美元</strong>，所以你这 5 个 ETH 现在只值 <strong>4500 美元</strong>；</li>
+<li>系统拍卖 ETH 得到的钱不够还你的 5000 DAI 欠款，<strong>差了 500 DAI</strong>；</li>
+</ul>
+<p><strong>💡那差的钱去哪补？</strong></p>
+<ul>
+<li>系统就会从这个“<strong>Maker Buffer（金库）里掏出 500 DAI</strong>”来补上这个窟窿；</li>
+<li>保证整个系统不会因为你这一单亏损就破产。</li>
+</ul>
+<hr>
+<p>✅ <strong>总结一句话：</strong></p>
+<p>ETH 跌太狠，你的抵押品卖了也不够还钱，Maker 会动用自己之前攒下的利息和罚金收入（Maker Buffer）来“垫付”这笔差额，确保系统健康运行、DAI 不出事。</p>
+<h3 id="DAl-的防护网之三–-Debt-Auction"><a href="#DAl-的防护网之三–-Debt-Auction" class="headerlink" title="DAl 的防护网之三– Debt Auction"></a><strong>DAl 的防护网之三– Debt Auction</strong></h3><p>情形5:ETH跌到 900USD，此时5ETH&#x3D;4500USD，拍卖后的缺口为500 USD，而Maker Buffer 里只有100 DAI，资金缺口为400 USD。</p>
+<ul>
+<li>增发 MKR 进行拍卖;</li>
+<li>用户使用 DAI参与拍卖，拍卖得到的 DAl来弥补缺口;</li>
+<li>一种对社区治理惩罚的方式;</li>
+</ul>
+<h4 id="解释：-2"><a href="#解释：-2" class="headerlink" title="解释："></a>解释：</h4><hr>
+<p>这是 DAI 的第三道“防护网”，叫做 Debt Auction，意思是“债务拍卖”。</p>
+<p>假设你之前用 5 个 ETH 抵押借了 5000 DAI，但现在 ETH 跌到 900 美元，总共才值 4500 美元。<br> 系统把你的 ETH 拍卖掉后，只换回了 4500 DAI，还有 500 DAI 的窟窿没补上。</p>
+<p>系统本来可以从 Maker Buffer（金库）里拿钱补，但现在里面只剩 100 DAI，还是不够，差 400 DAI。</p>
+<p>这时候，系统就会启动最后一招：增发 MKR（Maker 的治理代币）来卖钱。</p>
+<p>具体做法是：<br> 系统“印”出一些新的 MKR，放到市场上进行拍卖；<br> 用户用 DAI 去竞拍这些 MKR，谁出价高就能买到；<br> 拍卖收到的 DAI 就被用来填补那 400 DAI 的缺口。</p>
+<p>这相当于社区治理的惩罚措施：<br> 因为系统风险管理不到位、风险太高，所以最后要靠稀释 MKR 持有者的利益来“兜底”。</p>
+<p>换句话说，MKR 被增发了，老持有者手里的 MKR 相对贬值了，社区承担了代价。（通货膨胀了）</p>
+<hr>
+<p><strong>总结一句话：</strong><br> 当拍卖抵押品的钱不够还债、金库又没钱时，系统就会增发 MKR 拍卖换钱来补窟窿，这种机制确保 DAI 不出问题，但会惩罚整个社区和 MKR 持有者。</p>
+<h3 id="MakerDAO-的运行机制"><a href="#MakerDAO-的运行机制" class="headerlink" title="MakerDAO 的运行机制"></a><strong>MakerDAO 的运行机制</strong></h3><p>【一】提案阶段</p>
+<ol>
+<li>发起提案：任何 MKR 持有人都可以发起新提案；</li>
+<li>在 MakerDAO 社区进行公开讨论；</li>
+<li>提交优化后的正式提案；</li>
+<li>Risk Team（风险评估团队）对提案进行评估和建模分析。</li>
+</ol>
+<p>【二】投票阶段</p>
+<ul>
+<li>每一个 MKR 代币代表一票投票权，支持投票代理（Delegate）；</li>
+<li>投票期通常持续 7 天；</li>
+<li>最终根据投票结果决定提案是否通过（一般需超过 4% MKR 持有者同意）。</li>
+</ul>
+<p><img src="https://s2.loli.net/2025/07/21/9z7ABjeF3qyRhwC.jpg" alt=".jpg"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/07/21/DAI/">https://kizzy899.github.io/2025/07/21/DAI/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DeFi/">DeFi</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/07/01/%E7%A8%B3%E5%AE%9A%E5%B8%81%EF%BC%88Stablecoin%EF%BC%89%EF%BC%9A%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E%E6%97%B6%E4%BB%A3%E7%9A%84%E4%BB%B7%E5%80%BC%E9%94%9A/" title="稳定币"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">稳定币</div></div><div class="info-2"><div class="info-item-1">  启程：走近稳定币世界2024年7月，香港金管局公布首批三家”沙盒”参与机构，京东数科旗下公司等入选。2025年5月，香港立法会通过《稳定币条例草案》，飞速进步和不断跨越，标志着我国在稳定币监管领域取得重要突破。  稳定币成功的关键是什么   的确，在数字经济高速发展的今天，虚拟资产逐渐走入大众视野。但价格的剧烈波动却限制了它们在实际支付、跨境结算、金融产品等领域的应用。 尤其是在电商领域，京东这样的大型平台也在探索区块链技术的落地，但受限于数字货币的不稳定性，其在支付链路中的使用仍面临诸多挑战。 正是在这种背景下，稳定币（Stablecoin）应运而生，成为连接传统金融与区块链世界的重要桥梁。    初识：稳定币到底是什么？定义在理想状态下，稳定币是一种价值稳定的加密货币。 它继承了比特币所有的核心优势——如去中心化、安全性和全球流通性，同时避免了价格剧烈波动的缺点。这种特性使稳定币更适合承担货币的三大职能：可靠的价值储存手段、高效的交易媒介以及稳定的计价单位。 稳定币通常锚定某种现实世界货币，如“1枚稳定币 ≈...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/07/01/%E7%A8%B3%E5%AE%9A%E5%B8%81%EF%BC%88Stablecoin%EF%BC%89%EF%BC%9A%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E%E6%97%B6%E4%BB%A3%E7%9A%84%E4%BB%B7%E5%80%BC%E9%94%9A/" title="稳定币"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-01</div><div class="info-item-2">稳定币</div></div><div class="info-2"><div class="info-item-1">  启程：走近稳定币世界2024年7月，香港金管局公布首批三家”沙盒”参与机构，京东数科旗下公司等入选。2025年5月，香港立法会通过《稳定币条例草案》，飞速进步和不断跨越，标志着我国在稳定币监管领域取得重要突破。  稳定币成功的关键是什么   的确，在数字经济高速发展的今天，虚拟资产逐渐走入大众视野。但价格的剧烈波动却限制了它们在实际支付、跨境结算、金融产品等领域的应用。 尤其是在电商领域，京东这样的大型平台也在探索区块链技术的落地，但受限于数字货币的不稳定性，其在支付链路中的使用仍面临诸多挑战。 正是在这种背景下，稳定币（Stablecoin）应运而生，成为连接传统金融与区块链世界的重要桥梁。    初识：稳定币到底是什么？定义在理想状态下，稳定币是一种价值稳定的加密货币。 它继承了比特币所有的核心优势——如去中心化、安全性和全球流通性，同时避免了价格剧烈波动的缺点。这种特性使稳定币更适合承担货币的三大职能：可靠的价值储存手段、高效的交易媒介以及稳定的计价单位。 稳定币通常锚定某种现实世界货币，如“1枚稳定币 ≈...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">welcome~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#DAI%E7%9A%84%E4%BE%9B%E5%BA%94%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="toc-number">1.</span> <span class="toc-text">DAI的供应量控制</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DAI%E7%9A%84%E6%94%B6%E5%85%A5%E6%9D%A5%E6%BA%90%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number"></span> <span class="toc-text">DAI的收入来源是什么？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%94%B0-%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF-Maker-Buffer%EF%BC%9F"><span class="toc-number"></span> <span class="toc-text">🔰 一、什么是 Maker Buffer？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B5%84%E9%87%91%E6%9D%A5%E6%BA%90%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">资金来源：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Maker-Buffer-%E7%9A%84%E6%A0%B8%E5%BF%83%E4%BD%9C%E7%94%A8"><span class="toc-number"></span> <span class="toc-text">二、Maker Buffer 的核心作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%A3%8E%E9%99%A9%E4%B8%8E%E6%8C%91%E6%88%98"><span class="toc-number"></span> <span class="toc-text">三、风险与挑战</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%E5%88%86%E6%9E%90"><span class="toc-number"></span> <span class="toc-text">案例分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DAI%E7%9A%84%E9%98%B2%E6%8A%A4%E7%BD%91%E4%B9%8B%E4%B8%80-%E2%80%94%E2%80%94-Colleteral-Auction"><span class="toc-number"></span> <span class="toc-text">DAI的防护网之一 —— Colleteral Auction</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">解释：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DAI%E7%9A%84%E9%98%B2%E6%8A%A4%E7%BD%91%E4%B9%8B%E4%BA%8C-Maker-Buffer"><span class="toc-number"></span> <span class="toc-text">DAI的防护网之二-Maker Buffer</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A%EF%BC%9A-1"><span class="toc-number">1.</span> <span class="toc-text">解释：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DAl-%E7%9A%84%E9%98%B2%E6%8A%A4%E7%BD%91%E4%B9%8B%E4%B8%89%E2%80%93-Debt-Auction"><span class="toc-number"></span> <span class="toc-text">DAl 的防护网之三– Debt Auction</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%87%8A%EF%BC%9A-2"><span class="toc-number">1.</span> <span class="toc-text">解释：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MakerDAO-%E7%9A%84%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6"><span class="toc-number"></span> <span class="toc-text">MakerDAO 的运行机制</span></a></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/21/DAI/" title="DAI">DAI</a><time datetime="2025-07-21T11:32:12.000Z" title="发表于 2025-07-21 19:32:12">2025-07-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/07/01/%E7%A8%B3%E5%AE%9A%E5%B8%81%EF%BC%88Stablecoin%EF%BC%89%EF%BC%9A%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E%E6%97%B6%E4%BB%A3%E7%9A%84%E4%BB%B7%E5%80%BC%E9%94%9A/" title="稳定币">稳定币</a><time datetime="2025-07-01T01:00:46.000Z" title="发表于 2025-07-01 09:00:46">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/06/07/ERC721/" title="ERC721">ERC721</a><time datetime="2025-06-07T12:30:13.000Z" title="发表于 2025-06-07 20:30:13">2025-06-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/24/Hardhat/" title="Hardhat框架">Hardhat框架</a><time datetime="2025-05-24T11:13:25.000Z" title="发表于 2025-05-24 19:13:25">2025-05-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/24/Foundry%E6%A1%86%E6%9E%B6/" title="Foundry框架">Foundry框架</a><time datetime="2025-05-24T09:39:59.000Z" title="发表于 2025-05-24 17:39:59">2025-05-24</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/title.png);"><div id="footer-wrap"><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
