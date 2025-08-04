@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>DEX详解</title>
+      <link href="/2025/07/31/DEX%E8%AF%A6%E8%A7%A3/"/>
+      <url>/2025/07/31/DEX%E8%AF%A6%E8%A7%A3/</url>
+      
+        <content type="html"><![CDATA[<h1 id="交易所的盈利来源"><a href="#交易所的盈利来源" class="headerlink" title="交易所的盈利来源"></a>交易所的盈利来源</h1><blockquote><p>以币安为例</p></blockquote><ul><li><strong>交易费</strong>:交易所通过提供买卖加密货币的平台来收取交易费用有些交易所还提供高级交易选项，如杠杆交易，这通常会带来更高的费用;</li><li><strong>上币费</strong>:项目方团队后面都会去找交易所上币，然而上币需要缴纳一笔数额不小的上币费</li><li><strong>量化交易</strong>：用户在交易所中，一般数字资产币都是暂时存放在交易所，基本上交易所掌握所有筹码可以选择做多或者做空易所，所可以去赚取差价，i而用户提币出去也能赚取手续费</li><li><strong>原生代币</strong>;</li></ul><h2 id="中心化交易所的交易模式–订单簿模式"><a href="#中心化交易所的交易模式–订单簿模式" class="headerlink" title="中心化交易所的交易模式–订单簿模式"></a>中心化交易所的交易模式–订单簿模式</h2><ul><li>中央限价订单簿(CLOB)就是一本由出价和报价组成的权限透明账本，从最好价开始依次排序(两边分别是参与者愿意买&#x2F;卖的价格)。</li><li>所有的参与者都能看到所有的报价和出价，他们也可以参与其中。</li><li>订单簿中两边的第一行，即是最好的报价&#x2F;出价。</li></ul><h3 id="订单簿模式的优劣"><a href="#订单簿模式的优劣" class="headerlink" title="订单簿模式的优劣"></a>订单簿模式的优劣</h3><p><strong>优势:</strong></p><ul><li>透明的流动性劣势</li><li>做市商可自由出入</li><li>做市商可以自由决定价格与数量</li></ul><p><strong>劣势：</strong></p><ul><li>冷启动问题(很难给出初始流动性)</li><li>对非流动性资产不利</li><li>如果是链上交易所，则对链的TPS 的要求很高、</li></ul><p><strong>TPS</strong> 是 <strong>Transactions Per Second</strong>（每秒交易数）的缩写，用于衡量一个区块链网络在单位时间内能够处理交易的速度。它是评估区块链性能（尤其是交易所等高频场景）的关键指标之一。</p><hr><h4 id="为什么链上交易所对TPS要求很高？"><a href="#为什么链上交易所对TPS要求很高？" class="headerlink" title="为什么链上交易所对TPS要求很高？"></a><strong>为什么链上交易所对TPS要求很高？</strong></h4><ol><li><strong>实时交易需求</strong><br>交易所需要快速处理大量用户的买卖订单，低TPS会导致交易延迟、拥堵，用户体验变差（例如牛市时以太坊网络拥堵、Gas费飙升）。</li><li><strong>避免交易积压</strong><br>如果TPS过低，未确认的交易会堆积在内存池（mempool）中，可能导致交易失败或需要支付更高手续费来优先处理。</li><li><strong>竞争性场景</strong><br>高频交易、套利等操作依赖快速确认，高TPS能减少价格滑点和市场波动带来的风险。</li></ol><hr><h4 id="不同区块链的TPS对比"><a href="#不同区块链的TPS对比" class="headerlink" title="不同区块链的TPS对比"></a><strong>不同区块链的TPS对比</strong></h4><ul><li><strong>比特币</strong>：约 3-7 TPS（设计初衷侧重去中心化和安全性，牺牲速度）。</li><li><strong>以太坊</strong>：约 15-30 TPS（主网），Layer 2扩容后可达数千TPS。</li><li><strong>Solana</strong>：宣称 2,000-65,000 TPS（通过高吞吐量设计）。</li><li><strong>BSC（币安智能链）</strong>：约 100-300 TPS。</li></ul><hr><h4 id="提高TPS的常见方案"><a href="#提高TPS的常见方案" class="headerlink" title="提高TPS的常见方案"></a><strong>提高TPS的常见方案</strong></h4><ol><li><strong>Layer 1优化</strong><ul><li>扩大区块容量（如比特币的区块扩容争议）。</li><li>改进共识机制（如从PoW转向PoS，以太坊2.0）。</li></ul></li><li><strong>Layer 2扩容</strong><ul><li>链下处理交易，批量结算（如Rollups、状态通道）。</li></ul></li><li><strong>分片技术（Sharding）</strong><ul><li>将网络分成多个并行处理的碎片，提升并行处理能力（以太坊2.0的目标）。</li></ul></li></ol><p>、</p><h2 id="链上交易方案-自动做市商"><a href="#链上交易方案-自动做市商" class="headerlink" title="链上交易方案:自动做市商"></a>链上交易方案:自动做市商</h2><ul><li><strong>出现原因</strong>:以太坊的 TPS 对于支撑链上订单簿的实时更新来说太低了。反面案例:Solana链由于其60K的TPS，其上有许多订单簿模式的交易所。</li><li>交易所里没有订单簿，只有一系列预设的函数，为各类货币的互相交换来定价。</li><li>这些预设的函数(例如 x*y&#x3D;k)基于两头货币在各自流动性池中的供给变化率，来设定价格。在某个货币的流动性池内，任何人都能够提供该种货币以增加其流动性，从而获得收益。</li></ul>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> DeFi </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>ERC4626详解</title>
       <link href="/2025/07/24/ERC4626%E8%AF%A6%E8%A7%A3/"/>
       <url>/2025/07/24/ERC4626%E8%AF%A6%E8%A7%A3/</url>
