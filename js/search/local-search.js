@@ -133,7 +133,7 @@
 
     // 显示结果
     if (results.length === 0) {
-      resultContainer.innerHTML = "<p>没有找到捏 😔</p>"
+      resultContainer.innerHTML = "<p>没有找到相关内容 😔</p>"
       return
     }
 
