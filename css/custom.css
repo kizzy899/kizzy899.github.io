@@ -1,0 +1,107 @@
+/* 外层容器居中 */
+.search-wrapper {
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+/* 搜索框整体 */
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 2px solid #49b1f5;
+  border-radius: 50px;
+  padding: 8px 16px;
+  box-shadow: 0 5px 20px rgba(73, 177, 245, 0.15);
+  transition: all 0.3s ease;
+}
+
+.search-container:hover {
+  box-shadow: 0 8px 24px rgba(73, 177, 245, 0.3);
+  transform: translateY(-2px);
+}
+
+/* 输入框样式 */
+#local-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  padding: 10px;
+  background: transparent;
+  color: #333;
+}
+
+/* 占位符样式 */
+#local-search-input::placeholder {
+  color: #bbb;
+  font-style: italic;
+}
+
+/* 清空按钮 */
+.clear-btn {
+  background: #49b1f5;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  transition: background 0.3s ease;
+}
+
+.clear-btn:hover {
+  background: #217fc4;
+}
+
+/* 搜索结果 */
+#local-search-result {
+  text-align: left;
+  margin-top: 20px;
+}
+
+.search-item {
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.search-item h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.search-item p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* 关键词高亮 */
+.search-keyword {
+  background: #ffeb3b;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* 响应式 */
+@media (max-width: 600px) {
+  .search-wrapper {
+    width: 90%;
+  }
+  #local-search-input {
+    font-size: 16px;
+  }
+}
