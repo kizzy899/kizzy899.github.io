@@ -1,427 +1,137 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>关于我 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="&times;         &#x2F;&#x2F; 简单轮播图脚本（和之前一样）   (function(){     const images &#x3D; document.querySelectorAl">
-<meta property="og:type" content="website">
-<meta property="og:title" content="关于我">
-<meta property="og:url" content="https://kizzy899.github.io/about/index.html">
-<meta property="og:site_name" content="EIGHTJIU">
-<meta property="og:description" content="&times;         &#x2F;&#x2F; 简单轮播图脚本（和之前一样）   (function(){     const images &#x3D; document.querySelectorAl">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kizzy899.github.io/img/aaaset/touxiang.png">
-<meta property="article:published_time" content="2025-08-04T11:00:00.000Z">
-<meta property="article:modified_time" content="2025-08-04T09:00:32.628Z">
-<meta property="article:author" content="kizy">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://kizzy899.github.io/img/aaaset/touxiang.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/about/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
-    (() => {
-      
-    const saveToLocal = {
-      set: (key, value, ttl) => {
-        if (!ttl) return
-        const expiry = Date.now() + ttl * 86400000
-        localStorage.setItem(key, JSON.stringify({ value, expiry }))
-      },
-      get: key => {
-        const itemStr = localStorage.getItem(key)
-        if (!itemStr) return undefined
-        const { value, expiry } = JSON.parse(itemStr)
-        if (Date.now() > expiry) {
-          localStorage.removeItem(key)
-          return undefined
-        }
-        return value
-      }
-    }
+<div class="page-about-me">
+    <!-- 返回按钮 -->
+    <a href="https://kizzy899.github.io/" class="back-home">🏠 Back to Home</a>
 
-    window.btf = {
-      saveToLocal,
-      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
-        const script = document.createElement('script')
-        script.src = url
-        script.async = true
-        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
-        script.onload = script.onreadystatechange = () => {
-          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
-        }
-        script.onerror = reject
-        document.head.appendChild(script)
-      }),
-      getCSS: (url, id) => new Promise((resolve, reject) => {
-        const link = document.createElement('link')
-        link.rel = 'stylesheet'
-        link.href = url
-        if (id) link.id = id
-        link.onload = link.onreadystatechange = () => {
-          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
-        }
-        link.onerror = reject
-        document.head.appendChild(link)
-      }),
-      addGlobalFn: (key, fn, name = false, parent = window) => {
-        if (!false && key.startsWith('pjax')) return
-        const globalFn = parent.globalFn || {}
-        globalFn[key] = globalFn[key] || {}
-        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
-        parent.globalFn = globalFn
-      }
-    }
-  
-      
-      const activateDarkMode = () => {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      const activateLightMode = () => {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-        }
-      }
+    <h1 class="title">ABOUT ME</h1>
 
-      btf.activateDarkMode = activateDarkMode
-      btf.activateLightMode = activateLightMode
-
-      const theme = saveToLocal.get('theme')
-    
-          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
-        
-      
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
-      }
-    
-      
-    const detectApple = () => {
-      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
-        document.documentElement.classList.add('apple')
-      }
-    }
-    detectApple()
-  
-    })()
-  </script><script>const GLOBAL_CONFIG = {
-  root: '/',
-  algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
-  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
-  copy: {
-    success: '复制成功',
-    error: '复制失败',
-    noSupport: '浏览器不支持'
-  },
-  relativeDate: {
-    homepage: false,
-    post: false
-  },
-  runtime: '',
-  dateSuffix: {
-    just: '刚刚',
-    min: '分钟前',
-    hour: '小时前',
-    day: '天前',
-    month: '个月前'
-  },
-  copyright: undefined,
-  lightbox: 'null',
-  Snackbar: undefined,
-  infinitegrid: {
-    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
-    buttonText: '加载更多'
-  },
-  isPhotoFigcaption: false,
-  islazyloadPlugin: false,
-  isAnchor: false,
-  percent: {
-    toc: true,
-    rightside: false,
-  },
-  autoDarkmode: false
-}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: '关于我',
-  isHighlightShrink: false,
-  isToc: false,
-  pageType: 'page'
-}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">42</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/cover9.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">关于我</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><!-- 轮播图区域 -->
-<div class="carousel-container" id="carousel">
-  <img src="/cover/cover1.jpg" alt="81" loading="lazy" />
-  <img src="/cover/cover2.jpg" alt="82" loading="lazy" style="display:none" />
-  <img src="/cover/cover3.jpg" alt="83" loading="lazy" style="display:none" />
-  <div class="carousel-dots">
-    <div class="carousel-dot active" data-index="0"></div>
-    <div class="carousel-dot" data-index="1"></div>
-    <div class="carousel-dot" data-index="2"></div>
-  </div>
-</div>
-
-<!-- 画廊区域 -->
-<div class="gallery-container" id="gallery">
-  <div class="gallery-item">
-    <img data-src="/cover/cover4.jpg" alt="画作1" class="lazy" />
-    
-  </div>
-  <div class="gallery-item">
-    <img data-src="/cover/cover5.jpg" alt="画作2" class="lazy" />
-    
-  </div>
-  <div class="gallery-item">
-    <img data-src="/cover/cover6.jpg" alt="画作3" class="lazy" />
-   
-  </div>
-  <div class="gallery-item">
-    <img data-src="/cover/cover7.jpg" alt="画作4" class="lazy" />
-    
-  </div>
-  <!-- 更多画作卡片 -->
-</div>
-
-<!-- 大图查看遮罩层 -->
-<div id="lightbox" class="lightbox-hidden">
-  <span id="lightbox-close">&times;</span>
-  <img id="lightbox-img" src="" alt="大图查看" />
-</div>
-
-<script>
-  // 简单轮播图脚本（和之前一样）
-  (function(){
-    const images = document.querySelectorAll('#carousel img');
-    const dots = document.querySelectorAll('.carousel-dot');
-    let currentIndex = 0;
-    const total = images.length;
-
-    function showSlide(index){
-      images.forEach((img,i)=>{
-        img.style.display = i === index ? 'block' : 'none';
-        dots[i].classList.toggle('active', i === index);
-      });
-      currentIndex = index;
-    }
-    
-    dots.forEach(dot=>{
-      dot.addEventListener('click', ()=>{
-        showSlide(parseInt(dot.dataset.index));
-      });
-    });
-    
-    setInterval(()=>{
-      let next = (currentIndex +1) % total;
-      showSlide(next);
-    }, 5000);
-  })();
-
-  // 图片懒加载
-  document.addEventListener("DOMContentLoaded", function() {
-    const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
-    if ("IntersectionObserver" in window) {
-      let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            let lazyImage = entry.target;
-            lazyImage.src = lazyImage.dataset.src;
-            lazyImage.classList.remove("lazy");
-            lazyImageObserver.unobserve(lazyImage);
-          }
-        });
-      });
-      lazyImages.forEach(function(lazyImage) {
-        lazyImageObserver.observe(lazyImage);
-      });
-    } else {
-      // 兼容旧浏览器，直接加载
-      lazyImages.forEach(function(lazyImage) {
-        lazyImage.src = lazyImage.dataset.src;
-        lazyImage.classList.remove("lazy");
-      });
-    }
-  });
-
-  // 大图查看功能
-  (function(){
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const closeBtn = document.getElementById('lightbox-close');
-    const gallery = document.getElementById('gallery');
-
-    gallery.addEventListener('click', function(e) {
-      if(e.target && e.target.tagName === 'IMG' && e.target.dataset.src) {
-        lightboxImg.src = e.target.dataset.src;
-        lightbox.classList.remove('lightbox-hidden');
-      }
-    });
-    
-    closeBtn.addEventListener('click', function(){
-      lightbox.classList.add('lightbox-hidden');
-      lightboxImg.src = '';
-    });
-    
-    // 点击遮罩层空白区域关闭
-    lightbox.addEventListener('click', function(e) {
-      if(e.target === lightbox) {
-        lightbox.classList.add('lightbox-hidden');
-        lightboxImg.src = '';
-      }
-    });
-  })();
-</script>
-</div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">42</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 1.4em; color: #99a5b6">学习笔记</a> <a href="/tags/%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1/" style="font-size: 1.1em; color: #999">合约审计</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 1.5em; color: #99a9bf">区块链</a> <a href="/tags/solidity/" style="font-size: 1.2em; color: #999da3">solidity</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8/" style="font-size: 1.1em; color: #999">区块链安全</a> <a href="/tags/DeFi/" style="font-size: 1.3em; color: #99a1ac">DeFi</a> <a href="/tags/%E4%BC%A0%E7%BB%9F%E5%AE%89%E5%85%A8/" style="font-size: 1.2em; color: #999da3">传统安全</a></div></div><div class="card-widget card-archives">
-    <div class="item-headline">
-      <i class="fas fa-archive"></i>
-      <span>归档</span>
-      <a class="card-more-btn" href="/archives/"
-            title="查看更多">
-            <i class="fas fa-angle-right"></i>
-          </a>
+    <div class="container">
+        <div class="box"><img src="/img/aaaset/cover_12.jpg" alt=""></div>
+        <div class="box"><img src="/img/aaaset/cover_13.jpg" alt=""></div>
+        <div class="box"><img src="/img/aaaset/cover_14.jpg" alt=""></div>
+        <div class="box"><img src="/img/aaaset/cover_15.jpg" alt=""></div>
+        <div class="box"><img src="/img/aaaset/cover_16.jpg" alt=""></div>
+        <div class="box"><img src="/img/aaaset/cover_17.jpg" alt=""></div>
     </div>
-  
-    <ul class="card-archive-list">
-      
-        <li class="card-archive-list-item">
-          <a class="card-archive-list-link" href="/archives/2025/07/">
-            <span class="card-archive-list-date">
-              七月 2025
-            </span>
-            <span class="card-archive-list-count">4</span>
-          </a>
-        </li>
-      
-        <li class="card-archive-list-item">
-          <a class="card-archive-list-link" href="/archives/2025/06/">
-            <span class="card-archive-list-date">
-              六月 2025
-            </span>
-            <span class="card-archive-list-count">1</span>
-          </a>
-        </li>
-      
-        <li class="card-archive-list-item">
-          <a class="card-archive-list-link" href="/archives/2025/05/">
-            <span class="card-archive-list-date">
-              五月 2025
-            </span>
-            <span class="card-archive-list-count">4</span>
-          </a>
-        </li>
-      
-        <li class="card-archive-list-item">
-          <a class="card-archive-list-link" href="/archives/2025/04/">
-            <span class="card-archive-list-date">
-              四月 2025
-            </span>
-            <span class="card-archive-list-count">6</span>
-          </a>
-        </li>
-      
-        <li class="card-archive-list-item">
-          <a class="card-archive-list-link" href="/archives/2025/03/">
-            <span class="card-archive-list-date">
-              三月 2025
-            </span>
-            <span class="card-archive-list-count">5</span>
-          </a>
-        </li>
-      
-        <li class="card-archive-list-item">
-          <a class="card-archive-list-link" href="/archives/2025/02/">
-            <span class="card-archive-list-date">
-              二月 2025
-            </span>
-            <span class="card-archive-list-count">1</span>
-          </a>
-        </li>
-      
-        <li class="card-archive-list-item">
-          <a class="card-archive-list-link" href="/archives/2025/01/">
-            <span class="card-archive-list-date">
-              一月 2025
-            </span>
-            <span class="card-archive-list-count">4</span>
-          </a>
-        </li>
-      
-        <li class="card-archive-list-item">
-          <a class="card-archive-list-link" href="/archives/2024/12/">
-            <span class="card-archive-list-date">
-              十二月 2024
-            </span>
-            <span class="card-archive-list-count">7</span>
-          </a>
-        </li>
-      
-    </ul>
-  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">42</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-08-05T10:05:26.393Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
-  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
-  const option = null
+</div>
 
-  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+<style>
+.page-about-me {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: calc(100vh - var(--header-height)) !important;
+    background-color: #1a252c !important;
+    padding: 50px 20px;
+    position: relative;
+    overflow: hidden;
+}
 
-  const createScriptElement = config => {
-    const ele = document.createElement('script')
-    Object.entries(config).forEach(([key, value]) => {
-      ele.setAttribute(key, value)
-    })
-    return ele
-  }
+/* 返回按钮样式 */
+.page-about-me .back-home {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(45deg, #b9dceb, #91a7e4);
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+.page-about-me .back-home:hover {
+    background: linear-gradient(45deg, #b9dceb, #91a7e4);
+    transform: translateY(-2px) scale(1.05);
+}
 
-  const loadGiscus = (el = document, key) => {
-    const mappingConfig = isShuoshuo
-      ? { 'data-mapping': 'specific', 'data-term': key }
-      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+/* 标题动画 */
+.page-about-me .title {
+    font-size: 48px;
+    color: #ffffff;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 50px;
+    text-align: center;
+    width: 100%;
+    display: block;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards;
+}
 
-    const giscusConfig = {
-      src: 'https://giscus.app/client.js',
-      'data-repo': 'kizzy899/kizzy899.github.io',
-      'data-repo-id': 'R_kgDONCC1iQ',
-      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
-      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
-      'data-reactions-enabled': '1',
-      crossorigin: 'anonymous',
-      async: true,
-      ...option,
-      ...mappingConfig
+/* 容器布局 */
+.page-about-me .container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-width: 1600px;
+}
+
+/* 图片盒子 */
+.page-about-me .container .box {
+    flex: 1 1 calc(20% - 10px); /* 默认 PC 五列 */
+    max-width: calc(20% - 10px);
+    aspect-ratio: 1 / 1;
+    position: relative;
+    transition: transform 0.5s;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s ease forwards;
+}
+
+/* 让图片逐个延迟出现 */
+.page-about-me .container .box:nth-child(1) { animation-delay: 0.3s; }
+.page-about-me .container .box:nth-child(2) { animation-delay: 0.5s; }
+.page-about-me .container .box:nth-child(3) { animation-delay: 0.7s; }
+.page-about-me .container .box:nth-child(4) { animation-delay: 0.9s; }
+.page-about-me .container .box:nth-child(5) { animation-delay: 1.1s; }
+.page-about-me .container .box:nth-child(6) { animation-delay: 1.3s; }
+
+.page-about-me .container .box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 悬停缩放 */
+.page-about-me .container:hover > :not(:hover) {
+    filter: drop-shadow(0 0 25px #000)
+            drop-shadow(0 0 45px #000);
+    transform: scale(0.95);
+}
+
+.page-about-me .container .box:hover {
+    transform: scale(1.2);
+    z-index: 10;
+}
+
+/* 动画关键帧 */
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
+}
 
-    const scriptElement = createScriptElement(giscusConfig)
-
-    el.querySelector('#giscus-wrap').appendChild(scriptElement)
-
-    if (isShuoshuo) {
-      window.shuoshuoComment.destroyGiscus = () => {
-        if (el.children.length) {
-          el.innerHTML = ''
-          el.classList.add('no-comment')
-        }
-      }
+/* 响应式调整：平板 3 列，手机 2 列 */
+@media (max-width: 1024px) {
+    .page-about-me .container .box {
+        flex: 1 1 calc(33.33% - 10px);
+        max-width: calc(33.33% - 10px);
     }
-  }
-
-  const changeGiscusTheme = theme => {
-    const iframe = document.querySelector('#giscus-wrap iframe')
-    if (iframe) {
-      const message = {
-        giscus: {
-          setConfig: {
-            theme: getGiscusTheme(theme)
-          }
-        }
-      }
-      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+}
+@media (max-width: 600px) {
+    .page-about-me .container .box {
+        flex: 1 1 calc(50% - 10px);
+        max-width: calc(50% - 10px);
     }
-  }
-
-  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
-
-  if (isShuoshuo) {
-    'Giscus' === 'Giscus'
-      ? window.shuoshuoComment = { loadComment: loadGiscus }
-      : window.loadOtherComment = loadGiscus
-    return
-  }
-
-  if ('Giscus' === 'Giscus' || !false) {
-    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
-    else loadGiscus()
-  } else {
-    window.loadOtherComment = loadGiscus
-  }
-})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+}
+</style>
