@@ -1,13 +1,13 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>友情链接 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="欢迎互换友链！ &#x2F;* 基础容器样式 *&#x2F; .link-container {   display: grid;   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));   gap: 25px;   padding: 20px 0; }  &#x2F;* 卡片主体 *&#x2F; .link-card {   background: white;">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>友情链接 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="欢迎互换友链！ &#x2F;* 基础容器样式 *&#x2F; .link-container {   display: grid;   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); &#x2F;* 卡片宽度缩小 *&#x2F;   gap: 20px;   padding: 20px 0; }  &#x2F;* 卡片主体 - 3:4比例 *&#x2F; .link-card {">
 <meta property="og:type" content="website">
 <meta property="og:title" content="友情链接">
 <meta property="og:url" content="https://kizzy899.github.io/link/index.html">
 <meta property="og:site_name" content="EIGHTJIU">
-<meta property="og:description" content="欢迎互换友链！ &#x2F;* 基础容器样式 *&#x2F; .link-container {   display: grid;   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));   gap: 25px;   padding: 20px 0; }  &#x2F;* 卡片主体 *&#x2F; .link-card {   background: white;">
+<meta property="og:description" content="欢迎互换友链！ &#x2F;* 基础容器样式 *&#x2F; .link-container {   display: grid;   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); &#x2F;* 卡片宽度缩小 *&#x2F;   gap: 20px;   padding: 20px 0; }  &#x2F;* 卡片主体 - 3:4比例 *&#x2F; .link-card {">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://kizzy899.github.io/img/aaaset/touxiang.png">
 <meta property="article:published_time" content="2025-08-04T09:00:00.000Z">
-<meta property="article:modified_time" content="2025-08-05T19:31:39.490Z">
+<meta property="article:modified_time" content="2025-08-05T19:36:09.807Z">
 <meta property="article:author" content="kizy">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://kizzy899.github.io/img/aaaset/touxiang.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/link/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
@@ -147,12 +147,12 @@
 /* 基础容器样式 */
 .link-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); /* 卡片宽度缩小 */
+  gap: 20px;
   padding: 20px 0;
 }
 
-/* 卡片主体 */
+/* 卡片主体 - 3:4比例 */
 .link-card {
   background: white;
   border-radius: 12px;
@@ -160,30 +160,44 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   border: 1px solid rgba(0, 0, 0, 0.05);
+  aspect-ratio: 3/4; /* 关键：强制3:4比例 */
+  display: flex;
+  flex-direction: column;
 }
 
-/* 悬浮效果 */
-.link-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-/* 图片样式 */
-.link-card img {
+/* 图片容器 - 保持1:1比例 */
+.link-image-container {
   width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-bottom: 1px solid #f0f0f0;
+  aspect-ratio: 1/1; /* 1:1正方形 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8f8f8;
+  overflow: hidden;
 }
 
-/* 信息区域 */
+/* 图片样式 - 完整显示1:1图片 */
+.link-card img {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain; /* 关键：完整显示不裁剪 */
+}
+
+/* 信息区域 - 自动填充剩余空间 */
 .link-info {
-  padding: 18px;
+  padding: 15px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
+/* 其他样式保持不变 */
 .link-info h3 {
   margin: 0 0 8px 0;
-  font-size: 1.2em;
+  font-size: 1.1em;
+  text-align: center;
 }
 
 .link-info h3 a {
@@ -193,27 +207,30 @@
 }
 
 .link-info h3 a:hover {
-  color: #42b983; /* 悬停颜色可调整 */
+  color: #42b983;
 }
 
 .link-info p {
   margin: 0;
   color: #7f8c8d;
-  font-size: 0.95em;
+  font-size: 0.9em;
   line-height: 1.5;
+  text-align: center;
 }
 
 /* 响应式调整 */
 @media (max-width: 600px) {
   .link-container {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 }
 </style>
 
 <div class="link-container">
   <div class="link-card">
-    <img src="img/1.jpg" alt="吉伊">
+    <div class="link-image-container">
+      <img src="img/1.jpg" alt="吉伊">
+    </div>
     <div class="link-info">
       <h3><a href="https://github.com/" target="_blank" rel="noopener">吉伊</a></h3>
       <p>小八的好友</p>
@@ -221,13 +238,15 @@
   </div>
 
   <div class="link-card">
-    <img src="img/2.jpg" alt="乌萨奇">
+    <div class="link-image-container">
+      <img src="img/2.jpg" alt="乌萨奇">
+    </div>
     <div class="link-info">
       <h3><a href="https://butterfly.js.org" target="_blank" rel="noopener">乌萨奇的主页</a></h3>
       <p>小八的好友</p>
     </div>
   </div>
-</div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">42</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8/" style="font-size: 1.1em; color: #999">区块链安全</a> <a href="/tags/DeFi/" style="font-size: 1.3em; color: #99a1ac">DeFi</a> <a href="/tags/%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1/" style="font-size: 1.1em; color: #999">合约审计</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 1.5em; color: #99a9bf">区块链</a> <a href="/tags/solidity/" style="font-size: 1.2em; color: #999da3">solidity</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 1.4em; color: #99a5b6">学习笔记</a> <a href="/tags/%E4%BC%A0%E7%BB%9F%E5%AE%89%E5%85%A8/" style="font-size: 1.2em; color: #999da3">传统安全</a></div></div><div class="card-widget card-archives">
+</div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">42</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E4%BC%A0%E7%BB%9F%E5%AE%89%E5%85%A8/" style="font-size: 1.2em; color: #999da3">传统安全</a> <a href="/tags/DeFi/" style="font-size: 1.3em; color: #99a1ac">DeFi</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 1.5em; color: #99a9bf">区块链</a> <a href="/tags/solidity/" style="font-size: 1.2em; color: #999da3">solidity</a> <a href="/tags/%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1/" style="font-size: 1.1em; color: #999">合约审计</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8/" style="font-size: 1.1em; color: #999">区块链安全</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 1.4em; color: #99a5b6">学习笔记</a></div></div><div class="card-widget card-archives">
     <div class="item-headline">
       <i class="fas fa-archive"></i>
       <span>归档</span>
@@ -312,7 +331,7 @@
         </li>
       
     </ul>
-  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">42</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-08-05T19:31:49.771Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">42</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-08-05T19:36:21.636Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
   const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
   const option = null
 
