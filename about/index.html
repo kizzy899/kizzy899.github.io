@@ -43,7 +43,7 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 .page-about-me .back-home:hover {
-    background: linear-gradient(45deg, #b9dceb, #91a7e4);
+    background: linear-gradient(45deg, #a3c4f3, #7a95e6);
     transform: translateY(-2px) scale(1.05);
 }
 
@@ -83,7 +83,7 @@
     animation: fadeUp 0.8s ease forwards;
 }
 
-/* 让图片逐个延迟出现 */
+/* 图片逐个延迟动画 */
 .page-about-me .container .box:nth-child(1) { animation-delay: 0.3s; }
 .page-about-me .container .box:nth-child(2) { animation-delay: 0.5s; }
 .page-about-me .container .box:nth-child(3) { animation-delay: 0.7s; }
@@ -121,7 +121,7 @@
     }
 }
 
-/* 响应式调整：平板 3 列，手机 2 列 */
+/* 响应式调整 */
 @media (max-width: 1024px) {
     .page-about-me .container .box {
         flex: 1 1 calc(33.33% - 10px);
