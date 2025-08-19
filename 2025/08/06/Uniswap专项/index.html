@@ -1,24 +1,24 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Uniswap专项 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="恒定乘积自动做市商算法案例假定一个交易对 tokenA &#x2F; tokenB 有 10A  200B 则k &#x3D; 10 * 200 &#x3D;2000 情况  用户卖出5个A  ​	（10 + 5 ） * （200 - dy）&#x3D; 2000 ​		得 dy &#x3D; 66.667B ​		实际卖出价格：   恢复初始状态，用户此时持有100B，想买入A  ​    	(">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Uniswap专项 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="恒定乘积自动做市商算法核心公式恒定乘积做市商的核心公式是：x * y &#x3D; k其中：  ( x ) 是第一种资产的数量（如ETH） ( y ) 是第二种资产的数量（如USDT） ( k ) 是常数乘积  价格变动机制当交易发生时，资产数量的变化遵循：[ (x + dx)(y - dy) &#x3D; k ][ (x - dx)(y + dy) &#x3D; k ] 滑点计算滑点计算公式（纯文本格式）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Uniswap专项">
 <meta property="og:url" content="https://kizzy899.github.io/2025/08/06/Uniswap%E4%B8%93%E9%A1%B9/index.html">
 <meta property="og:site_name" content="EIGHTJIU">
-<meta property="og:description" content="恒定乘积自动做市商算法案例假定一个交易对 tokenA &#x2F; tokenB 有 10A  200B 则k &#x3D; 10 * 200 &#x3D;2000 情况  用户卖出5个A  ​	（10 + 5 ） * （200 - dy）&#x3D; 2000 ​		得 dy &#x3D; 66.667B ​		实际卖出价格：   恢复初始状态，用户此时持有100B，想买入A  ​    	(">
+<meta property="og:description" content="恒定乘积自动做市商算法核心公式恒定乘积做市商的核心公式是：x * y &#x3D; k其中：  ( x ) 是第一种资产的数量（如ETH） ( y ) 是第二种资产的数量（如USDT） ( k ) 是常数乘积  价格变动机制当交易发生时，资产数量的变化遵循：[ (x + dx)(y - dy) &#x3D; k ][ (x - dx)(y + dy) &#x3D; k ] 滑点计算滑点计算公式（纯文本格式）">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kizzy899.github.io/cover/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250805174003_272.jpg">
+<meta property="og:image" content="https://kizzy899.github.io/cover/cover_18.jpg">
 <meta property="article:published_time" content="2025-08-06T01:30:25.000Z">
-<meta property="article:modified_time" content="2025-08-06T09:17:07.197Z">
+<meta property="article:modified_time" content="2025-08-19T08:59:57.438Z">
 <meta property="article:author" content="kizy">
 <meta property="article:tag" content="DeFi">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://kizzy899.github.io/cover/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250805174003_272.jpg"><script type="application/ld+json">{
+<meta name="twitter:image" content="https://kizzy899.github.io/cover/cover_18.jpg"><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "Uniswap专项",
   "url": "https://kizzy899.github.io/2025/08/06/Uniswap%E4%B8%93%E9%A1%B9/",
-  "image": "https://kizzy899.github.io/cover/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250805174003_272.jpg",
+  "image": "https://kizzy899.github.io/cover/cover_18.jpg",
   "datePublished": "2025-08-06T01:30:25.000Z",
-  "dateModified": "2025-08-06T09:17:07.197Z",
+  "dateModified": "2025-08-19T08:59:57.438Z",
   "author": [
     {
       "@type": "Person",
@@ -159,11 +159,34 @@
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">47</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/cover/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250805174003_272.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">Uniswap专项</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Uniswap专项</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-08-06T01:30:25.000Z" title="发表于 2025-08-06 09:30:25">2025-08-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-08-06T09:17:07.197Z" title="更新于 2025-08-06 17:17:07">2025-08-06</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="恒定乘积自动做市商算法"><a href="#恒定乘积自动做市商算法" class="headerlink" title="恒定乘积自动做市商算法"></a>恒定乘积自动做市商算法</h1><h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>假定一个交易对 tokenA &#x2F; tokenB</p>
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">47</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/cover/cover_18.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">Uniswap专项</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Uniswap专项</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-08-06T01:30:25.000Z" title="发表于 2025-08-06 09:30:25">2025-08-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-08-19T08:59:57.438Z" title="更新于 2025-08-19 16:59:57">2025-08-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="恒定乘积自动做市商算法"><a href="#恒定乘积自动做市商算法" class="headerlink" title="恒定乘积自动做市商算法"></a>恒定乘积自动做市商算法</h1><h2 id="核心公式"><a href="#核心公式" class="headerlink" title="核心公式"></a>核心公式</h2><p>恒定乘积做市商的核心公式是：<br><code>x * y = k</code><br>其中：</p>
+<ul>
+<li>( x ) 是第一种资产的数量（如ETH）</li>
+<li>( y ) 是第二种资产的数量（如USDT）</li>
+<li>( k ) 是常数乘积</li>
+</ul>
+<h2 id="价格变动机制"><a href="#价格变动机制" class="headerlink" title="价格变动机制"></a>价格变动机制</h2><p>当交易发生时，资产数量的变化遵循：<br>[ (x + dx)(y - dy) &#x3D; k ]<br>[ (x - dx)(y + dy) &#x3D; k ]</p>
+<h2 id="滑点计算"><a href="#滑点计算" class="headerlink" title="滑点计算"></a>滑点计算</h2><h3 id="滑点计算公式（纯文本格式）"><a href="#滑点计算公式（纯文本格式）" class="headerlink" title="滑点计算公式（纯文本格式）"></a>滑点计算公式（纯文本格式）</h3><p>滑点(S) &#x3D; [(实际执行价格 - 预期价格) &#x2F; 预期价格] × 100%</p>
+<h4 id="变量说明："><a href="#变量说明：" class="headerlink" title="变量说明："></a>变量说明：</h4><ul>
+<li>滑点(S)：以百分比(%)表示的价格偏差</li>
+<li>实际执行价格：交易实际成交的价格</li>
+<li>预期价格：交易发起时预期的市场价格</li>
+</ul>
+<h4 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h4><p>如果预期价格是2000 USDT，实际执行价格是2666.66 USDT，那么：<br>滑点 &#x3D; [(2666.66 - 2000)&#x2F;2000] × 100% &#x3D; 33.33%</p>
+<h4 id="公式解读："><a href="#公式解读：" class="headerlink" title="公式解读："></a>公式解读：</h4><ol>
+<li>先计算实际价格与预期价格的差值</li>
+<li>将差值除以预期价格，得到相对偏差</li>
+<li>乘以100%转换为百分比形式</li>
+</ol>
+<h4 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a>注意事项：</h4><ul>
+<li>正值表示实际价格高于预期（对买方不利）</li>
+<li>负值表示实际价格低于预期（对卖方不利）</li>
+<li>滑点大小反映市场流动性和交易规模的影响</li>
+</ul>
+<h2 id="交易案例"><a href="#交易案例" class="headerlink" title="交易案例"></a>交易案例</h2><p>假定一个交易对 tokenA &#x2F; tokenB</p>
 <p>有 <code>10A  200B</code></p>
 <p>则<strong>k</strong> &#x3D; 10 * 200 &#x3D;2000</p>
-<p><strong>情况</strong></p>
-<ol>
+<h3 id="情况"><a href="#情况" class="headerlink" title="情况"></a><strong>情况</strong></h3><ol>
 <li>用户卖出5个A</li>
 </ol>
 <p>​	（10 + 5 ） * （200 - dy）&#x3D; 2000</p>
@@ -179,9 +202,266 @@
 </ol>
 <p>​	(10 + 1000) * (200 - dy) &#x3D; 2000</p>
 <p>​		得dy &#x3D; 200 - 20&#x2F;11 &#x3D; 198B</p>
+<p><code>spot price</code></p>
 <p>PA &#x3D; B &#x2F; A &#x3D; 200 &#x2F; 10 &#x3D; 20</p>
 <p>PB &#x3D; A &#x2F; B &#x3D; 10 &#x2F; 200 &#x3D; 0.05 </p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/08/06/Uniswap%E4%B8%93%E9%A1%B9/">https://kizzy899.github.io/2025/08/06/Uniswap%E4%B8%93%E9%A1%B9/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DeFi/">DeFi</a></div><div class="post-share"><div class="social-share" data-image="/cover/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250805174003_272.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/08/08/%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="云计算学习笔记"><img class="cover" src="/cover/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250805174003_271.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">云计算学习笔记</div></div><div class="info-2"><div class="info-item-1">云计算学习笔记一、云计算的模式分类1. 横向分层（按部署模式划分）   类型 特点 适用场景    私有云 合规、安全、性能高 企业内网、金融、政府、数据安全要求高的业务   公有云 敏捷、低成本、弹性 中小企业、快速上线、弹性扩容需求场景   混合云 兼具安全性与弹性扩展能力 核心业务部署私有云，非核心业务或突发需求上公有云   2. 纵向分层（按服务模式划分）   层级 含义 示例    IaaS（基础架构即服务） 提供计算、存储、网络等基础资源 阿里云ECS、腾讯云CVM   PaaS（平台即服务） 提供开发运行环境及工具 阿里云中间件、Google App Engine   SaaS（软件即服务） 直接提供可使用的应用软件 钉钉、微信、企业邮箱    二、虚拟化技术1. 作用 解耦服务器硬件资源与操作系统 支持“一虚多”——一台物理机可运行多个逻辑计算机 资源池化与灵活调度  2. 虚拟机热升级 原理：在不关机的情况下增加 CPU、内存、磁盘等 优势：减少停机时间 限制：不能热降级   三、网络技术 软件定义网络（SDN）：将网络控制与数据转发分离，实现集中化、可编程的网...</div></div></div></a><a class="pagination-related" href="/2025/08/05/3CDaemon%20+%20MobaXterm%20%E8%BF%90%E7%BB%B4%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="3CDaemon + MobaXterm运维"><img class="cover" src="/cover/cover_15.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">3CDaemon + MobaXterm运维</div></div><div class="info-2"><div class="info-item-1">3CDaemon + MobaXterm 运维学习笔记📑 目录 一、FTP 配置与使用 二、SSH 与 SFTP 基础 三、BS 运维（Browser–Server 模式） 四、CS 运维（Client–Server 模式） 参考链接与原文标题   一、FTP 配置与使用 3CDaemon 创建 FTP 用户 打开 3CDaemon → 点击 FTP 用户（创建前先选择一个真实存在的文件夹路径，例如 D:\）。 新建用户： 账号：admin 密码：123123   确认保存。   开启 FTP 服务 进入 配置 → 服务管理 → 端口配置。 默认端口为 21，如需自定义可改为 20021。   在堡垒机添加 FTP 资产 新建资产： IP：主机 IP 端口：FTP 服务端口（如 21 或 20021） 删除系统自带账号，添加刚刚在 3CDaemon 中新建的账号（用户名：admin，密码：123123）。 服务类型选择 FTP。   确认保存。 在 授权管理 中，为刚建的资产分配用户权限。   MobaXterm 连接 FTP 在 个人工作台 中找到刚建的 FTP 资产，使用 ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/07/21/DAI/" title="DAI"><img class="cover" src="/cover/cover12.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-21</div><div class="info-item-2">DAI</div></div><div class="info-2"><div class="info-item-1">DAI 是Maker Protocol的主要产品，Maker Protoco 是由Maker DAO来管理和维护的。 DAI的供应量控制贷款利率： Stability fee 存款利率： DAI Saving Rate(DSR) 通过控制这两个利率，来控制供应量（类似于“升息降息”） DAI的收入来源是什么？   收入来源 简介 是否主要收入来源    稳定费 用户铸造 DAI 时支付的利息 ✅ 是   现实世界资产收益 投资国债、协议贷款等带来的实际利息收入 ✅ 是   清算惩罚收入 抵押资产清算时收取的惩罚费用 ⚠️ 次要   储蓄率利差 DAI 储户收益与实际投资收益之间的利差 ⚠️ 次要   🔰 一、什么是 Maker Buffer？Maker Buffer 是 MakerDAO 协议的“储备金账户”，是一个专门用来应对系统风险的资金缓冲池。 资金来源： 用户铸造 DAI 时支付的 Stability Fee（稳定费） 用户抵押品被清算时的 Penalty Fee（清算罚金） 投资资产的 利差收益（如 RWA 收益）中保留的一部分  这些收入不会马上分发给 MKR 持有...</div></div></div></a><a class="pagination-related" href="/2025/07/31/DEX%E8%AF%A6%E8%A7%A3/" title="DEX详解"><img class="cover" src="/cover/cover1.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-31</div><div class="info-item-2">DEX详解</div></div><div class="info-2"><div class="info-item-1">交易所的盈利来源 以币安为例   交易费:交易所通过提供买卖加密货币的平台来收取交易费用有些交易所还提供高级交易选项，如杠杆交易，这通常会带来更高的费用; 上币费:项目方团队后面都会去找交易所上币，然而上币需要缴纳一笔数额不小的上币费 量化交易：用户在交易所中，一般数字资产币都是暂时存放在交易所，基本上交易所掌握所有筹码可以选择做多或者做空易所，所可以去赚取差价，i而用户提币出去也能赚取手续费 原生代币;  中心化交易所的交易模式–订单簿模式 中央限价订单簿(CLOB)就是一本由出价和报价组成的权限透明账本，从最好价开始依次排序(两边分别是参与者愿意买&#x2F;卖的价格)。 所有的参与者都能看到所有的报价和出价，他们也可以参与其中。 订单簿中两边的第一行，即是最好的报价&#x2F;出价。  订单簿模式的优劣优势:  透明的流动性劣势 做市商可自由出入 做市商可以自由决定价格与数量  劣势：  冷启动问题(很难给出初始流动性) 对非流动性资产不利 如果是链上交易所，则对链的TPS 的要求很高、  TPS 是 Transactions Per Second（每秒交易数）的缩写，用于...</div></div></div></a><a class="pagination-related" href="/2025/07/24/ERC4626%E8%AF%A6%E8%A7%A3/" title="ERC4626详解"><img class="cover" src="/cover/cover12.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-24</div><div class="info-item-2">ERC4626详解</div></div><div class="info-2"><div class="info-item-1">VaultVault（保险库） 通常指一种资金管理和收益策略工具，主要用于 DeFi（去中心化金融）协议中，用来帮助用户自动化收益最大化，降低操作难度和 Gas 成本。 Vault 的主要功能 自动复投 Vault 会将挖矿奖励、利息等收益，自动复投到原策略中，提升复利效应，用户不需要手动操作。 策略自动化 比如 Yearn Finance 的 Vault，会根据链上数据动态调整策略，将资金投向收益更高的 DeFi 协议。 降低 Gas 成本 单个用户频繁操作会耗费大量 Gas，而 Vault 将资金集中，批量执行操作，摊薄 Gas 成本。 风险隔离 不同策略可以部署在不同的 Vault 中，用户可以根据风险偏好选择。 yield farming&#x2F;借贷&#x2F;质押   Yield Farming（收益耕作） 是 DeFi（去中心化金融） 中的一种策略，指用户将自己的加密资产存入特定协议（如借贷、流动性池、收益聚合器）中，以赚取额外收益（通常是利息或平台代币奖励）的行为。 简单来说，Yield Farming 就是“把加密货币拿去生钱”，类似于传统金融里的“存款生息 ...</div></div></div></a><a class="pagination-related" href="/2025/07/01/%E7%A8%B3%E5%AE%9A%E5%B8%81%EF%BC%88Stablecoin%EF%BC%89%EF%BC%9A%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E%E6%97%B6%E4%BB%A3%E7%9A%84%E4%BB%B7%E5%80%BC%E9%94%9A/" title="稳定币"><img class="cover" src="/cover/cover9.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-01</div><div class="info-item-2">稳定币</div></div><div class="info-2"><div class="info-item-1">  启程：走近稳定币世界2024年7月，香港金管局公布首批三家”沙盒”参与机构，京东数科旗下公司等入选。2025年5月，香港立法会通过《稳定币条例草案》，飞速进步和不断跨越，标志着我国在稳定币监管领域取得重要突破。  稳定币成功的关键是什么   的确，在数字经济高速发展的今天，虚拟资产逐渐走入大众视野。但价格的剧烈波动却限制了它们在实际支付、跨境结算、金融产品等领域的应用。 尤其是在电商领域，京东这样的大型平台也在探索区块链技术的落地，但受限于数字货币的不稳定性，其在支付链路中的使用仍面临诸多挑战。 正是在这种背景下，稳定币（Stablecoin）应运而生，成为连接传统金融与区块链世界的重要桥梁。    初识：稳定币到底是什么？定义在理想状态下，稳定币是一种价值稳定的加密货币。 它继承了比特币所有的核心优势——如去中心化、安全性和全球流通性，同时避免了价格剧烈波动的缺点。这种特性使稳定币更适合承担货币的三大职能：可靠的价值储存手段、高效的交易媒介以及稳定的计价单位。 稳定币通常锚定某种现实世界货币，如“1枚稳定币 ≈ 1美元”。但他不是现实发售的货币，而是运行在链上的虚拟货币。 ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">47</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%81%92%E5%AE%9A%E4%B9%98%E7%A7%AF%E8%87%AA%E5%8A%A8%E5%81%9A%E5%B8%82%E5%95%86%E7%AE%97%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">恒定乘积自动做市商算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B"><span class="toc-number">1.1.</span> <span class="toc-text">案例</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+<h3 id="重要概念"><a href="#重要概念" class="headerlink" title="重要概念"></a>重要概念</h3><ol>
+<li><strong>流动性池</strong>：由两种资产组成，数量乘积保持恒定</li>
+<li><strong>价格影响</strong>：大额交易会导致显著的价格滑点</li>
+<li><strong>交易执行</strong>：实际执行价格可能与预期价格有差异</li>
+</ol>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>大额交易（交易额占池子总数比较大）在AMM中会产生较高的滑点</li>
+<li>流动性深度影响价格稳定性</li>
+<li>公式中的k值代表流动性池的规模，k越大，同等交易量下的滑点越小</li>
+</ul>
+<hr>
+<h2 id="流动性参数-L"><a href="#流动性参数-L" class="headerlink" title="流动性参数 L"></a>流动性参数 L</h2><h3 id="恒定乘积公式的两种表示方法"><a href="#恒定乘积公式的两种表示方法" class="headerlink" title="恒定乘积公式的两种表示方法"></a>恒定乘积公式的两种表示方法</h3><h4 id="1-传统形式-x-×-y-k"><a href="#1-传统形式-x-×-y-k" class="headerlink" title="1. 传统形式 (x × y &#x3D; k)"></a>1. 传统形式 (x × y &#x3D; k)</h4><ul>
+<li>k是一个常数，代表流动性池中两种资产数量的乘积</li>
+<li>当交易发生时，k值保持不变</li>
+<li>资产数量x和y会呈反向变化关系</li>
+<li>这是最基本的自动做市商(AMM)模型公式</li>
+</ul>
+<h4 id="2-改进形式-x-×-y-L²"><a href="#2-改进形式-x-×-y-L²" class="headerlink" title="2. 改进形式 (x × y &#x3D; L²)"></a>2. 改进形式 (x × y &#x3D; L²)</h4><ul>
+<li>L被定义为”流动性深度”(Liquidity)</li>
+<li>L等于k的平方根(L &#x3D; √k)</li>
+<li>这种表示法直接将流动性L与资产数量关联</li>
+<li>便于更直观地计算价格和滑点</li>
+</ul>
+<h3 id="使用L²表示的优势"><a href="#使用L²表示的优势" class="headerlink" title="使用L²表示的优势"></a>使用L²表示的优势</h3><h4 id="1-几何意义"><a href="#1-几何意义" class="headerlink" title="(1) 几何意义"></a>(1) 几何意义</h4><ul>
+<li>公式x × y &#x3D; L²描述的是双曲线</li>
+<li>L值决定了曲线的”宽度”</li>
+<li>L越大，曲线越平缓(流动性越深)，价格滑点越小</li>
+</ul>
+<h4 id="2-统一流动性度量"><a href="#2-统一流动性度量" class="headerlink" title="(2) 统一流动性度量"></a>(2) 统一流动性度量</h4><ul>
+<li>在Uniswap V3等先进模型中，明确将L定义为√(x × y)</li>
+<li>这样做的好处包括：<ul>
+<li>添加&#x2F;移除流动性时，可以直接通过L计算所需资产量</li>
+<li>可以实现不同价格区间的流动性分段计算(集中流动性)</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-简化价格计算"><a href="#3-简化价格计算" class="headerlink" title="(3) 简化价格计算"></a>(3) 简化价格计算</h4><ul>
+<li>资产价格P(如ETH&#x2F;USDT价格)可以表示为：<br>P &#x3D; y&#x2F;x &#x3D; L²&#x2F;x²</li>
+<li>这种表示方法能更直观地反映价格与流动性的关系</li>
+</ul>
+<h3 id="两种表示法的比较"><a href="#两种表示法的比较" class="headerlink" title="两种表示法的比较"></a>两种表示法的比较</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>x × y &#x3D; k</th>
+<th>x × y &#x3D; L²</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>常数意义</td>
+<td>k是任意乘积常数</td>
+<td>L明确代表流动性深度</td>
+</tr>
+<tr>
+<td>价格影响</td>
+<td>滑点取决于k大小</td>
+<td>滑点由L直接控制</td>
+</tr>
+<tr>
+<td>适用性</td>
+<td>基础AMM模型</td>
+<td>高级模型(如Uniswap V3)</td>
+</tr>
+</tbody></table>
+<h3 id="实际应用示例"><a href="#实际应用示例" class="headerlink" title="实际应用示例"></a>实际应用示例</h3><p>假设一个ETH&#x2F;USDT交易池：</p>
+<ul>
+<li>传统模型：100 ETH × 400,000 USDT &#x3D; 40,000,000 (k值)</li>
+<li>流动性模型：√40,000,000 ≈ 6,324.56 (L值)</li>
+</ul>
+<p>当用户买入10 ETH时：</p>
+<ul>
+<li>两种公式计算结果相同</li>
+<li>但L²形式能更直观显示流动性变化</li>
+</ul>
+<h2 id="LP-和-LPT-解释"><a href="#LP-和-LPT-解释" class="headerlink" title="LP 和 LPT 解释"></a><strong>LP 和 LPT 解释</strong></h2><h4 id="1-LP（Liquidity-Provider，流动性提供者）"><a href="#1-LP（Liquidity-Provider，流动性提供者）" class="headerlink" title="1. LP（Liquidity Provider，流动性提供者）"></a><strong>1. LP（Liquidity Provider，流动性提供者）</strong></h4><ul>
+<li><strong>定义</strong>：向去中心化交易所（DEX）或自动做市商（AMM）资金池存入代币的用户。</li>
+<li><strong>作用</strong>：提供交易对的流动性（如 ETH&#x2F;USDT），使其他用户能顺利交易。</li>
+<li><strong>收益</strong>：<ul>
+<li>赚取交易手续费（通常 0.1%-0.3% 每笔）。</li>
+<li>可能获得流动性挖矿的额外代币奖励。</li>
+</ul>
+</li>
+<li><strong>风险</strong>：<ul>
+<li><strong>无常损失（Impermanent Loss）</strong>：当代币价格剧烈波动时，LP 的资产价值可能低于单纯持有。</li>
+<li><strong>智能合约风险</strong>：资金池可能被黑客攻击或存在漏洞。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="2-LPT（Liquidity-Provider-Token，流动性提供者代币）"><a href="#2-LPT（Liquidity-Provider-Token，流动性提供者代币）" class="headerlink" title="2. LPT（Liquidity Provider Token，流动性提供者代币）"></a><strong>2. LPT（Liquidity Provider Token，流动性提供者代币）</strong></h4><ul>
+<li><strong>定义</strong>：当用户成为 LP 时，系统发放的<strong>凭证代币</strong>，代表其在资金池中的份额。</li>
+<li><strong>功能</strong>：<ul>
+<li><strong>赎回权</strong>：凭 LPT 可随时取回自己存入的资产（按比例计算）。</li>
+<li><strong>流动性证明</strong>：用于参与治理或质押挖矿（如 Curve 的 veCRV）。</li>
+</ul>
+</li>
+<li><strong>示例</strong>：<ul>
+<li>Uniswap 的 LP 会收到 <code>UNI-V2</code> 代币。</li>
+<li>PancakeSwap 的 LP 会收到 <code>CAKE-LP</code> 代币。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="关键区别"><a href="#关键区别" class="headerlink" title="关键区别"></a><strong>关键区别</strong></h3><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>含义</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LP</strong></td>
+<td>流动性提供者（人&#x2F;地址）</td>
+<td>存入代币，赚取手续费</td>
+</tr>
+<tr>
+<td><strong>LPT</strong></td>
+<td>流动性凭证（代币）</td>
+<td>证明份额，用于赎回或质押</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="为什么需要-LPT？"><a href="#为什么需要-LPT？" class="headerlink" title="为什么需要 LPT？"></a><strong>为什么需要 LPT？</strong></h3><ol>
+<li><strong>追踪份额</strong>：资金池中资产价格变动时，LPT 确保 LP 能按比例取回资产。</li>
+<li><strong>可组合性</strong>：LPT 可质押到其他协议（如 Yearn Finance）进行二次收益 farming。</li>
+<li><strong>去中心化治理</strong>：部分项目的 LPT 具有投票权（如 SushiSwap 的 <code>SLP</code>）。</li>
+</ol>
+<hr>
+<h3 id="实际案例"><a href="#实际案例" class="headerlink" title="实际案例"></a><strong>实际案例</strong></h3><ol>
+<li><strong>在 Uniswap 添加流动性</strong>：<ul>
+<li>存入 1 ETH + 2000 USDT → 获得 <code>UNI-V2</code> LPT。</li>
+<li>交易手续费按 LPT 占比分配。</li>
+</ul>
+</li>
+<li><strong>赎回资产</strong>：<ul>
+<li>销毁 <code>UNI-V2</code> LPT → 取回 ETH 和 USDT（可能因价格变动数量不同）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="注意事项-1"><a href="#注意事项-1" class="headerlink" title="注意事项"></a><strong>注意事项</strong></h3><ul>
+<li><strong>无常损失</strong>：价格波动越大，LP 的潜在损失风险越高。</li>
+<li><strong>LPT 价值</strong>：本身可在二级市场交易（如 SushiSwap 的 <code>SLP</code>），但通常与底层资产挂钩。</li>
+</ul>
+<h2 id="添加流动性（Adding-Liquidity）"><a href="#添加流动性（Adding-Liquidity）" class="headerlink" title="添加流动性（Adding Liquidity）"></a>添加流动性（Adding Liquidity）</h2><h4 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1. 基本概念"></a><strong>1. 基本概念</strong></h4><p><strong>添加流动性</strong> 是指用户向去中心化交易所（DEX）或自动做市商（AMM）的资金池存入一定比例的两种代币，成为<strong>流动性提供者（LP）</strong>，以支持该交易对的交易活动。作为回报，LP 会获得交易手续费分成和可能的额外奖励。</p>
+<hr>
+<h4 id="2-核心原理"><a href="#2-核心原理" class="headerlink" title="2. 核心原理"></a><strong>2. 核心原理</strong></h4><ul>
+<li><p><strong>恒定乘积公式（AMM 模型）</strong>：  </p>
+</li>
+<li><p><strong>添加流动性时</strong>：<br>用户必须按当前池中资产的<strong>比例</strong>同时存入两种代币。例如：</p>
+<ul>
+<li>如果池中有 100 ETH 和 200,000 USDT（比例 1:2000），用户需按相同比例存入（如 1 ETH + 2000 USDT）。</li>
+</ul>
+<p><code>(x +dx) / (y + dy) = x / y</code></p>
+</li>
+</ul>
+<hr>
+<h4 id="3-操作步骤（以-Uniswap-为例）"><a href="#3-操作步骤（以-Uniswap-为例）" class="headerlink" title="3. 操作步骤（以 Uniswap 为例）"></a><strong>3. 操作步骤（以 Uniswap 为例）</strong></h4><ol>
+<li><strong>选择交易对</strong>：如 ETH&#x2F;USDT。</li>
+<li><strong>输入存入数量</strong>：系统会自动计算另一种代币的所需数量（保持比例一致）。</li>
+<li><strong>授权代币</strong>：首次需授权智能合约访问你的代币。</li>
+<li><strong>确认添加</strong>：完成交易后，你会收到 <strong>LP Token（LPT）</strong> 作为凭证。</li>
+</ol>
+<hr>
+<h4 id="4-为什么需要添加流动性？"><a href="#4-为什么需要添加流动性？" class="headerlink" title="4. 为什么需要添加流动性？"></a><strong>4. 为什么需要添加流动性？</strong></h4><ul>
+<li><strong>支持交易</strong>：没有流动性，用户无法在 DEX 中买卖代币。</li>
+<li><strong>赚取收益</strong>：<ul>
+<li><strong>手续费</strong>：每笔交易收取 0.01%-0.3% 的费用，按 LP 份额分配。</li>
+<li><strong>挖矿奖励</strong>：部分项目额外发放治理代币（如 UNI、CAKE）。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="5-风险与注意事项"><a href="#5-风险与注意事项" class="headerlink" title="5. 风险与注意事项"></a><strong>5. 风险与注意事项</strong></h4><ul>
+<li><strong>无常损失（Impermanent Loss）</strong>：<br>当代币价格剧烈波动时，LP 取回的资产价值可能低于单纯持有。<br><em>示例</em>：存入 ETH&#x2F;USDT 后，若 ETH 价格暴涨，部分 ETH 会被自动卖出，导致 LP 的 ETH 数量减少。</li>
+<li><strong>智能合约风险</strong>：资金池可能存在漏洞或被黑客攻击。</li>
+<li><strong>代币选择风险</strong>：为低流动性或诈骗代币提供流动性可能导致重大损失。</li>
+</ul>
+<hr>
+<h4 id="6-实际案例"><a href="#6-实际案例" class="headerlink" title="6. 实际案例"></a><strong>6. 实际案例</strong></h4><ul>
+<li><strong>场景</strong>：<br>你向 ETH&#x2F;USDT 池存入 1 ETH（价值 2000 USDT）和 2000 USDT。</li>
+<li><strong>结果</strong>：<ul>
+<li>获得 <code>UNI-V2</code> LP Token。</li>
+<li>若池中总流动性为 100 ETH + 200,000 USDT，你的份额是 1%。</li>
+<li>每笔交易手续费（如 0.3%）的 1% 归你所有。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="7-常见问题"><a href="#7-常见问题" class="headerlink" title="7. 常见问题"></a><strong>7. 常见问题</strong></h4><ul>
+<li><strong>Q：能否只存一种代币？</strong><br>A：不能，必须按比例存入两种（AMM 机制要求）。</li>
+<li><strong>Q：如何计算收益？</strong><br>A：收益来自手续费 + 挖矿奖励，可通过 DEX 的仪表盘实时查看。</li>
+<li><strong>Q：何时取出流动性？</strong><br>A：当手续费收益覆盖无常损失，或需要收回资金时。</li>
+</ul>
+<p>添加流动性是 DeFi 生态的核心操作之一，通过提供代币支持交易并获得被动收益，但需谨慎评估无常损失和项目风险。对于新手，建议从主流交易对（如 ETH&#x2F;USDT）开始，并充分理解机制后再参与。</p>
+<blockquote>
+<p>添加初始流动性决定了一个token的初始价格</p>
+<p>添加流动性时，不可以改变&#x2F;影响价格</p>
+</blockquote>
+<hr>
+<h2 id="移除流动性（Removing-Liquidity）"><a href="#移除流动性（Removing-Liquidity）" class="headerlink" title="移除流动性（Removing Liquidity）"></a>移除流动性（Removing Liquidity）</h2><h4 id="1-基本概念-1"><a href="#1-基本概念-1" class="headerlink" title="1. 基本概念"></a><strong>1. 基本概念</strong></h4><p><strong>移除流动性</strong> 是指流动性提供者（LP）从去中心化交易所（DEX）的资金池中取回自己原先存入的代币，并销毁对应的 <strong>LP Token（LPT）</strong>。这一操作会减少资金池的流动性，同时 LP 停止赚取手续费收益。</p>
+<hr>
+<h4 id="2-核心原理-1"><a href="#2-核心原理-1" class="headerlink" title="2. 核心原理"></a><strong>2. 核心原理</strong></h4><ul>
+<li><p><strong>赎回比例</strong>：<br>移除流动性时，你能取回的代币数量取决于：</p>
+<ol>
+<li><strong>当前</strong>资金池的资产比例（可能因交易和价格波动而变化）。</li>
+<li><strong>你持有的 LPT 占总 LPT 的比例</strong>。<br><em>公式</em>：<br><code>你的代币数量 = (你的 LPT 数量 / 总 LPT) × 池中代币余额</code></li>
+</ol>
+</li>
+<li><p><strong>无常损失的影响</strong>：<br>如果代币价格波动较大，取回的代币数量可能与最初存入时不同（通常少于单纯持有）。</p>
+</li>
+</ul>
+<hr>
+<h4 id="3-操作步骤（以-Uniswap-为例）-1"><a href="#3-操作步骤（以-Uniswap-为例）-1" class="headerlink" title="3. 操作步骤（以 Uniswap 为例）"></a><strong>3. 操作步骤（以 Uniswap 为例）</strong></h4><ol>
+<li><strong>连接钱包</strong>：访问 DEX 的「Pool」或「流动性管理」页面。</li>
+<li><strong>选择要移除的流动性池</strong>：如 ETH&#x2F;USDT。</li>
+<li><strong>输入移除数量</strong>：选择销毁全部或部分 LPT。</li>
+<li><strong>预览赎回资产</strong>：系统会显示可取回的两种代币数量（可能因价格变化与最初不同）。</li>
+<li><strong>确认移除</strong>：完成交易后，LPT 被销毁，代币返回钱包。</li>
+</ol>
+<hr>
+<h4 id="4-为什么需要移除流动性？"><a href="#4-为什么需要移除流动性？" class="headerlink" title="4. 为什么需要移除流动性？"></a><strong>4. 为什么需要移除流动性？</strong></h4><ul>
+<li><strong>提取收益</strong>：将积累的手续费和本金变现。</li>
+<li><strong>规避风险</strong>：避免无常损失进一步扩大，或应对市场剧烈波动。</li>
+<li><strong>调整投资策略</strong>：将资金转移到其他池子或退出 DeFi 市场。</li>
+</ul>
+<hr>
+<h4 id="5-关键注意事项"><a href="#5-关键注意事项" class="headerlink" title="5. 关键注意事项"></a><strong>5. 关键注意事项</strong></h4><ul>
+<li><strong>价格影响</strong>：<br>移除大额流动性可能导致池内资产比例失衡，短暂影响价格（滑点增大）。</li>
+<li><strong>手续费</strong>：<br>部分平台会收取少量交易费（如以太坊的 Gas 费）。</li>
+<li><strong>税收</strong>：<br>某些地区将移除流动性视为应税事件（需咨询专业人士）。</li>
+</ul>
+<hr>
+<h4 id="6-实际案例-1"><a href="#6-实际案例-1" class="headerlink" title="6. 实际案例"></a><strong>6. 实际案例</strong></h4><ul>
+<li><strong>场景</strong>：<br>你最初存入 1 ETH + 2000 USDT，获得 10 枚 <code>UNI-V2</code> LPT（占总 LPT 的 1%）。<br>现在池中有 100 ETH + 400,000 USDT（ETH 价格上涨至 4000 USDT）。</li>
+<li><strong>移除操作</strong>：  <ul>
+<li>销毁全部 10 枚 LPT。  </li>
+<li>取回数量：<br><code>ETH = 1% × 100 = 1 ETH</code><br><code>USDT = 1% × 400,000 = 4000 USDT</code>  </li>
+<li><strong>结果</strong>：<br>你最终获得 1 ETH + 4000 USDT（总价值 8000 USDT），比最初存入的 4000 USDT 翻倍（但 ETH 数量未变，存在无常损失）。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="7-常见问题-1"><a href="#7-常见问题-1" class="headerlink" title="7. 常见问题"></a><strong>7. 常见问题</strong></h4><ul>
+<li><strong>Q：移除流动性后，LPT 会消失吗？</strong><br>A：是的，LPT 会被销毁，无法再次使用。  </li>
+<li><strong>Q：能否分批移除流动性？</strong><br>A：可以，自由选择销毁部分 LPT。  </li>
+<li><strong>Q：移除时价格如何计算？</strong><br>A：按移除时池中的实时资产比例计算（非存入时的价格）。</li>
+</ul>
+<blockquote>
+<p> <a target="_blank" rel="noopener" href="https://impermanentloss.com/">impermanentloss.com</a>提前模拟收益与风险。</p>
+<p>移除流动性时，不可以改变&#x2F;影响价格</p>
+<p>撤底池（移除全部）</p>
+<p>添加&#x2F;移除流动性时候，k都是有变化的</p>
+<p>k的恒定是指在swap时候是恒定不变的</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/08/06/Uniswap%E4%B8%93%E9%A1%B9/">https://kizzy899.github.io/2025/08/06/Uniswap%E4%B8%93%E9%A1%B9/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DeFi/">DeFi</a></div><div class="post-share"><div class="social-share" data-image="/cover/cover_18.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/08/08/%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="云计算学习笔记"><img class="cover" src="/cover/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250805174003_271.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">云计算学习笔记</div></div><div class="info-2"><div class="info-item-1">云计算学习笔记一、云计算的模式分类1. 横向分层（按部署模式划分）   类型 特点 适用场景    私有云 合规、安全、性能高 企业内网、金融、政府、数据安全要求高的业务   公有云 敏捷、低成本、弹性 中小企业、快速上线、弹性扩容需求场景   混合云 兼具安全性与弹性扩展能力 核心业务部署私有云，非核心业务或突发需求上公有云   2. 纵向分层（按服务模式划分）   层级 含义 示例    IaaS（基础架构即服务） 提供计算、存储、网络等基础资源 阿里云ECS、腾讯云CVM   PaaS（平台即服务） 提供开发运行环境及工具 阿里云中间件、Google App Engine   SaaS（软件即服务） 直接提供可使用的应用软件 钉钉、微信、企业邮箱    二、虚拟化技术1. 作用 解耦服务器硬件资源与操作系统 支持“一虚多”——一台物理机可运行多个逻辑计算机 资源池化与灵活调度  2. 虚拟机热升级 原理：在不关机的情况下增加 CPU、内存、磁盘等 优势：减少停机时间 限制：不能热降级   三、网络技术 软件定义网络（SDN）：将网络控制与数据转发分离，实现集中化、可编程的网...</div></div></div></a><a class="pagination-related" href="/2025/08/05/3CDaemon%20+%20MobaXterm%20%E8%BF%90%E7%BB%B4%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="3CDaemon + MobaXterm运维"><img class="cover" src="/cover/cover_15.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">3CDaemon + MobaXterm运维</div></div><div class="info-2"><div class="info-item-1">3CDaemon + MobaXterm 运维学习笔记📑 目录 一、FTP 配置与使用 二、SSH 与 SFTP 基础 三、BS 运维（Browser–Server 模式） 四、CS 运维（Client–Server 模式） 参考链接与原文标题   一、FTP 配置与使用 3CDaemon 创建 FTP 用户 打开 3CDaemon → 点击 FTP 用户（创建前先选择一个真实存在的文件夹路径，例如 D:\）。 新建用户： 账号：admin 密码：123123   确认保存。   开启 FTP 服务 进入 配置 → 服务管理 → 端口配置。 默认端口为 21，如需自定义可改为 20021。   在堡垒机添加 FTP 资产 新建资产： IP：主机 IP 端口：FTP 服务端口（如 21 或 20021） 删除系统自带账号，添加刚刚在 3CDaemon 中新建的账号（用户名：admin，密码：123123）。 服务类型选择 FTP。   确认保存。 在 授权管理 中，为刚建的资产分配用户权限。   MobaXterm 连接 FTP 在 个人工作台 中找到刚建的 FTP 资产，使用 ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/07/21/DAI/" title="DAI"><img class="cover" src="/cover/cover12.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-21</div><div class="info-item-2">DAI</div></div><div class="info-2"><div class="info-item-1">DAI 是Maker Protocol的主要产品，Maker Protoco 是由Maker DAO来管理和维护的。 DAI的供应量控制贷款利率： Stability fee 存款利率： DAI Saving Rate(DSR) 通过控制这两个利率，来控制供应量（类似于“升息降息”） DAI的收入来源是什么？   收入来源 简介 是否主要收入来源    稳定费 用户铸造 DAI 时支付的利息 ✅ 是   现实世界资产收益 投资国债、协议贷款等带来的实际利息收入 ✅ 是   清算惩罚收入 抵押资产清算时收取的惩罚费用 ⚠️ 次要   储蓄率利差 DAI 储户收益与实际投资收益之间的利差 ⚠️ 次要   🔰 一、什么是 Maker Buffer？Maker Buffer 是 MakerDAO 协议的“储备金账户”，是一个专门用来应对系统风险的资金缓冲池。 资金来源： 用户铸造 DAI 时支付的 Stability Fee（稳定费） 用户抵押品被清算时的 Penalty Fee（清算罚金） 投资资产的 利差收益（如 RWA 收益）中保留的一部分  这些收入不会马上分发给 MKR 持有...</div></div></div></a><a class="pagination-related" href="/2025/07/31/DEX%E8%AF%A6%E8%A7%A3/" title="DEX详解"><img class="cover" src="/cover/cover1.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-31</div><div class="info-item-2">DEX详解</div></div><div class="info-2"><div class="info-item-1">交易所的盈利来源 以币安为例   交易费:交易所通过提供买卖加密货币的平台来收取交易费用有些交易所还提供高级交易选项，如杠杆交易，这通常会带来更高的费用; 上币费:项目方团队后面都会去找交易所上币，然而上币需要缴纳一笔数额不小的上币费 量化交易：用户在交易所中，一般数字资产币都是暂时存放在交易所，基本上交易所掌握所有筹码可以选择做多或者做空易所，所可以去赚取差价，i而用户提币出去也能赚取手续费 原生代币;  中心化交易所的交易模式–订单簿模式 中央限价订单簿(CLOB)就是一本由出价和报价组成的权限透明账本，从最好价开始依次排序(两边分别是参与者愿意买&#x2F;卖的价格)。 所有的参与者都能看到所有的报价和出价，他们也可以参与其中。 订单簿中两边的第一行，即是最好的报价&#x2F;出价。  订单簿模式的优劣优势:  透明的流动性劣势 做市商可自由出入 做市商可以自由决定价格与数量  劣势：  冷启动问题(很难给出初始流动性) 对非流动性资产不利 如果是链上交易所，则对链的TPS 的要求很高、  TPS 是 Transactions Per Second（每秒交易数）的缩写，用于...</div></div></div></a><a class="pagination-related" href="/2025/07/24/ERC4626%E8%AF%A6%E8%A7%A3/" title="ERC4626详解"><img class="cover" src="/cover/cover12.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-24</div><div class="info-item-2">ERC4626详解</div></div><div class="info-2"><div class="info-item-1">VaultVault（保险库） 通常指一种资金管理和收益策略工具，主要用于 DeFi（去中心化金融）协议中，用来帮助用户自动化收益最大化，降低操作难度和 Gas 成本。 Vault 的主要功能 自动复投 Vault 会将挖矿奖励、利息等收益，自动复投到原策略中，提升复利效应，用户不需要手动操作。 策略自动化 比如 Yearn Finance 的 Vault，会根据链上数据动态调整策略，将资金投向收益更高的 DeFi 协议。 降低 Gas 成本 单个用户频繁操作会耗费大量 Gas，而 Vault 将资金集中，批量执行操作，摊薄 Gas 成本。 风险隔离 不同策略可以部署在不同的 Vault 中，用户可以根据风险偏好选择。 yield farming&#x2F;借贷&#x2F;质押   Yield Farming（收益耕作） 是 DeFi（去中心化金融） 中的一种策略，指用户将自己的加密资产存入特定协议（如借贷、流动性池、收益聚合器）中，以赚取额外收益（通常是利息或平台代币奖励）的行为。 简单来说，Yield Farming 就是“把加密货币拿去生钱”，类似于传统金融里的“存款生息 ...</div></div></div></a><a class="pagination-related" href="/2025/07/01/%E7%A8%B3%E5%AE%9A%E5%B8%81%EF%BC%88Stablecoin%EF%BC%89%EF%BC%9A%E6%95%B0%E5%AD%97%E7%BB%8F%E6%B5%8E%E6%97%B6%E4%BB%A3%E7%9A%84%E4%BB%B7%E5%80%BC%E9%94%9A/" title="稳定币"><img class="cover" src="/cover/cover9.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-01</div><div class="info-item-2">稳定币</div></div><div class="info-2"><div class="info-item-1">  启程：走近稳定币世界2024年7月，香港金管局公布首批三家”沙盒”参与机构，京东数科旗下公司等入选。2025年5月，香港立法会通过《稳定币条例草案》，飞速进步和不断跨越，标志着我国在稳定币监管领域取得重要突破。  稳定币成功的关键是什么   的确，在数字经济高速发展的今天，虚拟资产逐渐走入大众视野。但价格的剧烈波动却限制了它们在实际支付、跨境结算、金融产品等领域的应用。 尤其是在电商领域，京东这样的大型平台也在探索区块链技术的落地，但受限于数字货币的不稳定性，其在支付链路中的使用仍面临诸多挑战。 正是在这种背景下，稳定币（Stablecoin）应运而生，成为连接传统金融与区块链世界的重要桥梁。    初识：稳定币到底是什么？定义在理想状态下，稳定币是一种价值稳定的加密货币。 它继承了比特币所有的核心优势——如去中心化、安全性和全球流通性，同时避免了价格剧烈波动的缺点。这种特性使稳定币更适合承担货币的三大职能：可靠的价值储存手段、高效的交易媒介以及稳定的计价单位。 稳定币通常锚定某种现实世界货币，如“1枚稳定币 ≈ 1美元”。但他不是现实发售的货币，而是运行在链上的虚拟货币。 ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">47</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%81%92%E5%AE%9A%E4%B9%98%E7%A7%AF%E8%87%AA%E5%8A%A8%E5%81%9A%E5%B8%82%E5%95%86%E7%AE%97%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">恒定乘积自动做市商算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E5%85%AC%E5%BC%8F"><span class="toc-number">1.1.</span> <span class="toc-text">核心公式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%B7%E6%A0%BC%E5%8F%98%E5%8A%A8%E6%9C%BA%E5%88%B6"><span class="toc-number">1.2.</span> <span class="toc-text">价格变动机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BB%91%E7%82%B9%E8%AE%A1%E7%AE%97"><span class="toc-number">1.3.</span> <span class="toc-text">滑点计算</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BB%91%E7%82%B9%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%EF%BC%88%E7%BA%AF%E6%96%87%E6%9C%AC%E6%A0%BC%E5%BC%8F%EF%BC%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">滑点计算公式（纯文本格式）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E8%AF%B4%E6%98%8E%EF%BC%9A"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">变量说明：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">示例：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%AC%E5%BC%8F%E8%A7%A3%E8%AF%BB%EF%BC%9A"><span class="toc-number">1.3.1.3.</span> <span class="toc-text">公式解读：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%9A"><span class="toc-number">1.3.1.4.</span> <span class="toc-text">注意事项：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%A4%E6%98%93%E6%A1%88%E4%BE%8B"><span class="toc-number">1.4.</span> <span class="toc-text">交易案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%83%85%E5%86%B5"><span class="toc-number">1.4.1.</span> <span class="toc-text">情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5"><span class="toc-number">1.4.2.</span> <span class="toc-text">重要概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">1.4.3.</span> <span class="toc-text">注意事项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E5%8A%A8%E6%80%A7%E5%8F%82%E6%95%B0-L"><span class="toc-number">1.5.</span> <span class="toc-text">流动性参数 L</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%81%92%E5%AE%9A%E4%B9%98%E7%A7%AF%E5%85%AC%E5%BC%8F%E7%9A%84%E4%B8%A4%E7%A7%8D%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95"><span class="toc-number">1.5.1.</span> <span class="toc-text">恒定乘积公式的两种表示方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%BC%A0%E7%BB%9F%E5%BD%A2%E5%BC%8F-x-%C3%97-y-k"><span class="toc-number">1.5.1.1.</span> <span class="toc-text">1. 传统形式 (x × y &#x3D; k)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%94%B9%E8%BF%9B%E5%BD%A2%E5%BC%8F-x-%C3%97-y-L%C2%B2"><span class="toc-number">1.5.1.2.</span> <span class="toc-text">2. 改进形式 (x × y &#x3D; L²)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8L%C2%B2%E8%A1%A8%E7%A4%BA%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">1.5.2.</span> <span class="toc-text">使用L²表示的优势</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%87%A0%E4%BD%95%E6%84%8F%E4%B9%89"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">(1) 几何意义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%BB%9F%E4%B8%80%E6%B5%81%E5%8A%A8%E6%80%A7%E5%BA%A6%E9%87%8F"><span class="toc-number">1.5.2.2.</span> <span class="toc-text">(2) 统一流动性度量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%AE%80%E5%8C%96%E4%BB%B7%E6%A0%BC%E8%AE%A1%E7%AE%97"><span class="toc-number">1.5.2.3.</span> <span class="toc-text">(3) 简化价格计算</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E7%A7%8D%E8%A1%A8%E7%A4%BA%E6%B3%95%E7%9A%84%E6%AF%94%E8%BE%83"><span class="toc-number">1.5.3.</span> <span class="toc-text">两种表示法的比较</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.5.4.</span> <span class="toc-text">实际应用示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LP-%E5%92%8C-LPT-%E8%A7%A3%E9%87%8A"><span class="toc-number">1.6.</span> <span class="toc-text">LP 和 LPT 解释</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-LP%EF%BC%88Liquidity-Provider%EF%BC%8C%E6%B5%81%E5%8A%A8%E6%80%A7%E6%8F%90%E4%BE%9B%E8%80%85%EF%BC%89"><span class="toc-number">1.6.0.1.</span> <span class="toc-text">1. LP（Liquidity Provider，流动性提供者）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-LPT%EF%BC%88Liquidity-Provider-Token%EF%BC%8C%E6%B5%81%E5%8A%A8%E6%80%A7%E6%8F%90%E4%BE%9B%E8%80%85%E4%BB%A3%E5%B8%81%EF%BC%89"><span class="toc-number">1.6.0.2.</span> <span class="toc-text">2. LPT（Liquidity Provider Token，流动性提供者代币）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E5%8C%BA%E5%88%AB"><span class="toc-number">1.6.1.</span> <span class="toc-text">关键区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81-LPT%EF%BC%9F"><span class="toc-number">1.6.2.</span> <span class="toc-text">为什么需要 LPT？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B"><span class="toc-number">1.6.3.</span> <span class="toc-text">实际案例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-1"><span class="toc-number">1.6.4.</span> <span class="toc-text">注意事项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E6%B5%81%E5%8A%A8%E6%80%A7%EF%BC%88Adding-Liquidity%EF%BC%89"><span class="toc-number">1.7.</span> <span class="toc-text">添加流动性（Adding Liquidity）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.7.0.1.</span> <span class="toc-text">1. 基本概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86"><span class="toc-number">1.7.0.2.</span> <span class="toc-text">2. 核心原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4%EF%BC%88%E4%BB%A5-Uniswap-%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">1.7.0.3.</span> <span class="toc-text">3. 操作步骤（以 Uniswap 为例）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%B7%BB%E5%8A%A0%E6%B5%81%E5%8A%A8%E6%80%A7%EF%BC%9F"><span class="toc-number">1.7.0.4.</span> <span class="toc-text">4. 为什么需要添加流动性？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E9%A3%8E%E9%99%A9%E4%B8%8E%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">1.7.0.5.</span> <span class="toc-text">5. 风险与注意事项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B"><span class="toc-number">1.7.0.6.</span> <span class="toc-text">6. 实际案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="toc-number">1.7.0.7.</span> <span class="toc-text">7. 常见问题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A7%BB%E9%99%A4%E6%B5%81%E5%8A%A8%E6%80%A7%EF%BC%88Removing-Liquidity%EF%BC%89"><span class="toc-number">1.8.</span> <span class="toc-text">移除流动性（Removing Liquidity）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5-1"><span class="toc-number">1.8.0.1.</span> <span class="toc-text">1. 基本概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86-1"><span class="toc-number">1.8.0.2.</span> <span class="toc-text">2. 核心原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4%EF%BC%88%E4%BB%A5-Uniswap-%E4%B8%BA%E4%BE%8B%EF%BC%89-1"><span class="toc-number">1.8.0.3.</span> <span class="toc-text">3. 操作步骤（以 Uniswap 为例）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E7%A7%BB%E9%99%A4%E6%B5%81%E5%8A%A8%E6%80%A7%EF%BC%9F"><span class="toc-number">1.8.0.4.</span> <span class="toc-text">4. 为什么需要移除流动性？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%85%B3%E9%94%AE%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">1.8.0.5.</span> <span class="toc-text">5. 关键注意事项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B-1"><span class="toc-number">1.8.0.6.</span> <span class="toc-text">6. 实际案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98-1"><span class="toc-number">1.8.0.7.</span> <span class="toc-text">7. 常见问题</span></a></li></ol></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
   const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
   const option = null
 
