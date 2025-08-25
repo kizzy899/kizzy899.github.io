@@ -1,0 +1,764 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>0G核心模块|存储架构设计与实现 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="主要内容 0G Storage 模块功能介绍与工作流程 数据可验证存储 (Proof of Random Access) 机制 SDK 安装与使用教程 (上传&#x2F;下载) 去中心化数据存储场景中的实际部署方案   一. 数据存储相关原课件： Current storage options force impossible tradeoffs:Cloud providers: Fast but">
+<meta property="og:type" content="article">
+<meta property="og:title" content="0G核心模块|存储架构设计与实现">
+<meta property="og:url" content="https://kizzy899.github.io/2025/08/25/0G%20%E7%AC%AC%E4%B8%89%E8%AF%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="主要内容 0G Storage 模块功能介绍与工作流程 数据可验证存储 (Proof of Random Access) 机制 SDK 安装与使用教程 (上传&#x2F;下载) 去中心化数据存储场景中的实际部署方案   一. 数据存储相关原课件： Current storage options force impossible tradeoffs:Cloud providers: Fast but">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/cover/page.jpg">
+<meta property="article:published_time" content="2025-08-25T11:32:12.000Z">
+<meta property="article:modified_time" content="2025-08-25T12:45:31.887Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/cover/page.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "0G核心模块|存储架构设计与实现",
+  "url": "https://kizzy899.github.io/2025/08/25/0G%20%E7%AC%AC%E4%B8%89%E8%AF%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/",
+  "image": "https://kizzy899.github.io/cover/page.jpg",
+  "datePublished": "2025-08-25T11:32:12.000Z",
+  "dateModified": "2025-08-25T12:45:31.887Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "kizy",
+      "url": "https://kizzy899.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2025/08/25/0G%20%E7%AC%AC%E4%B8%89%E8%AF%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '0G核心模块|存储架构设计与实现',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">48</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/cover/page.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">0G核心模块|存储架构设计与实现</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">0G核心模块|存储架构设计与实现</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-08-25T11:32:12.000Z" title="发表于 2025-08-25 19:32:12">2025-08-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-08-25T12:45:31.887Z" title="更新于 2025-08-25 20:45:31">2025-08-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li>0G Storage 模块功能介绍与工作流程</li>
+<li>数据可验证存储 (Proof of Random Access) 机制</li>
+<li>SDK 安装与使用教程 (上传&#x2F;下载)</li>
+<li>去中心化数据存储场景中的实际部署方案</li>
+</ul>
+<hr>
+<h2 id="一-数据存储相关"><a href="#一-数据存储相关" class="headerlink" title="一. 数据存储相关"></a>一. 数据存储相关</h2><p><strong>原课件：</strong></p>
+<p>Current storage options force impossible tradeoffs:<br>Cloud providers: Fast but expensive with vendor lock-in<br>Distributed options: Either slow (IPFS)<br>Decentralized: Or limited (Filecoin), or prohibitively expensive (Arweave)</p>
+<p><strong>笔记：</strong></p>
+<h3 id="当前常见的数据存储方式及问题"><a href="#当前常见的数据存储方式及问题" class="headerlink" title="当前常见的数据存储方式及问题"></a>当前常见的数据存储方式及问题</h3><p><strong>云服务商（Cloud providers，比如 AWS、Google Cloud、阿里云）</strong>  </p>
+<ul>
+<li>优点：速度快，使用方便。  </li>
+<li>缺点：价格很贵，而且容易被厂商“绑架”（vendor lock-in，意思是你用了他们的服务后，迁移到别的地方会很麻烦）。</li>
+</ul>
+<p><strong>分布式存储（Distributed options，比如 IPFS）</strong>  </p>
+<ul>
+<li>优点：去中心化，理论上不依赖单一公司。  </li>
+<li>缺点：速度很慢，实际体验差。</li>
+</ul>
+<p><strong>去中心化存储（Decentralized storage，比如 Filecoin、Arweave）</strong>  </p>
+<ul>
+<li>Filecoin：功能有限，应用场景不够灵活。  </li>
+<li>Arweave：存储费用非常高，很多项目承担不起。</li>
+</ul>
+<hr>
+<h2 id="二-0G-的系统设计（0G-如何设计以解决上述问题）"><a href="#二-0G-的系统设计（0G-如何设计以解决上述问题）" class="headerlink" title="二. 0G 的系统设计（0G 如何设计以解决上述问题）"></a>二. 0G 的系统设计（0G 如何设计以解决上述问题）</h2><p><strong>原课件：</strong></p>
+<p><strong>Log Layer (Immutable Storage)</strong>  </p>
+<ul>
+<li>For AI training data, archives, backups  </li>
+<li>Append-only (write once, read many)  </li>
+<li>Optimized for large files  </li>
+<li>Lower cost for permanent storage</li>
+</ul>
+<p><strong>Key-Value Layer (Mutable Storage)</strong>  </p>
+<ul>
+<li>For databases, dynamic content, state storage  </li>
+<li>Update existing data  </li>
+<li>Fast key-based retrieval  </li>
+<li>Real-time applications</li>
+</ul>
+<p><img src="https://s2.loli.net/2025/08/25/rbYUIQRFMLtkVwH.png" alt="image.png"></p>
+<p><strong>笔记：</strong></p>
+<p>0G 通过<strong>设计两层存储结构来兼顾速度和成本</strong>：</p>
+<p><strong>Log Layer（不可变存储）</strong>  </p>
+<ul>
+<li>主要用于 AI 训练数据、档案、备份  </li>
+<li>只允许追加写入（写一次，多次读取）  </li>
+<li>针对大文件进行了优化  </li>
+<li>适合长期存储，成本较低</li>
+</ul>
+<p><strong>Key-Value Layer（可变存储）</strong>  </p>
+<ul>
+<li>用于数据库、动态内容、状态存储  </li>
+<li>可以更新已有数据  </li>
+<li>支持基于键的快速检索  </li>
+<li>适合实时应用</li>
+</ul>
+<p><strong>在不可变存储（Log Layer）中，适合存放训练数据、档案和备份。这里采用“写一次，多次读”的方式，优化了大文件的存储效率，同时降低长期存储的成本。</strong>  </p>
+<p><strong>在可变存储（Key-Value Layer）中，支持数据库、动态内容和实时应用。这里允许数据更新，并提供快速的键值检索能力，从而满足实时性要求。</strong>  </p>
+<p><strong>通过这种分层方式，0G 既能保证速度和低成本，又避免了传统云的厂商锁定问题，也比 IPFS、Filecoin、Arweave 更灵活和实用。</strong>  </p>
+<p><strong>日志上链有先后顺序</strong></p>
+<ul>
+<li>在 0G 的 <strong>Log Layer（不可变存储）</strong> 中，数据是以“追加写入”的方式存储的。</li>
+<li>每条日志都有时间顺序或顺序编号（类似区块链的区块顺序），保证写入的顺序不可篡改。</li>
+<li>这样即使数据量很大，也能通过顺序索引快速找到最新的数据或某个历史数据点。</li>
+</ul>
+<p><strong>天然的回滚机制</strong></p>
+<ul>
+<li>因为日志是按顺序追加的，如果出现错误或需要恢复到某个历史状态，只需<strong>回到某条日志之前的状态</strong>即可。</li>
+<li>不像传统数据库可能需要复杂的事务和回滚操作，日志的顺序本身就天然提供了恢复历史状态的能力。</li>
+</ul>
+<p>存储数据流程图：</p>
+<p><img src="https://s2.loli.net/2025/08/25/wzX6SnmeVo4cv9N.png" alt="image.png"></p>
+<blockquote>
+<p> Log Layer 的顺序写入不仅保证了数据不可篡改，还可以天然支持回滚历史状态，非常适合 AI 数据、备份等长期存储场景。</p>
+</blockquote>
+<p>回滚流程图：</p>
+<p><img src="https://s2.loli.net/2025/08/25/96CdkijyHDocUOs.png" alt="image.png"></p>
+<h2 id="三-实际数据上传设计"><a href="#三-实际数据上传设计" class="headerlink" title="三. 实际数据上传设计"></a>三. 实际数据上传设计</h2><p><img src="https://s2.loli.net/2025/08/25/EgTfZyJrsRq2jXU.png" alt="image.png"></p>
+<p>原课件:</p>
+<p><strong>Data Publishing Lane</strong></p>
+<ol>
+<li><p>Handles metadata and availability proofs</p>
+</li>
+<li><p>Verified through 0G Consensus network</p>
+</li>
+<li><p>Enables fast data discovery</p>
+</li>
+</ol>
+<p><strong>Data Storage Lane</strong></p>
+<ol>
+<li><p>Manages actual data storage</p>
+</li>
+<li><p>Uses erasure coding: splits data into chunks with redundancy<br>2.1   Even if 30% of nodes fail, data remains accessible</p>
+</li>
+<li><p>Automatic replication</p>
+</li>
+</ol>
+<p>笔记：</p>
+<p><strong>Publishing Lane</strong>：负责“证明”和“发现”，保证别人能找到并信任你的数据。</p>
+<p><strong>Storage Lane</strong>：负责“存储”和“冗余”，保证你的数据长期可用，即使部分节点失效也不会丢失。</p>
+<h3 id="数据上传流程"><a href="#数据上传流程" class="headerlink" title="数据上传流程"></a>数据上传流程</h3><p><strong>第一步：数据发布 (Data Publishing Lane)</strong></p>
+<ul>
+<li>当用户上传数据时，系统会先处理 <strong>元数据（metadata）</strong>，并生成 <strong>可用性证明（availability proofs）</strong>。</li>
+<li>这些证明会提交到 <strong>0G 共识网络</strong>，用来确保上传的数据是真实存在的，而不是虚假信息。</li>
+<li>通过这个过程，网络中其他节点能够 <strong>快速发现和验证数据</strong>。</li>
+</ul>
+<p><strong>第二步：数据存储 (Data Storage Lane)</strong></p>
+<ul>
+<li>真正的文件内容会进入存储通道。</li>
+<li>系统会对数据进行 <strong>纠删码（erasure coding）</strong> 处理：<ul>
+<li>把文件切分成多个小块，并增加冗余。</li>
+<li>即使有 <strong>30% 的存储节点宕机</strong>，数据依然可以完整恢复。</li>
+</ul>
+</li>
+<li>这些数据块会被 <strong>自动复制</strong> 并分布式存储在不同节点上，从而保证数据的高可用性和容错性。</li>
+</ul>
+<p>上传数据流程图：</p>
+<p><img src="https://s2.loli.net/2025/08/25/6dzghaDS9XxAPl7.png" alt="image.png"></p>
+<h2 id="四-分片存储设计"><a href="#四-分片存储设计" class="headerlink" title="四. 分片存储设计"></a>四. 分片存储设计</h2><p>原课件：</p>
+<p>Sharded Storage -Naturally suited for parallel computing</p>
+<ol>
+<li><p>2 ^k</p>
+</li>
+<li><p>m independent storage nodes (non overlapping in stored data)</p>
+</li>
+<li><p>n clients, only uploading to certain nodes based on the shard config</p>
+</li>
+<li><p>Horizontally scalable m x bandwidth</p>
+</li>
+</ol>
+<p>笔记：</p>
+<h3 id="Sharded-Storage（分片存储）设计说明"><a href="#Sharded-Storage（分片存储）设计说明" class="headerlink" title="Sharded Storage（分片存储）设计说明"></a>Sharded Storage（分片存储）设计说明</h3><ol>
+<li><strong>2^k 分片</strong><ul>
+<li>数据被划分为 2k2^k2k 个分片，每个分片都有独立编号。</li>
+<li>这样可以更精细地分布数据，提高并行处理能力。</li>
+</ul>
+</li>
+<li><strong>m 个独立存储节点</strong><ul>
+<li>每个节点存储的数据 <strong>不重叠</strong>，保证数据均匀分布。</li>
+<li>节点之间互不干扰，提高效率和容错性。</li>
+</ul>
+</li>
+<li><strong>n 个客户端上传数据</strong><ul>
+<li>客户端根据 <strong>分片配置（shard config）</strong>，只上传到特定的节点。</li>
+<li>避免所有客户端都上传到同一节点，减少瓶颈。</li>
+</ul>
+</li>
+<li><strong>水平扩展能力</strong><ul>
+<li>可以通过增加更多节点来提升系统容量和吞吐量。</li>
+<li>理论上带宽可以达到 <code>m × 单节点带宽</code>，实现线性扩展。</li>
+</ul>
+</li>
+</ol>
+<p>分片存储策略流程图：</p>
+<p><img src="https://s2.loli.net/2025/08/25/CfGKlA6ceHb7WM2.png" alt="image.png"></p>
+<ol>
+<li>客户端根据 shard 配置上传数据，只上传到特定分片。</li>
+<li>分片再映射到独立存储节点，节点之间数据不重叠。</li>
+<li>新增节点可以水平扩展系统容量，带宽几乎线性增加。</li>
+</ol>
+<h3 id="带宽的计算"><a href="#带宽的计算" class="headerlink" title="带宽的计算"></a>带宽的计算</h3><h4 id="1-单节点带宽"><a href="#1-单节点带宽" class="headerlink" title="1. 单节点带宽"></a>1. 单节点带宽</h4><p>每个存储节点都有自己的网络带宽，例如 <strong>B Mbps</strong>。<br> 节点处理自己存储的分片时，可以利用这个带宽进行上传&#x2F;下载。</p>
+<h4 id="2-分片与节点"><a href="#2-分片与节点" class="headerlink" title="2. 分片与节点"></a>2. 分片与节点</h4><ul>
+<li>数据被划分为 2^k 个分片</li>
+<li>分片分布在 <strong>m 个节点</strong> 上（通常 2k≥m2^k \ge m2k≥m），每个节点可能存储多个分片</li>
+<li>客户端上传数据时，每个分片的数据只能上传到对应节点</li>
+</ul>
+<h4 id="3-水平可扩展带宽"><a href="#3-水平可扩展带宽" class="headerlink" title="3. 水平可扩展带宽"></a>3. 水平可扩展带宽</h4><ul>
+<li>如果节点数量增加，系统总带宽大约线性增加</li>
+<li>理论上，<strong>存储网络总带宽 ≈ 节点数量 × 单节点带宽</strong></li>
+<li>不是分片数量 × 单分片带宽，因为分片可能集中在少量节点上</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li><strong>分片数量</strong>决定了并行处理能力</li>
+<li><strong>节点数量</strong>决定了系统整体带宽</li>
+<li>理论上，增加节点可以线性扩展总带宽</li>
+<li>增加分片只是提升并行度，不直接增加总带宽</li>
+</ul>
+<blockquote>
+<p>0G Storage为何要使得数据以2^k 对齐(全选)</p>
+<ul>
+<li>A.方便链上与存储网络数据对齐</li>
+<li>B.方便链上交易构造</li>
+<li>C.方便用户上传、下载时数据定位</li>
+<li>D.方便分片对齐</li>
+</ul>
+</blockquote>
+<h3 id="节点、分片和带宽关系的示意图"><a href="#节点、分片和带宽关系的示意图" class="headerlink" title="节点、分片和带宽关系的示意图"></a>节点、分片和带宽关系的示意图</h3><p><img src="https://s2.loli.net/2025/08/25/1hHWB75QD8ajJrI.png" alt="image.png"></p>
+<h2 id="五-Flow-Merkle-Tree-over-Flow"><a href="#五-Flow-Merkle-Tree-over-Flow" class="headerlink" title="五.Flow + Merkle Tree over Flow"></a>五.Flow + Merkle Tree over Flow</h2><p>原课件：</p>
+<p><strong>Flow</strong></p>
+<ul>
+<li><p>The underlying structure of storage</p>
+</li>
+<li><p>Continuously appended list of sectors</p>
+</li>
+</ul>
+<p><strong>Merkle Tree over Flow</strong></p>
+<ul>
+<li>Merkle Root</li>
+</ul>
+<p>​		Speacially desighed,2^k</p>
+<ul>
+<li><p>Submission<br>Several concatenated sector arrays<br>    Each length with power of two<br>    Strictly decrease<br>    First length &lt;&#x3D; 8 x Last length</p>
+</li>
+<li><p>Metadata<br>Size of original data (bytes)<br>Merkle root and length of each array</p>
+</li>
+<li><p>Submission is always composed of several Merkle trees over the subtreeswithin the Flow, providing the Merkle root.</p>
+</li>
+<li><p>The user’s submission will not be excessively long</p>
+</li>
+</ul>
+<p>笔记：</p>
+<p><strong>用连续追加的扇区列表作为底层存储，用 Merkle Tree 叠加验证数据完整性，同时通过长度递减的扇区数组保证提交数据高效且安全</strong>。</p>
+<p>结构体示意：</p>
+<p><img src="https://s2.loli.net/2025/08/25/SB3ch9ZDELtYfOr.png" alt="image.png"></p>
+<p><strong>Flow（底层存储结构）</strong></p>
+<ul>
+<li>数据存储为 <strong>连续追加的扇区列表（sectors）</strong>，类似日志追加的方式。</li>
+<li>保证写入顺序不可篡改，也方便回溯历史数据。</li>
+</ul>
+<p><strong>Flow 上的 Merkle Tree</strong></p>
+<ul>
+<li>每个提交的数据会生成一个 <strong>Merkle 根（Merkle Root）</strong>，用于验证数据完整性。</li>
+<li>特别设计成 <strong>2^k 的长度</strong>，方便计算和验证。</li>
+</ul>
+<p><strong>提交数据（Submission）</strong></p>
+<ul>
+<li>一个提交由 <strong>多个连接的扇区数组</strong> 组成。</li>
+<li>每个数组的长度是 2 的幂次方，并且 <strong>严格递减</strong>，第一个数组长度 ≤ 最后一个数组长度的 8 倍。</li>
+<li>这样可以保证数据分片有规律，方便验证和存储优化。</li>
+</ul>
+<p><strong>元数据（Metadata）</strong></p>
+<ul>
+<li>包括原始数据大小（字节）、每个数组的长度、以及 Merkle 根。</li>
+<li>用于快速验证数据完整性和定位数据位置。</li>
+</ul>
+<p><strong>Merkle Tree 的作用</strong></p>
+<ul>
+<li>每次提交的数据都会在 Flow 上形成 <strong>若干子树的 Merkle Tree</strong>，再由这些子树生成最终 Merkle 根。</li>
+<li>这样用户提交的数据既不会太长，也能高效验证完整性。</li>
+</ul>
+<p>示意图：</p>
+<p><img src="https://s2.loli.net/2025/08/25/Rf4gG7t9UoCX5m3.png" alt="image.png"></p>
+<h2 id="六-PoRA-0G-的存储安全性和访问验证机制"><a href="#六-PoRA-0G-的存储安全性和访问验证机制" class="headerlink" title="六. PoRA _0G 的存储安全性和访问验证机制"></a>六. PoRA _0G 的存储安全性和访问验证机制</h2><p>原课件：</p>
+<p>What if a node does not store the data but only query others’ when needed?<br><strong>Data Sealing</strong><br>        Designed to be more expensive than simply storing therdata</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sealed[<span class="number">0</span>] = unsealed[e] ^ keccak256(minerId, contextDigest,index)</span><br><span class="line">sealed[i] = unsealed[i] ^ keccak256(sealedi<span class="number">-1</span>])</span><br></pre></td></tr></table></figure>
+
+<p>​	Sequential sealing and parallel unsealing</p>
+<p>Unique consensus mechanism known as <strong>Proof of Random Access (PoRA)</strong></p>
+<ol>
+<li>Random Challenges: System randomly asks miners to prove they have specific data</li>
+<li>Cryptographic Proof: Miners must generate a valid hash (like Bitcoin mining)</li>
+<li>Quick Response: Must respond fast to prove data is readily accessible</li>
+<li>Fair Rewards: Successful proofs earn storage fees</li>
+<li>Not always working, release mining context by contract periodically</li>
+<li>Unbounded by target submission count for each context</li>
+</ol>
+<p><strong>Recall Range</strong><br>    Determined by</p>
+<ol>
+<li><p>Onchain seeds</p>
+</li>
+<li><p>Index of start sector——————–Miner Defined</p>
+</li>
+<li><p>Mining length</p>
+</li>
+</ol>
+<p><strong>Difficulty Adjustment</strong><br>   Pora target, the higher the easier</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">expectedPoraTarget = poraTarget * actualBlocks /TARGET BLOCKS</span><br><span class="line"></span><br><span class="line">poraTarget += (expectedPoraTarget -poraTarget) / ADJUST RATIO</span><br></pre></td></tr></table></figure>
+
+
+
+<p>笔记：</p>
+<h3 id="1-数据封装（Data-Sealing）"><a href="#1-数据封装（Data-Sealing）" class="headerlink" title="1. 数据封装（Data Sealing）"></a>1. 数据封装（Data Sealing）</h3><ul>
+<li><p>设计目的：<strong>比简单存储数据更昂贵</strong>，确保节点不能只“懒惰”地不存数据，只在需要时查询别人的数据。</p>
+</li>
+<li><p>封装方式：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sealed[<span class="number">0</span>] = unsealed[e] ^ keccak256(minerId, contextDigest,index)</span><br><span class="line">sealed[i] = unsealed[i] ^ keccak256(sealedi<span class="number">-1</span>])</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>逻辑：</p>
+<ul>
+<li>数据是 <strong>顺序封装（sequential sealing）</strong>，保证每块数据依赖前一块。</li>
+<li>解封（unsealing）可以 <strong>并行进行</strong>，方便验证。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="2-Proof-of-Random-Access-PoRA"><a href="#2-Proof-of-Random-Access-PoRA" class="headerlink" title="2. Proof of Random Access (PoRA)"></a>2. Proof of Random Access (PoRA)</h3><p><strong>核心思想</strong>：随机挑战存储节点，确保它们真正存储了数据，而不是仅仅查询别人。</p>
+<ul>
+<li><strong>Random Challenges</strong>：系统随机要求节点证明它们拥有某块数据</li>
+<li><strong>Cryptographic Proof</strong>：节点必须生成有效的哈希证明（类似比特币挖矿）</li>
+<li><strong>Quick Response</strong>：节点必须快速响应，证明数据随时可访问</li>
+<li><strong>Fair Rewards</strong>：成功证明的节点获得存储费用奖励</li>
+<li><strong>Periodic Mining Context</strong>：验证不是一直进行，而是周期性释放上下文</li>
+<li><strong>Unbounded Target</strong>：每个上下文的目标提交次数不固定</li>
+</ul>
+<hr>
+<h3 id="3-Recall-Range（回溯范围）"><a href="#3-Recall-Range（回溯范围）" class="headerlink" title="3. Recall Range（回溯范围）"></a>3. Recall Range（回溯范围）</h3><ul>
+<li><strong>确定依据</strong>：<ol>
+<li>链上随机种子（Onchain seeds）</li>
+<li>起始扇区索引（Miner Defined）</li>
+<li>挖矿长度（Mining length）</li>
+</ol>
+</li>
+<li>作用：规定节点需要证明哪些数据块可访问，增加随机性和安全性</li>
+</ul>
+<hr>
+<h3 id="4-Difficulty-Adjustment（难度调整）"><a href="#4-Difficulty-Adjustment（难度调整）" class="headerlink" title="4. Difficulty Adjustment（难度调整）"></a>4. Difficulty Adjustment（难度调整）</h3><ul>
+<li><p>目标：保证 PoRA 证明的难度适中，既不能太容易，也不能太难。</p>
+</li>
+<li><p>公式：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">expectedPoraTarget = poraTarget * actualBlocks /TARGET BLOCKS</span><br><span class="line"></span><br><span class="line">poraTarget += (expectedPoraTarget -poraTarget) / ADJUST RATIO</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>逻辑：根据实际区块产出情况动态调整 PoRA 难度</p>
+</li>
+</ul>
+<hr>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p>这个系统设计 <strong>确保节点不能偷懒或作弊</strong>：</p>
+<ul>
+<li>通过 <strong>Data Sealing</strong>，存储成本高、依赖顺序</li>
+<li>通过 <strong>PoRA 随机挑战</strong>，验证节点随时可访问数据</li>
+<li>通过 <strong>Recall Range 和 Difficulty Adjustment</strong>，保证系统安全、公平、可扩展</li>
+</ul>
+<p><img src="https://s2.loli.net/2025/08/25/WXpEgu9GIycHiKw.png" alt="image.png"></p>
+<hr>
+<h4 id="1-初始存储位置在-Flow-的哪里？"><a href="#1-初始存储位置在-Flow-的哪里？" class="headerlink" title="1. 初始存储位置在 Flow 的哪里？"></a>1. 初始存储位置在 Flow 的哪里？</h4><ul>
+<li>用户上传的数据 <strong>先存储在 Flow 的底层结构（Flow 底层扇区列表）</strong>。</li>
+<li>Flow 是一个 <strong>连续追加的扇区列表（Append-only sectors）</strong>，保证写入顺序不可篡改。</li>
+<li>数据在 Flow 中被划分成 <strong>多个扇区数组（数组长度为 2 的幂次方，严格递减）</strong>，每个数组会生成 <strong>子树 Merkle Tree</strong>，最终形成整个提交的 <strong>Merkle 根</strong>。</li>
+<li><strong>总结</strong>：初始存储在 Flow 的 <strong>连续扇区 + 扇区数组 + 子树 Merkle Tree</strong> 结构里。</li>
+</ul>
+<hr>
+<h4 id="2-挖矿有难度调整，什么越高越简单？"><a href="#2-挖矿有难度调整，什么越高越简单？" class="headerlink" title="2. 挖矿有难度调整，什么越高越简单？"></a>2. 挖矿有难度调整，什么越高越简单？</h4><ul>
+<li><p>在 0G 的 PoRA 挖矿中，系统会根据实际出块情况 <strong>动态调整难度（Difficulty Adjustment）</strong>：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">expectedPoraTarget = poraTarget * actualBlocks / TARGET_BLOCKS</span><br><span class="line">poraTarget += (expectedPoraTarget - poraTarget) / ADJUST_RATIO</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>poraTarget 越高 → 难度越低 → 挖矿越简单</strong></p>
+</li>
+<li><p>逻辑：如果系统发现节点太难完成挑战，就提高 poraTarget，让挑战更容易；如果太容易，就降低 poraTarget，让挑战更难。</p>
+</li>
+</ul>
+<hr>
+<h4 id="3-只挖一部分指的是什么？"><a href="#3-只挖一部分指的是什么？" class="headerlink" title="3. 只挖一部分指的是什么？"></a>3. 只挖一部分指的是什么？</h4><ul>
+<li>节点并不是必须验证或提交全部存储数据，而是 <strong>随机挑战下只证明部分数据的可访问性</strong>。</li>
+<li>这对应 <strong>PoRA 的随机抽查机制（Random Challenges）</strong>：<ul>
+<li>系统随机抽取存储的某些扇区，节点需要快速生成加密证明。</li>
+<li>节点只验证这一部分数据，不必全部扫描，提高效率。</li>
+</ul>
+</li>
+<li><strong>总结</strong>：只挖一部分 &#x3D; 节点只针对被系统随机抽取的数据块进行挖矿&#x2F;证明，而不是整份存储数据。</li>
+</ul>
+<hr>
+<h4 id="4-0G-Storage-的挖矿机制里，每次挖矿数据-Recal-Range-由什么因素确定-多选"><a href="#4-0G-Storage-的挖矿机制里，每次挖矿数据-Recal-Range-由什么因素确定-多选" class="headerlink" title="4. 0G Storage 的挖矿机制里，每次挖矿数据(Recal Range)由什么因素确定(多选)"></a>4. 0G Storage 的挖矿机制里，每次挖矿数据(Recal Range)由什么因素确定(多选)</h4><p>  A.链上种子<br>  B.用户存储起始位置<br>  C.用户设置区间长度<br>  D.网络框架规定的区间限制</p>
+<p><strong>全选</strong></p>
+<h2 id="七-奖励机制"><a href="#七-奖励机制" class="headerlink" title="七. 奖励机制"></a>七. 奖励机制</h2><p>Fair Competition &#x3D; Fair Reward<br>To promote fairness, the mining range is capped at 8 TB of data per mining operation</p>
+<p>​	Small miners can compete with large operations<br>​	Prevents centralization<br>​	Lower barrier to entry<br>​	Move onto next data chunk if the current is fully mined (no more rewards)</p>
+<p>​	For large operators: Run multiple 8TB instances.For 	individuals: Focus on single 8TB range, still profitable</p>
+<p><strong>Pricing</strong><br>    sector_price x <number of sectors> x<br><strong>Reward Bucket</strong><br>    capped at 8TB<br>    Linear release<br><strong>System Reward</strong></p>
+<p>​	0G issuing</p>
+<p>​	Base reward for each PoRA, for early contributors<br><strong>Service Fee</strong><br>​	Charged by 0G<br>​	Proportion of storage fee</p>
+<p>笔记：</p>
+<h3 id="1-公平竞争（Fair-Competition）"><a href="#1-公平竞争（Fair-Competition）" class="headerlink" title="1. 公平竞争（Fair Competition）"></a>1. 公平竞争（Fair Competition）</h3><ul>
+<li><strong>目的</strong>：让小矿工也能和大矿场公平竞争，防止中心化。</li>
+<li><strong>做法</strong>：<ul>
+<li>每次挖矿操作的 <strong>数据范围上限为 8TB</strong>。</li>
+<li>小矿工可以专注单个 8TB 数据块，大矿工可以同时运行多个 8TB 实例。</li>
+<li>如果当前数据块已挖完（奖励用完），就移动到下一个数据块。</li>
+</ul>
+</li>
+<li><strong>好处</strong>：<ul>
+<li>降低进入门槛，小矿工也能参与。</li>
+<li>避免大矿工垄断整个网络。</li>
+<li>系统资源分配更均衡。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="2-奖励机制（Reward）"><a href="#2-奖励机制（Reward）" class="headerlink" title="2. 奖励机制（Reward）"></a>2. 奖励机制（Reward）</h3><ul>
+<li><strong>Sector 奖励</strong>：每个扇区根据 <code>sector_price × 扇区数量</code> 计算奖励。</li>
+<li><strong>奖励池（Reward Bucket）</strong>：<ul>
+<li>每次挖矿的数据范围上限 8TB</li>
+<li>奖励 <strong>线性释放</strong>，挖多少算多少</li>
+</ul>
+</li>
+<li><strong>系统奖励（System Reward）</strong>：<ul>
+<li>由 0G 发放</li>
+<li>包括 PoRA 挖矿的基础奖励</li>
+<li>鼓励早期贡献者</li>
+</ul>
+</li>
+<li><strong>服务费（Service Fee）</strong>：<ul>
+<li>由 0G 收取</li>
+<li>按存储费用的一定比例抽取</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h3><ul>
+<li><strong>公平竞争 + 奖励上限</strong>：防止大矿工垄断，让小矿工也能赚到奖励。</li>
+<li><strong>定价 + 奖励机制</strong>：结合扇区数量、PoRA 挑战和服务费，实现经济激励和网络可持续运行。</li>
+<li><strong>机制灵活性</strong>：大矿工可以多实例操作，小矿工集中单个数据块，也都能盈利。</li>
+</ul>
+<h2 id="八-实现"><a href="#八-实现" class="headerlink" title="八. 实现"></a>八. 实现</h2><p>原课件：</p>
+<p><strong>Core Components</strong></p>
+<ol>
+<li><p>0G Storage Node (For node runners)</p>
+</li>
+<li><p>0G Staraae Contracts (For data upload tx, mining check and reward)</p>
+</li>
+<li><p>0G Starage Client -Golang (For user uploaddownload operations)</p>
+</li>
+<li><p>0G Starage Ts SDK -TS</p>
+</li>
+</ol>
+<p><strong>RPC supported</strong></p>
+<ol>
+<li><p>Gateway</p>
+</li>
+<li><p>JSON RPC</p>
+</li>
+<li><p>gRPC (Faster with less data overhead)</p>
+</li>
+<li><p>Tested with 2GB&#x2F;s Upload&#x2F;Download speed with 32 storage nodes (32 shards)</p>
+</li>
+</ol>
+<p>笔记：</p>
+<ol>
+<li><h3 id="1-核心组件（Core-Components）"><a href="#1-核心组件（Core-Components）" class="headerlink" title="1. 核心组件（Core Components）"></a>1. 核心组件（Core Components）</h3><ul>
+<li><strong>0G Storage Node</strong>：运行存储节点的程序，负责存储数据和响应 PoRA 挑战。</li>
+<li><strong>0G Storage Contracts</strong>：链上智能合约，处理上传交易、挖矿验证和奖励发放。</li>
+<li><strong>0G Storage Client - Golang</strong>：用户端工具，用于上传和下载数据。</li>
+<li><strong>0G Storage TS SDK - TypeScript</strong>：提供给前端或 JS&#x2F;TS 项目使用的 SDK。</li>
+</ul>
+<hr>
+<h3 id="2-支持的-RPC-协议"><a href="#2-支持的-RPC-协议" class="headerlink" title="2. 支持的 RPC 协议"></a>2. 支持的 RPC 协议</h3><ul>
+<li><strong>Gateway</strong>：网关接口，方便客户端访问存储网络。</li>
+<li><strong>JSON RPC</strong>：通用的远程调用接口。</li>
+<li><strong>gRPC</strong>：高性能远程调用，数据开销更小。</li>
+<li><strong>性能测试</strong>：32 个分片节点情况下，上传&#x2F;下载速度可达 2GB&#x2F;s。</li>
+</ul>
+<hr>
+<h3 id="3-数据上传-下载流程"><a href="#3-数据上传-下载流程" class="headerlink" title="3. 数据上传&#x2F;下载流程"></a>3. 数据上传&#x2F;下载流程</h3><ol>
+<li><strong>发送请求给 index</strong><ul>
+<li>用户客户端先向索引服务（index）发请求，获取存储节点信息和分片配置。</li>
+</ul>
+</li>
+<li><strong>选择相近节点进行上传&#x2F;下载</strong><ul>
+<li>根据网络拓扑或节点距离（latency）选择合适节点，提高传输效率。</li>
+</ul>
+</li>
+<li><strong>链上同步交易</strong><ul>
+<li>上传操作会同步到智能合约上，记录交易信息、存储证明等。</li>
+</ul>
+</li>
+<li><strong>与同步到的节点传输数据</strong><ul>
+<li>客户端与选定节点之间直接传输数据，支持广播或请求方式上传&#x2F;下载。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://s2.loli.net/2025/08/25/ehxZ3I4JFHyXRGW.png" alt="image.png"></p>
+<ul>
+<li>0G 的存储系统通过 <strong>节点 + 合约 + 客户端 + SDK</strong> 构成完整生态。</li>
+<li>上传下载是 <strong>客户端 -&gt; 索引 -&gt; 节点 -&gt; 链上同步 -&gt; 节点间传输</strong> 的流程。</li>
+<li>支持高性能 RPC，保证分片并行传输和大文件高吞吐。</li>
+</ul>
+<p><img src="https://s2.loli.net/2025/08/25/abWQ3EegcsGminR.png" alt="image.png"></p>
+<h3 id="特别的参数举例"><a href="#特别的参数举例" class="headerlink" title="特别的参数举例"></a>特别的参数举例</h3><ul>
+<li>Provider either indexer or node list</li>
+</ul>
+<ol>
+<li><p>Node list needs to cover the enti’e shards</p>
+</li>
+<li><p>Or indexer will do it for you</p>
+<ul>
+<li>Skip tx if you paid already but try to re-upload</li>
+<li>Default fee is for 3 months</li>
+<li>storage(minimum),set higher to store longer</li>
+<li>The large file will be fragmented to 4GB each.will receive a list of data roots for retrieval</li>
+</ul>
+<p><strong>Usage:</strong><br>0g storagc clicnt upload<br><strong>Flags</strong></p>
+<p>–<strong>cxpected-replica uint</strong>   expccted number of replications to upload (defauit 1)<br>–<strong>fee float</strong>   fee paid in a0gi<br>–<strong>file string</strong>   File name to upload<br>–<strong>finality-required</strong>   Wait for file finality on  nodes to upload<br>–<strong>fragment-size int</strong>   the size of fragment to split into when file is too large (default 429<br>–<strong>grpe node strings</strong>   ZeroGStorage storage nade gRPC URL<br><strong>-h,–help</strong>  help for upload<br>–<strong>indexer string</strong>   ZeroGStorage indexer URL<br>–<strong>key string</strong>   Private key to interact with smart contract<br>–<strong>max-gas-price uint</strong>    max gas price to send transaction<br>–<strong>method string</strong>   method for selecting nodes, can be max, min, random, or positive will fail if the reguirement cannot be met (default “min”)<br>–<strong>n-retries int</strong>   number of retries for uploading whan it’s not gas price issue<br>–<strong>node strings</strong>   ZergGStorage storage node URL<br>–<strong>nonce uint</strong>     nonce of upload transaction<br>–<strong>routines int</strong><br>–<strong>skip-tx</strong>     Skip sending the transaction on chain if already exists (default true)</p>
+<p>…</p>
+</li>
+</ol>
+<h1 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h1><h3 id="什么是并行计算"><a href="#什么是并行计算" class="headerlink" title="什么是并行计算"></a>什么是并行计算</h3><ul>
+<li>并行计算（Parallel Computing）就是 <strong>把一个大的计算任务分成很多小任务，同时由多个处理单元（CPU、GPU 或节点）一起处理</strong>。</li>
+<li>目标是 <strong>加快计算速度</strong>，提高效率，而不是一个一个顺序执行。</li>
+</ul>
+<hr>
+<h3 id="并行计算是怎么工作的"><a href="#并行计算是怎么工作的" class="headerlink" title="并行计算是怎么工作的"></a>并行计算是怎么工作的</h3><ol>
+<li><strong>任务分解（Task Decomposition）</strong><ul>
+<li>将大任务拆成多个小子任务。</li>
+<li>这些子任务尽量互相独立，避免互相等待。</li>
+</ul>
+</li>
+<li><strong>分配到处理单元（Task Scheduling）</strong><ul>
+<li>小任务被分配到不同的处理单元（CPU 核心、GPU 核心、节点等）。</li>
+<li>每个处理单元同时运行一个或多个小任务。</li>
+</ul>
+</li>
+<li><strong>独立执行（Independent Execution）</strong><ul>
+<li>各个处理单元同时进行计算。</li>
+<li>在 0G 的分片存储场景中，比如不同分片的数据可以在不同节点上同时存储和检索。</li>
+</ul>
+</li>
+<li><strong>结果合并（Result Aggregation）</strong><ul>
+<li>小任务完成后，把结果汇总成最终结果。</li>
+<li>确保计算正确性和完整性。</li>
+</ul>
+</li>
+</ol>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><p>假设你要计算 1000 个数字的平方和：</p>
+<ul>
+<li><strong>顺序计算</strong>：一个数字算一个数字 → 总时间长。</li>
+<li><strong>并行计算</strong>：把 1000 个数字分成 10 组，每组 100 个数字交给 10 个 CPU 核心同时计算 → 大幅减少总时间。</li>
+</ul>
+<hr>
+<h4 id="在-0G-存储中的应用"><a href="#在-0G-存储中的应用" class="headerlink" title="在 0G 存储中的应用"></a>在 0G 存储中的应用</h4><ul>
+<li>数据被 <strong>分片（Sharding）</strong> → 每个分片可以在不同节点上并行处理上传、存储、检索。</li>
+<li>并行计算提高了 <strong>上传速度、数据处理能力和吞吐量</strong>，让系统可以支持大量用户同时操作。</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/08/25/0G%20%E7%AC%AC%E4%B8%89%E8%AF%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">https://kizzy899.github.io/2025/08/25/0G%20%E7%AC%AC%E4%B8%89%E8%AF%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></div><div class="post-share"><div class="social-share" data-image="/cover/page.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/08/08/%E4%BA%91%E8%AE%A1%E7%AE%97%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="云计算学习笔记"><img class="cover" src="/cover/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20250805174003_271.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">云计算学习笔记</div></div><div class="info-2"><div class="info-item-1">云计算学习笔记一、云计算的模式分类1. 横向分层（按部署模式划分）   类型 特点 适用场景    私有云 合规、安全、性能高 企业内网、金融、政府、数据安全要求高的业务   公有云 敏捷、低成本、弹性 中小企业、快速上线、弹性扩容需求场景   混合云 兼具安全性与弹性扩展能力 核心业务部署私有云，非核心业务或突发需求上公有云   2. 纵向分层（按服务模式划分）   层级 含义 示例    IaaS（基础架构即服务） 提供计算、存储、网络等基础资源 阿里云ECS、腾讯云CVM   PaaS（平台即服务） 提供开发运行环境及工具 阿里云中间件、Google App Engine   SaaS（软件即服务） 直接提供可使用的应用软件 钉钉、微信、企业邮箱    二、虚拟化技术1. 作用 解耦服务器硬件资源与操作系统 支持“一虚多”——一台物理机可运行多个逻辑计算机 资源池化与灵活调度  2. 虚拟机热升级 原理：在不关机的情况下增加 CPU、内存、磁盘等 优势：减少停机时间 限制：不能热降级   三、网络技术 软件定义网络（SDN）：将网络控制与数据转发分离，实现集中化、可编程的网...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/04/20/MobaXterm%E6%93%8D%E4%BD%9C/" title="MobaXterm操作"><img class="cover" src="/cover/cover13.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-20</div><div class="info-item-2">MobaXterm操作</div></div><div class="info-2"><div class="info-item-1">前置条件利用ubantu系统在VMware上配置Linux系统虚拟机 【两分半钟完成VMware安装及Linux-Ubuntu安装（全程无废话）】https://www.bilibili.com/video/BV1W34y1k7ge?vd_source=8d7dd382f6f8f6be47abce702685a0b0 （参考此视频） 虚拟机上Ssh的开启与安装 【Linux虚拟机开启SSH服务 -  CSDN App】http://t.csdnimg.cn/JE5nY Ps:还要注意要将虚拟机和电脑主机的防火墙关闭 过程一、查看虚拟机的 Host 信息启动 VMware 虚拟机，进入 Ubuntu 系统。在虚拟机内，点击 应用程序，然后选择 终端 打开命令行界面。(或者直接快捷键Ctrl + Alt + T 打开终端)输入命令 ifconfig 查看虚拟机的 IP 地址和主机信息。红框中显示的是虚拟机的 IP 地址。  下面显示的是虚拟机的用户名（如：root123）。  注：用户名和密码是创建虚拟机时设定的。 二、通过 MobaXterm 连接虚拟机  打开 MobaXterm...</div></div></div></a><a class="pagination-related" href="/2025/01/11/TEE%E7%9A%84%E5%88%9D%E6%AD%A5%E7%90%86%E8%A7%A3%E4%B8%8E%E8%AE%A4%E8%AF%86/" title="TEE的初步理解与认识"><img class="cover" src="/cover/cover7.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-11</div><div class="info-item-2">TEE的初步理解与认识</div></div><div class="info-2"><div class="info-item-1">【论文阅读摘要】 关键词：可信执行环境   定义可信执行环境（trusted execution environment, TEE）技术，用于保护非可信平台中应用和数据可信 执行. TEE 通常采用隔离部分软硬件资源的方法构 建安全区域，确保在其中运行的程序和数据保密性 和完整性不受外部干扰。 一个可靠的TEE 需要提供 4 方面的安全保障 1）数据隔离：一个可信应用使用的数据不能被其他应用访问、修改，包括可信应用的数据对外部操作系统隔离以及多个可信应用之间的数据隔离.。 2）计算隔离：可信应用的计算资源不能被其他应用观测和拦截，同时需要清理可信应用执行后的痕迹，并防御来自侧信道的攻击。 3）通信控制：非可信应用和可信应用、多个可信应用之间的会话和数据交互不能破坏隔离性. 4） 错误隔离：非可信区域的安 全漏洞不能扩散到可信应用中. 实用的 TEE 设计思路是基于硬件隔离基础，通过数据加解密和特权指令执行实现其安 全服务. 特点现有的 TEE 技术具有 3 个明显特点 1）面向用户设计 2）硬件辅助支持设计：从基于 x86 到 RISC-V 架 构的平台均引入了新硬件特性 3）共...</div></div></div></a><a class="pagination-related" href="/2024/11/06/penetration_testing_steps/" title="【学习笔记】渗透测试过程1"><img class="cover" src="/cover/cover5.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-06</div><div class="info-item-2">【学习笔记】渗透测试过程1</div></div><div class="info-2"><div class="info-item-1">1. 设置网络环境 将 Kali 虚拟机和靶机的网络适配器改为桥接模式。  在 Kali 虚拟机和靶机相互 ping 通，确保网络连通性。  切换到 root 模式进行操作。  Nmap（用于信息收集 资产探测：ip存活、系统、软件、软件版本、端口）  扫描网段： 1nmap -sn 192.168.42.0/24  查看网段中存活的主机。    全面扫描靶机： 1nmap -A &lt;靶机IP&gt;  在本实验获取数据库端口（1433）。   判断系统类型： 1nmap -O &lt;靶机IP&gt;  在 running: 后面查看主机系统信息。  【图片2】  服务版本扫描(运行软件）： 1nmap -sV &lt;靶机IP&gt;   端口扫描： 1nmap -p1-65535 (目标端口)&lt;靶机IP&gt;   端口 27689 测试：扫描出异常(unknown）端口，在浏览器访问 &lt;靶机IP&gt;:27689。  随机 IP 扫描： 1nmap -v -iR(随机) &lt;数量&gt; -Pn -p 80  如果对方开了防火墙——（报）filter...</div></div></div></a><a class="pagination-related" href="/2024/10/23/vlan%E9%85%8D%E7%BD%AE/" title="【学习笔记】简单网络结构的搭建&#x2F;vlan配置"><img class="cover" src="/cover/cover11.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-23</div><div class="info-item-2">【学习笔记】简单网络结构的搭建&#x2F;vlan配置</div></div><div class="info-2"><div class="info-item-1">(重新粗糙存档一下，过程图基本都丢失了，仅用于个人学习笔记使用)  网络基础架构图 网络通信的原理 软件的使用  ​       a. 关于拓扑图： 接入层交换机，汇聚层交换机 ​        b.技术实现6要求 Vlan trunk 不同vlan间的通信（三层交换技术）交换机的基础命令&#x2F;知识： vlan: 虚拟局域网  vlan trunk stp 链路聚合  hsrp(vrrp)——公司内部的网络系统  将pc1和pc2放入不同vlan可以实现隔离 (同一虚拟网之间的电脑可以通信，不同的不可通信)  vlan范围： 1-4094  关于常见接口类型：   ​	交换机常见接口类型：有Access和trunk ​	Access用来接入终端，电脑，打印机，服务器 ​	trunk用在交换机与交换机之间 ​	trunk技术解决交换机之间传输vlan数据的问题  命令行敲错后，跳出卡顿：ctrl+shift+1   三种模式：  Enable   #  Config    Exit 退出  查看都在#模式中；  配置文件的查看：show run (running-config...</div></div></div></a><a class="pagination-related" href="/2025/01/10/%E5%85%B3%E4%BA%8E%E6%9E%B6%E6%9E%84/" title="关于架构"><img class="cover" src="/cover/cover7.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-10</div><div class="info-item-2">关于架构</div></div><div class="info-2"><div class="info-item-1">企业架构  企业架构是企业进行项目决策的重要依据，同时也是支撑企业后续发展的重要基石。业务架构、数据架构、应用架构和技术架构是企业架构中的四个主要架构，它们在关注的方面和功能上有所不同，但是它们是相互关联和相互支持的，共同构成了企业的总体架构。 企业架构之4A架构4A架构关键词： 业务架构：战略，价值链，端到端，业务流程，业务组件，自上而下分解 应用架构：系统建设，系统集成，中台，自下而上抽象 技术架构：技术选型，框架，PaaS平台，云原生，DevOps，微服务，容器化，部署架构 数据架构：数据标准，数据采集加工，数据入湖，数据治理，数据共享服务，数据安全，数据质量，数据架构 【1】 业务结构业务架构定义了业务策略、治理、组织和关键业务过程。是企业架构的核心内容，承接了企业战略，直接决定企业战略的实现能力，是其他架构领域工作的前置条件。 主要目标是根据企业战略愿景，分析业务现状，识别现有业务能力及问题，提出业务改进需求，设计目标业务架构。（以价值链梳理分析业务开展流程，识别上下游依赖关系，从业务和产品的视角，描述整个平台或者产品的实现） 设计步骤：  识别战略，走访业务部门，问卷...</div></div></div></a><a class="pagination-related" href="/2025/08/05/3CDaemon%20+%20MobaXterm%20%E8%BF%90%E7%BB%B4%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="3CDaemon + MobaXterm运维"><img class="cover" src="/cover/cover_15.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-05</div><div class="info-item-2">3CDaemon + MobaXterm运维</div></div><div class="info-2"><div class="info-item-1">3CDaemon + MobaXterm 运维学习笔记📑 目录 一、FTP 配置与使用 二、SSH 与 SFTP 基础 三、BS 运维（Browser–Server 模式） 四、CS 运维（Client–Server 模式） 参考链接与原文标题   一、FTP 配置与使用 3CDaemon 创建 FTP 用户 打开 3CDaemon → 点击 FTP 用户（创建前先选择一个真实存在的文件夹路径，例如 D:\）。 新建用户： 账号：admin 密码：123123   确认保存。   开启 FTP 服务 进入 配置 → 服务管理 → 端口配置。 默认端口为 21，如需自定义可改为 20021。   在堡垒机添加 FTP 资产 新建资产： IP：主机 IP 端口：FTP 服务端口（如 21 或 20021） 删除系统自带账号，添加刚刚在 3CDaemon 中新建的账号（用户名：admin，密码：123123）。 服务类型选择 FTP。   确认保存。 在 授权管理 中，为刚建的资产分配用户权限。   MobaXterm 连接 FTP 在 个人工作台 中找到刚建的 FTP 资产，使用 ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">48</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%86%85%E5%AE%B9"><span class="toc-number">1.</span> <span class="toc-text">主要内容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80-%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E7%9B%B8%E5%85%B3"><span class="toc-number">2.</span> <span class="toc-text">一. 数据存储相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BD%93%E5%89%8D%E5%B8%B8%E8%A7%81%E7%9A%84%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E5%BC%8F%E5%8F%8A%E9%97%AE%E9%A2%98"><span class="toc-number">2.1.</span> <span class="toc-text">当前常见的数据存储方式及问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C-0G-%E7%9A%84%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%EF%BC%880G-%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E4%BB%A5%E8%A7%A3%E5%86%B3%E4%B8%8A%E8%BF%B0%E9%97%AE%E9%A2%98%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">二. 0G 的系统设计（0G 如何设计以解决上述问题）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89-%E5%AE%9E%E9%99%85%E6%95%B0%E6%8D%AE%E4%B8%8A%E4%BC%A0%E8%AE%BE%E8%AE%A1"><span class="toc-number">4.</span> <span class="toc-text">三. 实际数据上传设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E4%B8%8A%E4%BC%A0%E6%B5%81%E7%A8%8B"><span class="toc-number">4.1.</span> <span class="toc-text">数据上传流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B-%E5%88%86%E7%89%87%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1"><span class="toc-number">5.</span> <span class="toc-text">四. 分片存储设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Sharded-Storage%EF%BC%88%E5%88%86%E7%89%87%E5%AD%98%E5%82%A8%EF%BC%89%E8%AE%BE%E8%AE%A1%E8%AF%B4%E6%98%8E"><span class="toc-number">5.1.</span> <span class="toc-text">Sharded Storage（分片存储）设计说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%A6%E5%AE%BD%E7%9A%84%E8%AE%A1%E7%AE%97"><span class="toc-number">5.2.</span> <span class="toc-text">带宽的计算</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%8D%95%E8%8A%82%E7%82%B9%E5%B8%A6%E5%AE%BD"><span class="toc-number">5.2.1.</span> <span class="toc-text">1. 单节点带宽</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%88%86%E7%89%87%E4%B8%8E%E8%8A%82%E7%82%B9"><span class="toc-number">5.2.2.</span> <span class="toc-text">2. 分片与节点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%B0%B4%E5%B9%B3%E5%8F%AF%E6%89%A9%E5%B1%95%E5%B8%A6%E5%AE%BD"><span class="toc-number">5.2.3.</span> <span class="toc-text">3. 水平可扩展带宽</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.2.4.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E3%80%81%E5%88%86%E7%89%87%E5%92%8C%E5%B8%A6%E5%AE%BD%E5%85%B3%E7%B3%BB%E7%9A%84%E7%A4%BA%E6%84%8F%E5%9B%BE"><span class="toc-number">5.3.</span> <span class="toc-text">节点、分片和带宽关系的示意图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94-Flow-Merkle-Tree-over-Flow"><span class="toc-number">6.</span> <span class="toc-text">五.Flow + Merkle Tree over Flow</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD-PoRA-0G-%E7%9A%84%E5%AD%98%E5%82%A8%E5%AE%89%E5%85%A8%E6%80%A7%E5%92%8C%E8%AE%BF%E9%97%AE%E9%AA%8C%E8%AF%81%E6%9C%BA%E5%88%B6"><span class="toc-number">7.</span> <span class="toc-text">六. PoRA _0G 的存储安全性和访问验证机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%95%B0%E6%8D%AE%E5%B0%81%E8%A3%85%EF%BC%88Data-Sealing%EF%BC%89"><span class="toc-number">7.1.</span> <span class="toc-text">1. 数据封装（Data Sealing）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Proof-of-Random-Access-PoRA"><span class="toc-number">7.2.</span> <span class="toc-text">2. Proof of Random Access (PoRA)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Recall-Range%EF%BC%88%E5%9B%9E%E6%BA%AF%E8%8C%83%E5%9B%B4%EF%BC%89"><span class="toc-number">7.3.</span> <span class="toc-text">3. Recall Range（回溯范围）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Difficulty-Adjustment%EF%BC%88%E9%9A%BE%E5%BA%A6%E8%B0%83%E6%95%B4%EF%BC%89"><span class="toc-number">7.4.</span> <span class="toc-text">4. Difficulty Adjustment（难度调整）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-1"><span class="toc-number">7.5.</span> <span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%88%9D%E5%A7%8B%E5%AD%98%E5%82%A8%E4%BD%8D%E7%BD%AE%E5%9C%A8-Flow-%E7%9A%84%E5%93%AA%E9%87%8C%EF%BC%9F"><span class="toc-number">7.5.1.</span> <span class="toc-text">1. 初始存储位置在 Flow 的哪里？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%8C%96%E7%9F%BF%E6%9C%89%E9%9A%BE%E5%BA%A6%E8%B0%83%E6%95%B4%EF%BC%8C%E4%BB%80%E4%B9%88%E8%B6%8A%E9%AB%98%E8%B6%8A%E7%AE%80%E5%8D%95%EF%BC%9F"><span class="toc-number">7.5.2.</span> <span class="toc-text">2. 挖矿有难度调整，什么越高越简单？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%8F%AA%E6%8C%96%E4%B8%80%E9%83%A8%E5%88%86%E6%8C%87%E7%9A%84%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">7.5.3.</span> <span class="toc-text">3. 只挖一部分指的是什么？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-0G-Storage-%E7%9A%84%E6%8C%96%E7%9F%BF%E6%9C%BA%E5%88%B6%E9%87%8C%EF%BC%8C%E6%AF%8F%E6%AC%A1%E6%8C%96%E7%9F%BF%E6%95%B0%E6%8D%AE-Recal-Range-%E7%94%B1%E4%BB%80%E4%B9%88%E5%9B%A0%E7%B4%A0%E7%A1%AE%E5%AE%9A-%E5%A4%9A%E9%80%89"><span class="toc-number">7.5.4.</span> <span class="toc-text">4. 0G Storage 的挖矿机制里，每次挖矿数据(Recal Range)由什么因素确定(多选)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83-%E5%A5%96%E5%8A%B1%E6%9C%BA%E5%88%B6"><span class="toc-number">8.</span> <span class="toc-text">七. 奖励机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%85%AC%E5%B9%B3%E7%AB%9E%E4%BA%89%EF%BC%88Fair-Competition%EF%BC%89"><span class="toc-number">8.1.</span> <span class="toc-text">1. 公平竞争（Fair Competition）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%A5%96%E5%8A%B1%E6%9C%BA%E5%88%B6%EF%BC%88Reward%EF%BC%89"><span class="toc-number">8.2.</span> <span class="toc-text">2. 奖励机制（Reward）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%80%BB%E7%BB%93"><span class="toc-number">8.3.</span> <span class="toc-text">3. 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB-%E5%AE%9E%E7%8E%B0"><span class="toc-number">9.</span> <span class="toc-text">八. 实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%EF%BC%88Core-Components%EF%BC%89"><span class="toc-number">9.1.</span> <span class="toc-text">1. 核心组件（Core Components）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%94%AF%E6%8C%81%E7%9A%84-RPC-%E5%8D%8F%E8%AE%AE"><span class="toc-number">9.2.</span> <span class="toc-text">2. 支持的 RPC 协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%95%B0%E6%8D%AE%E4%B8%8A%E4%BC%A0-%E4%B8%8B%E8%BD%BD%E6%B5%81%E7%A8%8B"><span class="toc-number">9.3.</span> <span class="toc-text">3. 数据上传&#x2F;下载流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E5%88%AB%E7%9A%84%E5%8F%82%E6%95%B0%E4%B8%BE%E4%BE%8B"><span class="toc-number">9.4.</span> <span class="toc-text">特别的参数举例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A1%A5%E5%85%85"><span class="toc-number"></span> <span class="toc-text">补充</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97"><span class="toc-number">0.1.</span> <span class="toc-text">什么是并行计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97%E6%98%AF%E6%80%8E%E4%B9%88%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="toc-number">0.2.</span> <span class="toc-text">并行计算是怎么工作的</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B"><span class="toc-number">0.2.1.</span> <span class="toc-text">举例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%A8-0G-%E5%AD%98%E5%82%A8%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">0.2.2.</span> <span class="toc-text">在 0G 存储中的应用</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'kizzy899/kizzy899.github.io',
+      'data-repo-id': 'R_kgDONCC1iQ',
+      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
