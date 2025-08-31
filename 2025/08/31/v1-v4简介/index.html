@@ -1,0 +1,390 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Uniswapv1-v4简介 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Uniswap V1 2018年11月2日发布 使用 Vyper 语言编写 仅支持 ERC20-ETH 直接互换或者通过ETH进行互换: 合约地址: Uniswap&#x2F;v1-contracts: Uniswap V1 smartcontracts (github.com)  合约重点：  Exchange——交易逻辑  factory——创建交易对   createchange( )">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Uniswapv1-v4简介">
+<meta property="og:url" content="https://kizzy899.github.io/2025/08/31/v1-v4%E7%AE%80%E4%BB%8B/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="Uniswap V1 2018年11月2日发布 使用 Vyper 语言编写 仅支持 ERC20-ETH 直接互换或者通过ETH进行互换: 合约地址: Uniswap&#x2F;v1-contracts: Uniswap V1 smartcontracts (github.com)  合约重点：  Exchange——交易逻辑  factory——创建交易对   createchange( )">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/cover/cover_8.jpg">
+<meta property="article:published_time" content="2025-08-31T03:31:14.000Z">
+<meta property="article:modified_time" content="2025-08-31T04:00:46.865Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="Uniswap">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/cover/cover_8.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Uniswapv1-v4简介",
+  "url": "https://kizzy899.github.io/2025/08/31/v1-v4%E7%AE%80%E4%BB%8B/",
+  "image": "https://kizzy899.github.io/cover/cover_8.jpg",
+  "datePublished": "2025-08-31T03:31:14.000Z",
+  "dateModified": "2025-08-31T04:00:46.865Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "kizy",
+      "url": "https://kizzy899.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2025/08/31/v1-v4%E7%AE%80%E4%BB%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Uniswapv1-v4简介',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/cover/cover_8.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">Uniswapv1-v4简介</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Uniswapv1-v4简介</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-08-31T03:31:14.000Z" title="发表于 2025-08-31 11:31:14">2025-08-31</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-08-31T04:00:46.865Z" title="更新于 2025-08-31 12:00:46">2025-08-31</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Uniswap-V1"><a href="#Uniswap-V1" class="headerlink" title="Uniswap V1"></a>Uniswap V1</h1><ul>
+<li>2018年11月2日发布</li>
+<li>使用 Vyper 语言编写</li>
+<li>仅支持 ERC20-ETH 直接互换或者通过ETH进行互换:</li>
+<li>合约地址: Uniswap&#x2F;v1-contracts: Uniswap V1 smart<br>contracts (github.com)</li>
+</ul>
+<p>合约重点：</p>
+<ol>
+<li><p>Exchange——交易逻辑</p>
+</li>
+<li><p>factory——创建交易对 </p>
+<blockquote>
+<p>createchange( )</p>
+</blockquote>
+</li>
+</ol>
+<h1 id="Uniswap-V2"><a href="#Uniswap-V2" class="headerlink" title="Uniswap V2"></a>Uniswap V2</h1><ul>
+<li>2020年5月发布;</li>
+<li>增加 ERC20-ERC20直接互换:。增加 Flash Swap;</li>
+<li>增加 Oracle;</li>
+<li>改进手续费收取方式;</li>
+<li>引爆了 DeFi 赛道;</li>
+<li>2020年9月，发行治理代币UNI;</li>
+</ul>
+<p><img src="https://s2.loli.net/2025/08/31/TdMNR25XmeQjlGv.png" alt="image.png"></p>
+<h2 id="什么是DeFilama"><a href="#什么是DeFilama" class="headerlink" title="什么是DeFilama"></a>什么是DeFilama</h2><p><strong>DeFiLlama</strong> 是一个 <strong>去中心化金融（DeFi）数据聚合平台</strong>，主要提供各种区块链 DeFi 协议的统计数据和分析。它的特点是 <strong>中立、免费、开源</strong>，不像一些由 VC 资助的平台，它更倾向于社区驱动。</p>
+<h3 id="DeFiLlama-提供什么功能？"><a href="#DeFiLlama-提供什么功能？" class="headerlink" title="DeFiLlama 提供什么功能？"></a>DeFiLlama 提供什么功能？</h3><ol>
+<li><strong>TVL（Total Value Locked）数据</strong><ul>
+<li>可以看到不同链（以太坊、BSC、Arbitrum、Polygon 等）以及不同协议（Uniswap、Aave、Curve、MakerDAO 等）的锁仓量。</li>
+<li>这能直观反映一个协议的规模和活跃度。</li>
+</ul>
+</li>
+<li><strong>收益&#x2F;收益率信息</strong><ul>
+<li>提供各类 DeFi 协议的 <strong>流动性挖矿、借贷利率、收益率对比</strong>。</li>
+<li>比如你在 Uniswap V2 提供流动性，可以通过 DeFiLlama 对比不同池子的 APY。</li>
+</ul>
+</li>
+<li><strong>跨链桥数据</strong><ul>
+<li>提供各大跨链桥的资金流动情况，可以看到资金主要从哪条链流向哪条链。</li>
+</ul>
+</li>
+<li><strong>DeFi 生态全景</strong><ul>
+<li>能快速了解某条链上的 DeFi 生态整体规模，比如 Arbitrum 的 DeFi 总锁仓量是多少，哪些协议最火。</li>
+</ul>
+</li>
+<li><strong>Token 信息</strong><ul>
+<li>查看代币的 DeFi 用途，比如哪些协议支持某个代币作为抵押物</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>在 DeFiLlama 上，你可以查看 <strong>Uniswap V2 的锁仓量、交易量占比、在不同链上的分布情况</strong>。</li>
+<li>例如，你想知道 Uniswap V2 的 TVL 是否比 Curve、SushiSwap 高，就可以在 DeFiLlama 里查。</li>
+</ul>
+<h2 id="什么是闪电贷（Flash-Loan）"><a href="#什么是闪电贷（Flash-Loan）" class="headerlink" title="什么是闪电贷（Flash Loan）"></a>什么是闪电贷（Flash Loan）</h2><p><strong>闪电贷</strong> 是一种 <strong>无需抵押的贷款机制</strong>，主要出现在 DeFi（去中心化金融）协议里。<br> 它的核心特点是：</p>
+<ol>
+<li><strong>用户可以瞬间借到大量资金</strong>（几乎没有上限，只受池子流动性限制）。</li>
+<li><strong>必须在同一个交易（同一个区块内）还清</strong>。<ul>
+<li>如果没有还清，整个交易会直接被回滚（就像从没发生过一样）。</li>
+<li>所以协议提供者不会有风险。</li>
+</ul>
+</li>
+</ol>
+<h4 id="闪电贷有什么用？"><a href="#闪电贷有什么用？" class="headerlink" title="闪电贷有什么用？"></a>闪电贷有什么用？</h4><ol>
+<li><strong>套利</strong><ul>
+<li>不同交易所（比如 Uniswap、SushiSwap、Curve）之间价格差异，瞬间搬运套利。</li>
+</ul>
+</li>
+<li><strong>清算</strong><ul>
+<li>在借贷协议（比如 Aave、Compound）里，当有人抵押物不足时，你可以用闪电贷借钱去清算，然后赚取奖励。</li>
+</ul>
+</li>
+<li><strong>抵押物替换</strong><ul>
+<li>假如你在 MakerDAO 抵押 ETH 借了 DAI，但想换成 WBTC 抵押，可以用闪电贷无缝替换，不需要先卖掉 ETH 再买 BTC。</li>
+</ul>
+</li>
+<li><strong>高杠杆操作</strong><ul>
+<li>利用瞬时借贷，把本金放大很多倍，进行投机或策略。</li>
+</ul>
+</li>
+</ol>
+<h4 id="为什么-Uniswap-V2-也能提供闪电贷？"><a href="#为什么-Uniswap-V2-也能提供闪电贷？" class="headerlink" title="为什么 Uniswap V2 也能提供闪电贷？"></a>为什么 Uniswap V2 也能提供闪电贷？</h4><ul>
+<li>Uniswap V2 引入了一个机制：<strong>你可以拿走池子里的代币，只要在交易结束前归还相同数量的代币（或等值代币）</strong>。</li>
+<li>这正好可以被用来实现 <strong>闪电贷</strong>。</li>
+</ul>
+<p>假设：</p>
+<ul>
+<li>在 <strong>Uniswap V2</strong>，1 ETH &#x3D; 2000 USDC。</li>
+<li>在 <strong>SushiSwap</strong>，1 ETH &#x3D; 2100 USDC。</li>
+</ul>
+<p>操作步骤：</p>
+<ol>
+<li>通过闪电贷借 100 ETH（不需要抵押）。</li>
+<li>在 SushiSwap 卖掉 100 ETH，得到 210,000 USDC。</li>
+<li>在 Uniswap 买回 100 ETH，只花 200,000 USDC。</li>
+<li>归还闪电贷 100 ETH（或等值 USDC）。</li>
+<li>赚到差价 <strong>10,000 USDC</strong>，手续费可能只有千分之一左右。</li>
+</ol>
+<p><img src="https://s2.loli.net/2025/08/31/3Opq9FbwAka86nt.png" alt="image.png"></p>
+<h1 id="Uniswap-V3"><a href="#Uniswap-V3" class="headerlink" title="Uniswap V3"></a>Uniswap V3</h1><ul>
+<li>2021年5月，Uniswap V3发布;</li>
+<li>主要特性:<ul>
+<li>增加集中流动性;</li>
+<li>优化手续费设置:</li>
+<li>LPT改成基于NFT的 Liquidity Token;</li>
+<li>改进开源协议（开源协议改为享有两年保护区）</li>
+</ul>
+</li>
+</ul>
+<h1 id="Uniswap-V4"><a href="#Uniswap-V4" class="headerlink" title="Uniswap V4"></a>Uniswap V4</h1><ul>
+<li>2023年6月23日发布代码草案</li>
+<li>新增主要特性:<ul>
+<li>Hook</li>
+<li>Singleton Poot Manager Design</li>
+<li>Reintroduction of Native ETH</li>
+<li>Flash Accounting<br>目标:更快、更省gas fee、容易集成：成为 DeFi 领域的基础设施:</li>
+</ul>
+</li>
+</ul>
+<h2 id="Wrapped-eth"><a href="#Wrapped-eth" class="headerlink" title="Wrapped eth"></a>Wrapped eth</h2><h2 id="🔹-什么是-Wrapped-ETH-WETH-？"><a href="#🔹-什么是-Wrapped-ETH-WETH-？" class="headerlink" title="🔹 什么是 Wrapped ETH (WETH)？"></a>🔹 什么是 Wrapped ETH (WETH)？</h2><ul>
+<li><strong>ETH 本身不是 ERC-20 代币</strong>。<ul>
+<li>以太坊在最初设计时，ETH 是链的“原生代币”，并没有严格遵循后来的 ERC-20 标准。</li>
+<li>而 DeFi 协议（比如 Uniswap、Aave）基本都是基于 ERC-20 标准编写的。</li>
+</ul>
+</li>
+<li><strong>WETH 就是用智能合约把 ETH “包装”成一个标准的 ERC-20 代币</strong>。<ul>
+<li>你把 1 ETH 存进 WETH 合约，就会得到 1 WETH。</li>
+<li>1 WETH 可以随时兑换回 1 ETH。</li>
+<li>所以 <strong>ETH 和 WETH 的价值始终 1:1</strong>。</li>
+</ul>
+</li>
+</ul>
+<p>这样，协议就可以像对待普通 ERC-20 代币一样对待 ETH。</p>
+<hr>
+<h2 id="🔹-为什么要用-WETH？"><a href="#🔹-为什么要用-WETH？" class="headerlink" title="🔹 为什么要用 WETH？"></a>🔹 为什么要用 WETH？</h2><p>在 DEX（比如 Uniswap）里：</p>
+<ul>
+<li>交易对的两个资产都必须是 ERC-20 标准。</li>
+<li>由于 ETH 不是 ERC-20，所以没办法直接放进 Uniswap 的流动性池。</li>
+<li>解决办法就是：用 WETH 替代 ETH。<ul>
+<li>例如 <code>WETH/DAI</code>、<code>WETH/USDC</code> 这样的池子。</li>
+</ul>
+</li>
+</ul>
+<h2 id="🔹迭代"><a href="#🔹迭代" class="headerlink" title="🔹迭代"></a>🔹迭代</h2><ul>
+<li>从 <strong>Uniswap V1（2018 年发布）开始</strong> 就用到了 WETH。<ul>
+<li>因为 V1 的设计就是 <strong>“ETH ↔ ERC-20”</strong> 的单边交易模型。</li>
+<li>但在代码实现里，其实 ETH 是先被包装成 WETH，再和 ERC-20 交互。</li>
+</ul>
+</li>
+<li>到了 <strong>Uniswap V2</strong>（2020 年），改为 <strong>任意 ERC-20 ↔ ERC-20</strong> 的模型，ETH 依然需要通过 WETH 来参与池子。</li>
+<li>在 <strong>Uniswap V3</strong>（2021 年）同样如此，ETH 仍然不是 ERC-20，所以池子里依旧是用 WETH。</li>
+</ul>
+<p>✅ 结论：<br> 只要 DeFi 协议需要 ERC-20 兼容，ETH 就必须用 WETH 来参与。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/08/31/v1-v4%E7%AE%80%E4%BB%8B/">https://kizzy899.github.io/2025/08/31/v1-v4%E7%AE%80%E4%BB%8B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Uniswap/">Uniswap</a></div><div class="post-share"><div class="social-share" data-image="/cover/cover_8.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/08/31/UniswapV2%E4%B8%AD%E7%9A%84swap%E6%93%8D%E4%BD%9C%E5%92%8C%E6%89%8B%E7%BB%AD%E8%B4%B9%E6%9C%BA%E5%88%B6/" title="V2中的swap操作和手续费机制"><img class="cover" src="/cover/cover7.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">V2中的swap操作和手续费机制</div></div><div class="info-2"><div class="info-item-1">Swap操作关于DAI&#x2F;USDT的单交换 逻辑：  Router02.sol   SwapexactTokensForTokens( ) SwapTokensForexactTokens( )   资金转换 transferFrom( ) [ pair DAI&#x2F;USDT]  Swap   transfer(币转给用户)    多Tokens之间的交换此时path参数 1path = [DAI, WBTC, USDC];  流程图：  逻辑：  用户调用 Router02 的 swapExactTokensForTokens，传入 path = [DAI, WBTC, USDC]。  Router02 先把用户的 DAI 转入 DAI-WBTC Pair。  DAI-WBTC Pair 执行 swap，把 WBTC 发给下一个 Pair（由 Router02 转发）。  Router02 把 WBTC 继续送入 WBTC-USDC Pair。  WBTC-USDC Pair 执行 swap，把 USDC 最终发给用户。  用户完成从 DAI → WBTC → U...</div></div></div></a><a class="pagination-related" href="/2025/08/30/0G%E7%AC%AC%E5%9B%9B%E8%AF%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="0G核心模块|计算架构设计与实现"><img class="cover" src="/cover/cover1.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">0G核心模块|计算架构设计与实现</div></div><div class="info-2"><div class="info-item-1">主要内容 0G Compute Network 介绍 0G Compute Network 架构以及可信执行环境 0G Compute Network 核心模块|Inference 0G Compute Network 核心模块|fine-tuning 0G Compute SDk 的集成方式  0G Compute Network 介绍0G Compute 是一个去中心化的框架——提供 AI 计算能力。 它是deAlOS 的一个重要组成部分。 0G Compute 是一个去中心化的市场，GPU 拥有者可以将计算能力出售给需要它的开发者，可以将其想象成 AI计算领域的 Uber。 0G deAl Service Marketplace  处理支付和验证账号Inference 服务注册以及验证Fine-tuning 服务注册以及验证 Provoder:运行计算服务的GPU拥有者 Customer:服务的使用者，通过SDK使用 provider 服务 或者集成到自己的应用中   0G Compute Network 架构以及可信执行环境首先介绍TEE TEE在之前我有相关的学习笔记 ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/08/06/Uniswap%E4%B8%93%E9%A1%B9/" title="Uniswap专项"><img class="cover" src="/cover/cover_11.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-06</div><div class="info-item-2">Uniswap专项</div></div><div class="info-2"><div class="info-item-1">恒定乘积自动做市商算法核心公式恒定乘积做市商的核心公式是：x * y = k其中：  ( x ) 是第一种资产的数量（如ETH） ( y ) 是第二种资产的数量（如USDT） ( k ) 是常数乘积  价格变动机制当交易发生时，资产数量的变化遵循：[ (x + dx)(y - dy) &#x3D; k ][ (x - dx)(y + dy) &#x3D; k ] 滑点计算滑点计算公式（纯文本格式）滑点(S) &#x3D; [(实际执行价格 - 预期价格) &#x2F; 预期价格] × 100% 变量说明： 滑点(S)：以百分比(%)表示的价格偏差 实际执行价格：交易实际成交的价格 预期价格：交易发起时预期的市场价格  示例：如果预期价格是2000 USDT，实际执行价格是2666.66 USDT，那么：滑点 &#x3D; [(2666.66 - 2000)&#x2F;2000] × 100% &#x3D; 33.33% 公式解读： 先计算实际价格与预期价格的差值 将差值除以预期价格，得到相对偏差 乘以100%转换为百分比形式  注意事项： 正值表示实际价格高于预期（对买方不利） ...</div></div></div></a><a class="pagination-related" href="/2025/08/31/UniswapV2%E4%B8%AD%E7%9A%84swap%E6%93%8D%E4%BD%9C%E5%92%8C%E6%89%8B%E7%BB%AD%E8%B4%B9%E6%9C%BA%E5%88%B6/" title="V2中的swap操作和手续费机制"><img class="cover" src="/cover/cover7.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-31</div><div class="info-item-2">V2中的swap操作和手续费机制</div></div><div class="info-2"><div class="info-item-1">Swap操作关于DAI&#x2F;USDT的单交换 逻辑：  Router02.sol   SwapexactTokensForTokens( ) SwapTokensForexactTokens( )   资金转换 transferFrom( ) [ pair DAI&#x2F;USDT]  Swap   transfer(币转给用户)    多Tokens之间的交换此时path参数 1path = [DAI, WBTC, USDC];  流程图：  逻辑：  用户调用 Router02 的 swapExactTokensForTokens，传入 path = [DAI, WBTC, USDC]。  Router02 先把用户的 DAI 转入 DAI-WBTC Pair。  DAI-WBTC Pair 执行 swap，把 WBTC 发给下一个 Pair（由 Router02 转发）。  Router02 把 WBTC 继续送入 WBTC-USDC Pair。  WBTC-USDC Pair 执行 swap，把 USDC 最终发给用户。  用户完成从 DAI → WBTC → U...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Uniswap-V1"><span class="toc-number">1.</span> <span class="toc-text">Uniswap V1</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Uniswap-V2"><span class="toc-number">2.</span> <span class="toc-text">Uniswap V2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFDeFilama"><span class="toc-number">2.1.</span> <span class="toc-text">什么是DeFilama</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DeFiLlama-%E6%8F%90%E4%BE%9B%E4%BB%80%E4%B9%88%E5%8A%9F%E8%83%BD%EF%BC%9F"><span class="toc-number">2.1.1.</span> <span class="toc-text">DeFiLlama 提供什么功能？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%97%AA%E7%94%B5%E8%B4%B7%EF%BC%88Flash-Loan%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">什么是闪电贷（Flash Loan）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AA%E7%94%B5%E8%B4%B7%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8%EF%BC%9F"><span class="toc-number">2.2.0.1.</span> <span class="toc-text">闪电贷有什么用？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-Uniswap-V2-%E4%B9%9F%E8%83%BD%E6%8F%90%E4%BE%9B%E9%97%AA%E7%94%B5%E8%B4%B7%EF%BC%9F"><span class="toc-number">2.2.0.2.</span> <span class="toc-text">为什么 Uniswap V2 也能提供闪电贷？</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Uniswap-V3"><span class="toc-number">3.</span> <span class="toc-text">Uniswap V3</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Uniswap-V4"><span class="toc-number">4.</span> <span class="toc-text">Uniswap V4</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Wrapped-eth"><span class="toc-number">4.1.</span> <span class="toc-text">Wrapped eth</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%94%B9-%E4%BB%80%E4%B9%88%E6%98%AF-Wrapped-ETH-WETH-%EF%BC%9F"><span class="toc-number">4.2.</span> <span class="toc-text">🔹 什么是 Wrapped ETH (WETH)？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%94%B9-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8-WETH%EF%BC%9F"><span class="toc-number">4.3.</span> <span class="toc-text">🔹 为什么要用 WETH？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%94%B9%E8%BF%AD%E4%BB%A3"><span class="toc-number">4.4.</span> <span class="toc-text">🔹迭代</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'kizzy899/kizzy899.github.io',
+      'data-repo-id': 'R_kgDONCC1iQ',
+      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
