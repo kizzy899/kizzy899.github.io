@@ -1,0 +1,500 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>分布式详解1 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CAP理论简述CAP理论  **数据一致性 (Consistency)**：如果系统对一个写操作返回成功，那么之后的读请求都必须读到这个新数据；如果返回失败，那么所有读操作都不能读到这个数据。对调用者而言数据具有强一致性。 **服务可用性 (Availability)**：所有读写请求在一定时间内得到响应，可终止、不会一直等待。 **分区容错性 (Partition Tolerance)**：在网">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式详解1">
+<meta property="og:url" content="https://kizzy899.github.io/2025/09/29/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A31/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="CAP理论简述CAP理论  **数据一致性 (Consistency)**：如果系统对一个写操作返回成功，那么之后的读请求都必须读到这个新数据；如果返回失败，那么所有读操作都不能读到这个数据。对调用者而言数据具有强一致性。 **服务可用性 (Availability)**：所有读写请求在一定时间内得到响应，可终止、不会一直等待。 **分区容错性 (Partition Tolerance)**：在网">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/aaaset/cover_14.jpg">
+<meta property="article:published_time" content="2025-09-29T01:01:59.000Z">
+<meta property="article:modified_time" content="2025-10-04T13:48:14.065Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="分布式系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/aaaset/cover_14.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "分布式详解1",
+  "url": "https://kizzy899.github.io/2025/09/29/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A31/",
+  "image": "https://kizzy899.github.io/aaaset/cover_14.jpg",
+  "datePublished": "2025-09-29T01:01:59.000Z",
+  "dateModified": "2025-10-04T13:48:14.065Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "kizy",
+      "url": "https://kizzy899.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2025/09/29/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A31/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '分布式详解1',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">64</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/aaaset/cover_14.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">分布式详解1</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">分布式详解1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-29T01:01:59.000Z" title="发表于 2025-09-29 09:01:59">2025-09-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-04T13:48:14.065Z" title="更新于 2025-10-04 21:48:14">2025-10-04</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h1><p><strong>简述CAP理论</strong></p>
+<ul>
+<li>**数据一致性 (Consistency)**：如果系统对一个写操作返回成功，那么之后的读请求都必须读到这个新数据；如果返回失败，那么所有读操作都不能读到这个数据。对调用者而言数据具有强一致性。</li>
+<li>**服务可用性 (Availability)**：所有读写请求在一定时间内得到响应，可终止、不会一直等待。</li>
+<li>**分区容错性 (Partition Tolerance)**：在网络分区的情况下，被分解的节点仍能正常对外服务。</li>
+</ul>
+<p>如果选择了CA而放弃了P，那么当发生分区现象时，为了保证C，系统需要禁止写入，当有写入请求时，系统返回error，这又和A冲突了，因为A要求返回no error和no timeout。因此，分布式系统理论上不可能选择CA架构，只能选择CP或者AP架构。</p>
+<p><strong>反证</strong>：<br>如果CAP三者可同时满足，由于允许P的存在，则一定存在节点之间的丢包，如此则不能保证C。因为允许分区容错，写操作可能在节点1上成功，在节点2上失败，这时候对于Client1（读取节点1）和Client2（读取节点2），就会读取到不一致的值，出现不一致的情况。如果要保持一致性，写操作必须同时失败，也就是降低系统的可用性。</p>
+<hr>
+<h1 id="Base理论"><a href="#Base理论" class="headerlink" title="Base理论"></a>Base理论</h1><p><strong>简述BASE理论</strong></p>
+<p>BASE理论是CAP理论的一种妥协，由于CAP只能二取其一，BASE理论降低了发生分区容错时对可用性和一致性的要求。</p>
+<ol>
+<li>**基本可用 (Basically Available)**：允许可用性降低（可能响应延长、可能服务降级）。</li>
+<li>**软状态 (Soft State)**：指允许系统中的数据存在中间状态，并认为该中间状态不会影响系统整体可用性。</li>
+<li>**最终一致性 (Eventual Consistency)**：节点数据同步可以存在时延，但在一定的期限后必须达成数据的一致，状态变为最终状态。</li>
+</ol>
+<hr>
+<h1 id="数据一致性模型"><a href="#数据一致性模型" class="headerlink" title="数据一致性模型"></a>数据一致性模型</h1><p><strong>数据一致性模型有哪些</strong></p>
+<p><strong>强一致性</strong>：当更新操作完成之后，任何多个后续进程的访问都会返回最新的更新过的值。这种是对用户最友好的，即用户上一次写什么，下一次就保证能读到什么。根据 CAP 理论，这种实现需要牺牲可用性。</p>
+<p><strong>弱一致性</strong>：系统在数据写入成功之后，不承诺立即可以读到最新写入的值，也不会具体承诺多久之后可以读到。用户读到某一操作对系统数据的更新需要一段时间，我们将这段时间称为“不一致性窗口”。</p>
+<p><strong>最终一致性</strong>：最终一致性是弱一致性的特例，强调的是所有的数据副本，在经过一段时间同步之后，最终都能够达到一个一致的状态。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要实时保证系统数据的强一致性。到达最终一致性的时间，就是不一致窗口时间，在没有故障发生的前提下，不一致窗口的时间主要受通信延迟、系统负载和复制副本的个数影响。</p>
+<p>最终一致性模型根据其提供的不同保证可以划分为更多的模型，包括因果一致性和会话一致性等。</p>
+<hr>
+<p><strong>因果一致性</strong>：要求有因果关系的操作顺序得到保证，非因果关系的操作顺序则无所谓。</p>
+<p>进程 A 在更新完某个数据项后通知了进程 B，那么进程 B 之后对该数据项的访问都应该能够获取到进程 A 更新后的最新值，并且如果进程 B 要对该数据项进行更新操作的话，务必基于进程 A 更新后的最新值。</p>
+<blockquote>
+<p>例如在微博或者微信进行评论的时候，比如你在朋友圈发了一张照片，朋友给你评论了，而你对朋友的评论进行了回复，这条朋友圈的显示中，你的回复必须在朋友之后，这是一个因果关系，而其他没有因果关系的数据，可以允许不一致。</p>
+</blockquote>
+<p><strong>会话一致性</strong>：将对系统数据的访问过程框定在一个会话当中，约定了系统能保证在同一个有效的会话中实现“读已之所有”的一致性。就是在你的一次访问中，执行更新操作之后，客户端能够在同一个会话中始终读取到该数据项的最新值。实际开发中有分布式的 Session 一致性问题，可以认为是会话一致性的一个应用。</p>
+<h1 id="Quorum、WARO机制"><a href="#Quorum、WARO机制" class="headerlink" title="Quorum、WARO机制"></a>Quorum、WARO机制</h1><p>**WARO (Write All Read One)**：一种简单的副本控制协议。写操作时，只有当所有的副本都更新成功之后，这次写操作才算成功，否则视为失败。优先保证读，任何节点读到的数据都是最新数据，牺牲了更新服务的可用性。只要有一个副本宕机，写服务就不会成功。但只要有一个节点存活，仍能提供读服务。</p>
+<p><strong>Quorum 机制</strong>：假设有10个副本，一次成功更新了三个，那么至少需要读取八个副本的数据，可以保证读到最新的数据。无法保证强一致性，即无法实现任何时刻任何用户或节点都可以读到最近一次成功提交的副本数据。需要配合一个获取最新成功提交的版本号的 metadata 服务，这样可以确定最新已经成功提交的版本号，然后从已经读到的数据中就可以确认最新写入的数据。</p>
+<blockquote>
+<p>假如一共n个副本，要更新m个，那就需读取n-m+1个副本。</p>
+</blockquote>
+<h1 id="PAXOS算法"><a href="#PAXOS算法" class="headerlink" title="PAXOS算法"></a>PAXOS算法</h1><p>一种共识算法。</p>
+<p>Paxos算法是用于解决分布式系统中就某个值（决议）达成一致性问题的一种协议。典型应用场景是确保分布式数据库中各个节点在执行相同操作序列后能保持最终一致性。在Paxos中，系统包含三种角色：<strong>Proposer（提议者）</strong>、<strong>Acceptor（接受者）</strong> 和 <strong>Learner（记录员）</strong>。</p>
+<ul>
+<li><strong>Proposer</strong>：负责提出提案。只要其提案被半数以上的 Acceptor 接受，就认为该提案的值（value）已被选定。</li>
+<li><strong>Acceptor</strong>：负责响应提案。一旦接受了某个提案，就认为该提案的值被选定。</li>
+<li><strong>Learner</strong>：不参与提案过程，负责学习被选定的值，通常由 Acceptor 通知其哪个值被最终确认。</li>
+</ul>
+<hr>
+<h3 id="Paxos算法的两个阶段"><a href="#Paxos算法的两个阶段" class="headerlink" title="Paxos算法的两个阶段"></a>Paxos算法的两个阶段</h3><h4 id="阶段一：Prepare（准备阶段）"><a href="#阶段一：Prepare（准备阶段）" class="headerlink" title="阶段一：Prepare（准备阶段）"></a>阶段一：Prepare（准备阶段）</h4><p>(a) Proposer 选择一个唯一的提案编号 N，并向半数以上的 Acceptor 发送编号为 N 的 Prepare 请求。<br>(b) Acceptor 收到 Prepare 请求后：</p>
+<ul>
+<li>如果该节点已有已提交的 value 记录，且记录的编号大于 N，则拒绝响应；</li>
+<li>如果记录的编号小于或等于 N，则返回该记录的 value 及编号；</li>
+<li>如果没有已提交记录，则判断本地是否已有编号 N1：<ul>
+<li>如果 N1 &gt; N，拒绝响应；</li>
+<li>否则，将本地编号更新为 N（如无编号则记录 N），并响应 Prepare。</li>
+</ul>
+</li>
+</ul>
+<h4 id="阶段二：Accept（接受阶段）"><a href="#阶段二：Accept（接受阶段）" class="headerlink" title="阶段二：Accept（接受阶段）"></a>阶段二：Accept（接受阶段）</h4><p>(a) 如果 Proposer 收到半数以上 Acceptor 对 Prepare 请求的响应，则它会发送一个针对 [N, V] 提案的 Accept 请求给半数以上的 Acceptor。其中 V 是收到的响应中编号最大的 value；如果所有响应中均不包含 value，则 V 由 Proposer 自行决定。<br>(b) Acceptor 收到 Accept 请求后：</p>
+<ul>
+<li>如果本地记录的编号小于或等于 N，则接受该提案，提交记录 value；</li>
+<li>否则拒绝该请求。</li>
+</ul>
+<p>如果 Proposer 收到大多数 Acceptor 的 Accept 响应，则认为该 value 被选定，并通知 Learner 进行记录，同时同步给未响应的 Acceptor 以达成一致。</p>
+<hr>
+<h3 id="活锁问题"><a href="#活锁问题" class="headerlink" title="活锁问题"></a>活锁问题</h3><p>Paxos 可能遇到<strong>活锁</strong>（livelock）问题：当多个 Proposer 同时不断提出编号递增的提案，并互相覆盖对方的 Accept 请求，导致系统无法最终选定一个值。例如，一个 Proposer 在 Accept 阶段被拒绝后，会增大提案编号 N 并重新发起 Prepare，而此时另一个 Proposer 也执行相同操作，造成 Accept 持续失败，算法无法完成。</p>
+<hr>
+<h3 id="Multi-Paxos-优化"><a href="#Multi-Paxos-优化" class="headerlink" title="Multi-Paxos 优化"></a>Multi-Paxos 优化</h3><p>Multi-Paxos 是对基础 Paxos 的扩展，用于高效确定多个值（即多个决议）。其核心思想是：  </p>
+<ul>
+<li>在第一次成功 Accept 后，系统在接下来的一段时间内，不再接受其他节点的 Prepare 请求，从而避免重复的准备阶段。  </li>
+<li>此时，该节点成为 <strong>Leader</strong>，后续提案可以直接进入 Accept 阶段，提升效率。  </li>
+<li>只有当 Accept 请求被拒绝，或 Leader 失效时，节点才重新发起 Prepare 请求，竞争 Leader 资格，以继续提案流程。</li>
+</ul>
+<p><img src="https://s2.loli.net/2025/10/04/esao4nCELbvxOPd.png" alt="_2025-10-04_212830_141.png"></p>
+<h2 id="问题解析"><a href="#问题解析" class="headerlink" title="问题解析"></a>问题解析</h2><p><strong>Q: PAXOS解决了什么问题？</strong><br><strong>A:</strong> Paxos算法解决的核心问题是：在一个可能发生机器宕机、网络延迟或消息丢失的不可靠分布式环境中，如何让网络中的所有节点<strong>就某个值（Value）达成一致</strong>。它通过为每一条指令执行一次共识过程，解决了分布式状态机的指令序列一致性问题。</p>
+<blockquote>
+<p><strong>“解决了指令问题”的含义：</strong><br>在分布式系统（如分布式数据库）中，为了保证所有节点的最终状态一致，它们必须按照<strong>相同的顺序</strong>执行<strong>相同的指令集</strong>。Paxos的作用就是在每一条指令上执行一次共识过程，来确定“下一条要执行的指令是什么”。这样，即使有节点故障或网络问题，整个系统也能就指令序列达成一致，从而保证状态机的一致性。可以说，Paxos是<strong>实现分布式状态机复制</strong>的基石。</p>
+</blockquote>
+<hr>
+<p><strong>Q: 状态机和数据库的区别？</strong><br><strong>A:</strong> 状态机的核心是“过程”和“状态转移”，它按确定顺序应用指令来改变状态，数据通常带有版本号。数据库的核心是“数据的存储、查询和管理”，是状态机状态的持久化载体。状态机定义变化规则，数据库保存变化结果。</p>
+<hr>
+<p><strong>Q: 有请求就有编号是什么意思？</strong><br><strong>A:</strong> 这是Paxos的核心设计，指每个提案都必须附带一个全局唯一且递增的编号。Acceptor根据这个编号来判断优先级：<strong>它只响应编号高于它已承诺编号的请求，并拒绝编号更低或相等的请求</strong>。这建立了全局顺序，避免了冲突，确保了高优先级提案能胜出。</p>
+<hr>
+<p><strong>Q: 为什么哪个值最先被确定，就一定会被持久化？</strong><br><strong>A:</strong> 因为一个值被“确定”意味着它被半数以上的Acceptor接受。任何后续提案都必须与半数以上的Acceptor通信，这两个半数集合必然存在交集。交集内的Acceptor会强制后续提案者继承已被确定的值，从而保证了该值一旦被确定，就会被永久保持，无法被更改或覆盖。</p>
+<hr>
+<p><strong>Q: 一个节点如何知道集群中存在哪些“其他节点”？</strong><br><strong>A:</strong> 这不是Paxos算法解决的，而是通过系统配置实现。主要有两种方式：<strong>静态配置</strong>（在配置文件中预先列出所有节点的地址）或<strong>动态服务发现</strong>（节点在启动时向一个中心化的注册中心注册和查询）。Paxos算法在已知的节点集合上运行。</p>
+<hr>
+<h1 id="raft算法"><a href="#raft算法" class="headerlink" title="raft算法"></a>raft算法</h1><p>Raft 算法是一种用于实现分布式系统一致性的共识算法。它通过明确的角色划分和阶段分离，相比 Paxos 更易于理解。其核心目标是管理一个复制状态机，并通过日志复制保证所有节点最终状态一致。</p>
+<hr>
+<h3 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h3><p><strong>1. 三种节点状态</strong><br>一个节点在任意时刻处于以下三种状态之一：</p>
+<ul>
+<li><strong>Leader（领导者）</strong>：处理所有客户端请求。如果客户端将请求发给 Follower，Follower 会将请求重定向给 Leader。</li>
+<li><strong>Follower（跟随者）</strong>：被动角色，不会发送任何请求，仅响应来自 Leader 或 Candidate 的 RPC 请求。</li>
+<li><strong>Candidate（候选人）</strong>：用于选举产生新的 Leader 的临时状态。</li>
+</ul>
+<p><strong>2. 任期（Term）</strong></p>
+<ul>
+<li>Term 是一个单调递增的编号，标志着 Leader 的统治时期。</li>
+<li>每个 Term 至多只有一个 Leader（也可能因选举失败而没有）。</li>
+<li>Term 编号存储在日志条目（log entry）中，标识该条目是哪个任期内写入的。</li>
+<li>每次 RPC 通信都会携带 Term 编号。若节点发现收到的 RPC 中 Term 比本地大，则更新本地 Term 并切换为 Follower；若收到的 Term 比本地小，则拒绝该 RPC。</li>
+</ul>
+<p><strong>3. 两种 RPC 通信</strong></p>
+<ul>
+<li><strong>RequestVote RPC</strong>：由 Candidate 在选举期间发起，用于拉取选票。</li>
+<li><strong>AppendEntries RPC</strong>：由 Leader 发起，用于复制日志条目和发送心跳（不包含日志的心跳也是一种 AppendEntries RPC）以维持权威。</li>
+</ul>
+<p><strong>4. 日志序列</strong></p>
+<ul>
+<li>每个节点维护一份持久化的日志序列（Log），日志由多个有序的条目组成。</li>
+<li>一致性算法保证所有节点上的日志序列最终保持一致。</li>
+<li>每个日志条目包含：<ul>
+<li>命令（客户端请求的操作）</li>
+<li>任期号（Term）</li>
+<li>索引号（Log Index）</li>
+</ul>
+</li>
+</ul>
+<p><strong>5. 状态机</strong></p>
+<ul>
+<li>当日志条目被安全地复制到多数节点后，Leader 将其提交（commit）。</li>
+<li>提交意味着将日志条目中的命令应用到状态机中，从而改变系统状态。</li>
+<li>Leader 通过后续的 <code>AppendEntries</code> RPC（携带最后提交的索引 <code>lastIndex</code>）通知所有 Follower 提交相应的日志条目到各自的状态机。</li>
+</ul>
+<hr>
+<h3 id="选举机制"><a href="#选举机制" class="headerlink" title="选举机制"></a>选举机制</h3><p><strong>何时触发选举？</strong></p>
+<ol>
+<li><strong>集群初始化</strong>：所有节点启动时均为 Follower。随后，每个节点随机设置一个选举超时时间（Election Timeout）。</li>
+<li><strong>Leader 故障</strong>：Follower 在选举超时时间内未收到来自 Leader 的心跳（即 <code>AppendEntries</code> RPC），则会主动触发选举。</li>
+</ol>
+<p><strong>选举过程（从发起选举的节点视角）</strong></p>
+<ol>
+<li><strong>状态转换</strong>：节点增加本地的当前任期号（Term），并切换至 Candidate 状态。</li>
+<li><strong>自投票</strong>：首先投票给自己。</li>
+<li><strong>发起拉票</strong>：并行向集群中其他所有节点发送 <code>RequestVote</code> RPCs。</li>
+<li><strong>等待与处理结果</strong>：<ul>
+<li><strong>4.1 赢得选举</strong>：如果收到来自<strong>多数节点</strong>的投票，则该节点赢得选举，立即切换为 Leader 状态，并立刻向所有节点发送心跳消息以确立权威。</li>
+<li><strong>4.2 他人胜出</strong>：如果在等待过程中，收到来自其他节点的 RPC，且其中包含的 Term <strong>大于或等于</strong> 自己的当前 Term，并表明已有合法 Leader，则该节点承认结果，切换回 Follower 状态。</li>
+<li><strong>4.3 选举超时</strong>：如果一段时间内既未赢得选举，也未收到新 Leader 的心跳，则保持 Candidate 状态，<strong>增加任期号</strong>，然后重新发起新一轮选举。</li>
+</ul>
+</li>
+</ol>
+<p><strong>其他节点的投票逻辑</strong></p>
+<ul>
+<li>每个节点在<strong>一个任期内最多只能投一票</strong>，遵循先来先得的原则。</li>
+<li>Candidate 必须包含<strong>足够新</strong>的日志信息才会获得投票。具体来说，投票者会比较自己和 Candidate 最后一条日志的 <code>(lastTerm, lastIndex)</code>：<ul>
+<li>如果 Candidate 的最后日志任期号更大，则投票。</li>
+<li>如果任期号相同，但 Candidate 的日志索引更大或相等，则投票。</li>
+<li>否则拒绝投票。这一机制确保了新选出的 Leader 一定包含所有已提交的日志条目。</li>
+</ul>
+</li>
+</ul>
+<p><code>lastIndex</code>:最后一条数据的数据的索引号</p>
+<p><code>lastTerm</code>:本地最新的任期号</p>
+<hr>
+<h3 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h3><p><strong>日志同步流程</strong></p>
+<ol>
+<li><p><strong>客户端请求</strong>：客户端向 Leader 发送命令。</p>
+</li>
+<li><p><strong>本地追加</strong>：Leader 将命令作为一个新的日志条目追加到自己的日志序列中。</p>
+</li>
+<li><p><strong>广播复制</strong>：Leader 通过 <code>AppendEntries</code> RPC 将新条目并行发送给所有 Follower。该 RPC 包含前一个日志条目的索引（<code>prevLogIndex</code>）和任期号（<code>prevLogTerm</code>），用于日志一致性检查。</p>
+</li>
+<li><p><strong>Follower 一致性检查</strong>：</p>
+<ul>
+<li><strong>匹配成功</strong>：如果 Follower 在本地日志中找到了与 <code>prevLogIndex</code> 和 <code>prevLogTerm</code> 匹配的条目，则接受新条目，将其追加到本地日志。</li>
+<li><strong>匹配失败</strong>：如果找不到匹配的条目，则拒绝该请求。Leader 收到拒绝后，<strong>会减小 <code>prevLogIndex</code>，重发 RPC</strong>，逐步回溯直到找到一致的日志点。此后，Leader 会强制覆盖 Follower 该点之后的所有日志，使其与自己的日志保持一致。</li>
+</ul>
+<blockquote>
+<p>强制覆盖： 直接删除index不连续的日志</p>
+</blockquote>
+</li>
+<li><p><strong>提交与应用</strong>：</p>
+<ul>
+<li>一旦新的日志条目被复制到<strong>多数节点</strong>上，Leader 就认为该条目是<strong>已提交（Committed）</strong> 的。</li>
+<li>Leader 首先在本地状态机中应用（执行）该条目，然后将结果返回给客户端。</li>
+<li>在后续的 <code>AppendEntries</code> RPC（包括心跳）中，Leader 会携带最新的已提交索引 <code>lastIndex</code>。</li>
+<li>Follower 收到后，将本地日志中所有索引小于等于 <code>lastIndex</code> 的已提交条目应用到自己的状态机。</li>
+</ul>
+</li>
+</ol>
+<p><strong>安全性约束</strong></p>
+<ul>
+<li><strong>领导人完整性原则（Leader Completeness）</strong>：新选举出的 Leader 一定拥有所有已提交的日志条目。这是通过选举时的投票限制（Candidate 的日志必须至少和投票者一样新）来保证的。</li>
+<li><strong>提交前序任期条目</strong>：Leader 不能直接提交前任期的日志条目，只能通过提交当前任期的日志条目来间接提交之前任期的条目。这是为了防止已被提交的日志条目被后续的领导者覆盖。</li>
+</ul>
+<hr>
+<h3 id="安全原则"><a href="#安全原则" class="headerlink" title="安全原则"></a>安全原则</h3><ul>
+<li><strong>选举安全原则（Election Safety）</strong>：对于一个给定的任期号，最多只会有一个领导人被选举出来。</li>
+<li><strong>状态机安全原则（State Machine Safety）</strong>：如果一个领导人已经在给定的索引值位置的日志条目应用到状态机中，那么其他任何的服务器在这个索引位置不会应用一个不同的日志条目。这确保了所有状态机最终执行相同的命令序列。</li>
+<li><strong>领导人完全性原则（Leader Completeness）</strong>：如果某个日志条目在某个任期号中已经被提交，那么这个条目必然出现在更大任期号的所有领导人中。</li>
+<li><strong>日志匹配原则（Log Matching）</strong>：如果两个日志在相同的索引位置的日志条目的任期号相同，那么我们就认为这两个日志从头到该索引位置之间的内容完全相同。</li>
+</ul>
+<hr>
+<p>如果需要将此内容整理为流程图或与其他算法进行对比，可继续提出。</p>
+<p>raft算法示意图：</p>
+<p><strong>Q: 随机超时是什么意思？</strong><br><strong>A:</strong> 它是Raft触发选举的机制。每个Follower在启动或收到心跳后，会设置一个随机的选举超时时间（如150-300ms）。在此期间如果未收到心跳，它就会超时并切换为Candidate发起选举。随机性确保了多个Follower不会同时竞选，避免了选票被瓜分，从而提高了选举成功率。</p>
+<p><strong>Q: 心跳是什么？</strong><br><strong>A:</strong> 心跳是Leader周期性发送给所有Follower的、<strong>不包含日志条目</strong>的 <code>AppendEntries RPC</code>。它的主要目的是<strong>维持Leader的权威</strong>，通过让Follower重置其选举超时定时器，来阻止它们发起新的选举。同时，心跳也用于通知Follower已提交的日志索引。</p>
+<p><strong>Q: 如何避免出现&gt;&#x3D;2个leader？</strong><br><strong>A:</strong> Raft通过多重安全机制来严格避免脑裂：</p>
+<ul>
+<li><strong>任期机制：</strong> 节点只响应任期号不低于自己的请求。发现更高任期的节点会立即切换为Follower。</li>
+<li><strong>大多数投票原则：</strong> 一个Candidate必须获得集群半数以上的投票才能当选。由于任意两个“大多数”集合必然相交，不可能在同一任期内产生两个Leader。</li>
+<li><strong>一节点一票：</strong> 每个节点在一个任期内只能投一次票。</li>
+<li><strong>选举限制：</strong> Follower只会投票给日志不比自己旧的Candidate，这确保了Leader的日志完整性。</li>
+</ul>
+<h1 id="问题解析："><a href="#问题解析：" class="headerlink" title="问题解析："></a>问题解析：</h1><h3 id="1-PAXOS解决了什么问题？"><a href="#1-PAXOS解决了什么问题？" class="headerlink" title="1. PAXOS解决了什么问题？"></a><strong>1. PAXOS解决了什么问题？</strong></h3><p><strong>Paxos算法解决的核心问题是：</strong> 在一个可能发生机器宕机、网络延迟或消息丢失的不可靠分布式环境中，如何让网络中的所有节点<strong>就某个值（Value）达成一致</strong>，并且这个值一旦被确定，就是不可变的、永久的。</p>
+<p><strong>“解决了指令问题”的含义：</strong><br>在分布式系统（如分布式数据库）中，为了保证所有节点的最终状态一致，它们必须按照<strong>相同的顺序</strong>执行<strong>相同的指令集</strong>。Paxos的作用就是在每一条指令上执行一次共识过程，来确定“下一条要执行的指令是什么”。这样，即使有节点故障或网络问题，整个系统也能就指令序列达成一致，从而保证状态机的一致性。可以说，Paxos是<strong>实现分布式状态机复制</strong>的基石。</p>
+<hr>
+<h3 id="2-状态机和数据库的区别"><a href="#2-状态机和数据库的区别" class="headerlink" title="2. 状态机和数据库的区别"></a><strong>2. 状态机和数据库的区别</strong></h3><p>这是一个很好的概念性问题，它们关注点不同：</p>
+<ul>
+<li><strong>状态机：</strong><ul>
+<li><strong>核心是“过程”和“状态转移”</strong>。它从一个初始状态开始，接收一系列输入（命令&#x2F;指令），每个命令都会使状态机从一个确定的状态转移到另一个确定的状态。</li>
+<li><strong>强调确定性：</strong> 相同的初始状态和相同的命令序列，必须得到相同的最终状态。</li>
+<li><strong>数据是状态的一部分：</strong> 状态机中的数据（即状态）通常带有<strong>版本号或任期号</strong>（在Paxos&#x2F;Raft中就是日志索引和任期Term）。每次更改状态（应用一条新指令），版本号都会递增。这保证了状态变更的顺序性和可追溯性。</li>
+</ul>
+</li>
+<li><strong>数据库：</strong><ul>
+<li><strong>核心是“数据的存储、查询和管理”</strong>。它更关注数据的持久化、一致性（ACID特性）、查询效率和事务处理。</li>
+<li><strong>是状态机的一种持久化载体：</strong> 你可以将一个状态机的“状态”存储在一个数据库中。状态机负责决定“状态如何变化”，而数据库负责“将变化后的状态安全地存下来”。</li>
+<li><strong>版本号可能不是核心机制：</strong> 数据库本身可能使用MVCC（多版本并发控制）等技术，但其核心接口是读写数据，而不是严格按顺序应用指令。</li>
+</ul>
+</li>
+</ul>
+<p><strong>简单比喻：</strong></p>
+<ul>
+<li><strong>状态机</strong>就像一台录像机，它严格按顺序播放录像带（指令序列），屏幕上的画面（状态）随之变化。画面本身带有时间戳（版本号）。</li>
+<li><strong>数据库</strong>就像一本笔记本，你可以随时翻到某一页去读或写。虽然它有页码，但其主要功能是记录内容，而不是定义翻页的规则。</li>
+</ul>
+<p>在Paxos&#x2F;Raft中，我们正是用<strong>日志</strong>来记录那个不可变的指令序列，而<strong>状态机</strong>负责按日志顺序执行这些指令，从而保证所有节点的状态一致。</p>
+<hr>
+<h3 id="3-“有请求就有编号”是什么意思？"><a href="#3-“有请求就有编号”是什么意思？" class="headerlink" title="3. “有请求就有编号”是什么意思？"></a><strong>3. “有请求就有编号”是什么意思？</strong></h3><p>这句话精炼地概括了Paxos算法的核心设计之一：<strong>通过编号（提案编号 N）来建立全局顺序和确定优先级。</strong></p>
+<p><strong>具体解释如下：</strong></p>
+<p>在Paxos的Prepare阶段，Proposer会生成一个全局唯一且递增的提案编号N，然后发给Acceptor。</p>
+<p>对于Acceptor来说，这个编号N是判断是否响应的唯一依据，其承诺规则可以简化为：</p>
+<ul>
+<li><strong>“如果收到的请求编号 N &gt; 我已承诺的最小编号，我就响应，并承诺不再接受任何编号小于 N 的提案。”</strong></li>
+<li>你问题中的表述 **“请求编号 &lt;&#x3D; 现有编号 就拒绝”** 是从反面说的，更准确的描述是：**Acceptor会记录它已响应过的最大Prepare请求编号 <code>max_n</code>。如果收到一个编号为 N 的Prepare请求，且 N &lt;&#x3D; <code>max_n</code>，则它会拒绝这个请求。** 只有当 N &gt; <code>max_n</code> 时，它才会响应并更新 <code>max_n = N</code>。</li>
+</ul>
+<p><strong>为什么这么做？</strong><br>这解决了分布式环境中的“活锁”和“冲突”问题。编号建立了绝对的优先级：高编号的提案可以覆盖低编号的提案，从而确保即使有多个Proposer在竞争，最终也能有一个提案（通常是编号最大的那个）成功被接受，使系统达成一致。</p>
+<hr>
+<h3 id="4-为什么哪个值最先被确定，就一定会被持久化？"><a href="#4-为什么哪个值最先被确定，就一定会被持久化？" class="headerlink" title="4. 为什么哪个值最先被确定，就一定会被持久化？"></a><strong>4. 为什么哪个值最先被确定，就一定会被持久化？</strong></h3><p>这个结论源于Paxos算法的<strong>安全性和“大多数派”原则</strong>。</p>
+<ol>
+<li><strong>“确定”的定义：</strong> 在Paxos中，一个值V被“确定”，意味着它已经被<strong>半数以上</strong>的Acceptor节点接受。</li>
+<li><strong>“持久化”的保证：</strong> 任何后续的Proposer想要提出提案，都必须先执行Prepare阶段，并向半数以上的Acceptor发送请求。</li>
+<li><strong>关键推理（交集原则）：</strong> 由于两次“半数以上”的集合必然存在<strong>至少一个公共的Acceptor</strong>（数学上的交集不为空），这个公共的Acceptor已经接受了之前被确定的值V。</li>
+<li><strong>算法的强制规定：</strong> 根据Paxos算法规则，这个公共Acceptor在响应新的Prepare请求时，<strong>必须</strong>将它已经接受过的值（也就是V）返回给新的Proposer。而新的Proposer在生成提案时，<strong>必须</strong>选择收到的响应中编号最高的那个值作为自己的提案值。</li>
+</ol>
+<p><strong>因此，流程是这样的：</strong></p>
+<ul>
+<li>值V被确定 → 半数以上Acceptor接受了V。</li>
+<li>新Proposer发起提案 → 向半数以上Acceptor执行Prepare。</li>
+<li><strong>必然存在一个Acceptor既接受了V，又响应了新Proposer</strong> → 这个Acceptor会把V返回给新Proposer。</li>
+<li>新Proposer<strong>必须</strong>使用V作为提案值 → 新提案成功被接受后，被确定的值依然是V。</li>
+</ul>
+<p>所以，一旦一个值被确定，无论发生任何节点故障、重启或新的提案，这个值都会被后续的提案所继承和巩固，从而实现了“持久化”。这是Paxos算法最核心的安全保证。</p>
+<hr>
+<h3 id="5-一个节点如何知道集群中存在哪些“其他节点”？"><a href="#5-一个节点如何知道集群中存在哪些“其他节点”？" class="headerlink" title="5. 一个节点如何知道集群中存在哪些“其他节点”？"></a><strong>5. 一个节点如何知道集群中存在哪些“其他节点”？</strong></h3><p>这并不是Paxos算法本身解决的问题，而是分布式系统在<strong>配置和初始化</strong>阶段需要解决的。主要有以下几种方式：</p>
+<ol>
+<li><strong>静态配置：</strong> 最常见的方式。在系统启动前，就在每个节点的配置文件中<strong>明确列出</strong>集群中所有节点的网络地址（IP和端口）。这样，每个节点启动时，都清楚地知道需要与哪些“其他节点”进行通信。<ul>
+<li><em>例如：在 <code>cluster.conf</code> 中写入 <code>node1=192.168.1.101:8000, node2=192.168.1.102:8000, node3=192.168.1.103:8000</code>。</em></li>
+</ul>
+</li>
+<li><strong>动态服务发现：</strong> 在更复杂的云环境中，节点的IP可能是不固定的。这时，节点会使用一个外部的<strong>服务发现系统</strong>（如 ZooKeeper, Etcd, Consul 或 Kubernetes Service）。<ul>
+<li><strong>流程：</strong> 节点启动后，向服务发现系统进行注册。当它需要与其他节点通信时（比如发起Paxos提案），它先去服务发现系统查询当前所有已注册的健康节点列表。</li>
+</ul>
+</li>
+<li><strong>广播&#x2F;组播：</strong> 在某些局域网环境中，节点可以通过广播或组播消息来发现彼此。一个节点上线后发送广播消息“我来了”，其他节点收到后将其加入自己的节点列表。</li>
+</ol>
+<p><strong>总结：</strong> “判断其他节点”是一个运维和架构层面的问题，通过<strong>预先静态配置</strong>或<strong>运行时动态发现</strong>来解决。而Paxos算法是在<strong>已知节点集合</strong>的基础上，来解决这些节点之间如何达成共识的问题。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/09/29/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A31/">https://kizzy899.github.io/2025/09/29/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A31/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a></div><div class="post-share"><div class="social-share" data-image="/aaaset/cover_14.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/10/10/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="关于Git 子模块（子文档）"><img class="cover" src="/aaaset/cover_18.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">关于Git 子模块（子文档）</div></div><div class="info-2"><div class="info-item-1">问题发现&amp;解决什么是子模块（子文档） 定义：Git 子模块（submodule）是一个嵌套在父仓库中的独立 Git 仓库。 作用：允许你在一个 Git 仓库中引用另一个仓库，并保持独立版本控制。 特点： 有自己的 .git 目录或由父仓库 .gitmodules 管理。 GitHub 上显示为 箭头文件夹，点击会跳转到子模块的远程仓库。 本地未初始化或更新时，会出现 in unpopulated submodule 报错。     如何发现文件夹被上传成子模块  GitHub 文件浏览器：  文件夹前有 箭头标记。 点击会跳到子模块对应的远程仓库，而不是显示普通文件列表。   本地操作：  执行 git status 或 git submodule status 可能显示子模块信息。  对未初始化的子模块操作文件会报错，例如： 1in unpopulated submodule     为什么文件夹会被识别为子模块 误操作添加子模块： 1git submodule add &lt;repo_url&gt; 子文件夹名   Git 会记录子模块信息在 .gitmodules...</div></div></div></a><a class="pagination-related" href="/2025/09/28/%E5%88%B7%E9%A2%98%E5%8F%8D%E6%80%9D/" title="代码理解记录1"><img class="cover" src="/cover/cover9.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">代码理解记录1</div></div><div class="info-2"><div class="info-item-1">1uint id = zombies.push(Zombie(_name, _dna)) - 1;  错误理解：仅记录加入数组的僵尸的下标 正确理解：1. 创建一个 Zombie 结构体实例1Zombie(_name, _dna)  这是对 Zombie 结构体的构造（只是内存中的一个临时对象）。 2. 调用 zombies.push(...) 将它加入数组1zombies.push(...)  push 会把这个新的僵尸放入 zombies 动态数组中，并且返回当前数组的新长度。 3. 计算该僵尸的下标（ID）因为 push 返回的是「数组新长度」，所以减 1 就是索引： 1uint id = ... - 1;    该代码等价于： 12zombies.push(Zombie(_name, _dna));   // 加入数组uint id = zombies.length - 1;        // 获取下标  </div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">64</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CAP%E7%90%86%E8%AE%BA"><span class="toc-number">1.</span> <span class="toc-text">CAP理论</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Base%E7%90%86%E8%AE%BA"><span class="toc-number">2.</span> <span class="toc-text">Base理论</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E6%A8%A1%E5%9E%8B"><span class="toc-number">3.</span> <span class="toc-text">数据一致性模型</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Quorum%E3%80%81WARO%E6%9C%BA%E5%88%B6"><span class="toc-number">4.</span> <span class="toc-text">Quorum、WARO机制</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PAXOS%E7%AE%97%E6%B3%95"><span class="toc-number">5.</span> <span class="toc-text">PAXOS算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Paxos%E7%AE%97%E6%B3%95%E7%9A%84%E4%B8%A4%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="toc-number">5.0.1.</span> <span class="toc-text">Paxos算法的两个阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%80%EF%BC%9APrepare%EF%BC%88%E5%87%86%E5%A4%87%E9%98%B6%E6%AE%B5%EF%BC%89"><span class="toc-number">5.0.1.1.</span> <span class="toc-text">阶段一：Prepare（准备阶段）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9AAccept%EF%BC%88%E6%8E%A5%E5%8F%97%E9%98%B6%E6%AE%B5%EF%BC%89"><span class="toc-number">5.0.1.2.</span> <span class="toc-text">阶段二：Accept（接受阶段）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B4%BB%E9%94%81%E9%97%AE%E9%A2%98"><span class="toc-number">5.0.2.</span> <span class="toc-text">活锁问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Multi-Paxos-%E4%BC%98%E5%8C%96"><span class="toc-number">5.0.3.</span> <span class="toc-text">Multi-Paxos 优化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E6%9E%90"><span class="toc-number">5.1.</span> <span class="toc-text">问题解析</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#raft%E7%AE%97%E6%B3%95"><span class="toc-number">6.</span> <span class="toc-text">raft算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">6.0.1.</span> <span class="toc-text">核心概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E4%B8%BE%E6%9C%BA%E5%88%B6"><span class="toc-number">6.0.2.</span> <span class="toc-text">选举机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E5%A4%8D%E5%88%B6"><span class="toc-number">6.0.3.</span> <span class="toc-text">日志复制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E5%8E%9F%E5%88%99"><span class="toc-number">6.0.4.</span> <span class="toc-text">安全原则</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="toc-number">7.</span> <span class="toc-text">问题解析：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-PAXOS%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">7.0.1.</span> <span class="toc-text">1. PAXOS解决了什么问题？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%8A%B6%E6%80%81%E6%9C%BA%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.0.2.</span> <span class="toc-text">2. 状态机和数据库的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E2%80%9C%E6%9C%89%E8%AF%B7%E6%B1%82%E5%B0%B1%E6%9C%89%E7%BC%96%E5%8F%B7%E2%80%9D%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%9F"><span class="toc-number">7.0.3.</span> <span class="toc-text">3. “有请求就有编号”是什么意思？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%93%AA%E4%B8%AA%E5%80%BC%E6%9C%80%E5%85%88%E8%A2%AB%E7%A1%AE%E5%AE%9A%EF%BC%8C%E5%B0%B1%E4%B8%80%E5%AE%9A%E4%BC%9A%E8%A2%AB%E6%8C%81%E4%B9%85%E5%8C%96%EF%BC%9F"><span class="toc-number">7.0.4.</span> <span class="toc-text">4. 为什么哪个值最先被确定，就一定会被持久化？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%B8%80%E4%B8%AA%E8%8A%82%E7%82%B9%E5%A6%82%E4%BD%95%E7%9F%A5%E9%81%93%E9%9B%86%E7%BE%A4%E4%B8%AD%E5%AD%98%E5%9C%A8%E5%93%AA%E4%BA%9B%E2%80%9C%E5%85%B6%E4%BB%96%E8%8A%82%E7%82%B9%E2%80%9D%EF%BC%9F"><span class="toc-number">7.0.5.</span> <span class="toc-text">5. 一个节点如何知道集群中存在哪些“其他节点”？</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'kizzy899/kizzy899.github.io',
+      'data-repo-id': 'R_kgDONCC1iQ',
+      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
