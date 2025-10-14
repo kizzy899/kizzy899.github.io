@@ -1,0 +1,585 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>分布式详解2 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="ZAB协议ZAB协议定义ZAB协议是为分布式协调服务Zookeeper专门设计的一种支持崩溃恢复的原子广播协议，实现分布式数据一致性。 ZAB协议组成部分消息广播 集群中所有的事务请求都由Leader节点来处理，其他服务器为Follower Leader将客户端的事务请求转换为事务Proposal，并且将Proposal分发给集群中其他所有的Follower 完成广播之后，Leader等待Foll">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式详解2">
+<meta property="og:url" content="https://kizzy899.github.io/2025/10/04/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A32/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="ZAB协议ZAB协议定义ZAB协议是为分布式协调服务Zookeeper专门设计的一种支持崩溃恢复的原子广播协议，实现分布式数据一致性。 ZAB协议组成部分消息广播 集群中所有的事务请求都由Leader节点来处理，其他服务器为Follower Leader将客户端的事务请求转换为事务Proposal，并且将Proposal分发给集群中其他所有的Follower 完成广播之后，Leader等待Foll">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/aaaset/cover_15.jpg">
+<meta property="article:published_time" content="2025-10-04T02:01:02.000Z">
+<meta property="article:modified_time" content="2025-10-14T02:11:16.673Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="分布式系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/aaaset/cover_15.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "分布式详解2",
+  "url": "https://kizzy899.github.io/2025/10/04/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A32/",
+  "image": "https://kizzy899.github.io/aaaset/cover_15.jpg",
+  "datePublished": "2025-10-04T02:01:02.000Z",
+  "dateModified": "2025-10-14T02:11:16.673Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "kizy",
+      "url": "https://kizzy899.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2025/10/04/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A32/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '分布式详解2',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/aaaset/cover_15.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">分布式详解2</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">分布式详解2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-04T02:01:02.000Z" title="发表于 2025-10-04 10:01:02">2025-10-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-14T02:11:16.673Z" title="更新于 2025-10-14 10:11:16">2025-10-14</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="ZAB协议"><a href="#ZAB协议" class="headerlink" title="ZAB协议"></a>ZAB协议</h1><h2 id="ZAB协议定义"><a href="#ZAB协议定义" class="headerlink" title="ZAB协议定义"></a>ZAB协议定义</h2><p>ZAB协议是为分布式协调服务Zookeeper专门设计的一种支持崩溃恢复的原子广播协议，实现分布式数据一致性。</p>
+<h2 id="ZAB协议组成部分"><a href="#ZAB协议组成部分" class="headerlink" title="ZAB协议组成部分"></a>ZAB协议组成部分</h2><h3 id="消息广播"><a href="#消息广播" class="headerlink" title="消息广播"></a>消息广播</h3><ul>
+<li>集群中所有的事务请求都由Leader节点来处理，其他服务器为Follower</li>
+<li>Leader将客户端的事务请求转换为事务Proposal，并且将Proposal分发给集群中其他所有的Follower</li>
+<li>完成广播之后，Leader等待Follower反馈，当有过半数的Follower反馈信息后，Leader将再次向集群内Follower广播Commit信息</li>
+<li>Commit信息就是确认将之前的Proposal提交</li>
+<li>Leader节点的写入是一个两步操作：第一步是广播事务操作，第二步是广播提交操作</li>
+<li>过半数指的是反馈的节点数 &gt;&#x3D;N&#x2F;2+1，N是全部的Follower节点数量</li>
+</ul>
+<h3 id="崩溃恢复"><a href="#崩溃恢复" class="headerlink" title="崩溃恢复"></a>崩溃恢复</h3><ul>
+<li>在以下情况下会进入崩溃恢复模式：<ul>
+<li>初始化集群，刚刚启动的时候</li>
+<li>Leader崩溃，因为故障宕机</li>
+<li>Leader失去了半数的机器支持，与集群中超过一半的节点断连</li>
+</ul>
+</li>
+<li>此时<strong>开启新一轮Leader选举</strong>，选举产生的Leader会与过半的Follower进行同步，使数据一致</li>
+<li>当与过半的机器同步完成后，就退出恢复模式，然后进入消息广播模式</li>
+</ul>
+<h2 id="ZAB协议作用"><a href="#ZAB协议作用" class="headerlink" title="ZAB协议作用"></a>ZAB协议作用</h2><ul>
+<li>所有客户端请求都是写入到Leader进程中，然后由Leader同步到其他节点（Follower）</li>
+<li>在集群数据同步的过程中，如果出现Follower节点崩溃或者Leader进程崩溃时，都会通过Zab协议来保证数据一致性</li>
+<li>整个Zookeeper集群的一致性保证就是在消息广播和崩溃恢复两个状态之间切换</li>
+<li>当Leader服务正常时，就是正常的消息广播模式；当Leader不可用时，则进入崩溃恢复模式</li>
+<li>崩溃恢复阶段会进行数据同步，完成以后，重新进入消息广播阶段</li>
+</ul>
+<h2 id="Zxid事务编号"><a href="#Zxid事务编号" class="headerlink" title="Zxid事务编号"></a>Zxid事务编号</h2><ul>
+<li>Zxid是Zab协议的一个事务编号</li>
+<li>Zxid是一个64位的数字，其中低32位是一个简单的单调递增计数器，针对客户端每一个事务请求，计数器加1</li>
+<li>高32位则代表Leader周期年代的编号</li>
+<li>Leader周期（epoch）：可以理解为当前集群所处的年代或者周期</li>
+<li>每当有一个新的Leader选举出现时，就会从这个Leader服务器上取出其本地日志中最大事务的Zxid，并从中读取epoch值，然后加1，以此作为新的周期ID</li>
+<li>高32位代表了每代Leader的唯一性，低32位则代表了每代Leader中事务的唯一性</li>
+</ul>
+<h2 id="ZAB节点状态"><a href="#ZAB节点状态" class="headerlink" title="ZAB节点状态"></a>ZAB节点状态</h2><ul>
+<li>following：服从leader的命令</li>
+<li>leading：负责协调事务</li>
+<li>election&#x2F;looking：选举状态</li>
+</ul>
+<h2 id="ZAB选举流程"><a href="#ZAB选举流程" class="headerlink" title="ZAB选举流程"></a>ZAB选举流程</h2><p>好的，我们来分步骤详细讲解 ZAB 协议的选举流程，并重点解释 Zxid 和 myid 的作用。</p>
+<h3 id="ZAB-选举流程详解"><a href="#ZAB-选举流程详解" class="headerlink" title="ZAB 选举流程详解"></a>ZAB 选举流程详解</h3><p>ZAB 的选举发生在集群启动或 Leader 崩溃时，所有节点会进入 <strong>LOOKING</strong> 状态。整个选举过程可以概括为“<strong>两轮比较</strong>”，核心是确保选出的 Leader 拥有最全的数据。</p>
+<p><strong>步骤 1: 每个节点发起投票</strong></p>
+<ul>
+<li>当某个 Follower 发现无法与 Leader 通信（心跳超时）时，它会将自己置为 <strong>LOOKING</strong> 状态，并<strong>首先投自己一票</strong>。</li>
+<li>这张选票包含三个核心信息：<ol>
+<li><strong>我当前所推举的 Leader 的 myid</strong>（初始时就是自己）。</li>
+<li><strong>我本地持有的最大 Zxid</strong> (<code>lastZxid</code>)。</li>
+<li><strong>我当前所处的逻辑时钟 Epoch</strong>。</li>
+</ol>
+</li>
+</ul>
+<p><strong>步骤 2: 节点间交换选票</strong></p>
+<ul>
+<li>每个处于 LOOKING 状态的节点，都会通过 <strong>投票广播</strong> 将自己的这张选票发送给集群中的所有其他节点。</li>
+<li>同时，它也会不断地接收来自其他节点的选票。</li>
+</ul>
+<p><strong>步骤 3: 接收选票并进行“两轮比较”</strong></p>
+<p>这是整个选举过程的核心。当一个节点收到另一张选票时，它会将收到的选票与<strong>自己当前所持有的选票</strong>进行比较。比较规则遵循一个严格的优先级，即“<strong>数据完整性优先，服务器ID为辅</strong>”：</p>
+<ol>
+<li><p><strong>第一轮比较：比较 Zxid (数据新旧)</strong></p>
+<ul>
+<li><strong>规则</strong>：优先比较双方选票中携带的 <code>lastZxid</code>（即所推举 Leader 的 Zxid）。</li>
+<li><strong>如果收到的选票的 Zxid &gt; 自己当前选票的 Zxid</strong>：<ul>
+<li>这证明对方推举的 Leader 拥有比自己推举的 Leader <strong>更更新的数据</strong>。</li>
+<li>为了保证集群数据的一致性，必须让拥有最全数据的人当 Leader，否则会造成数据丢失或回滚。</li>
+<li><strong>行动</strong>：节点会<strong>无条件地更新自己的选票</strong>，改为支持对方推举的那个 myid，并将这个更新后的选票再次广播出去。</li>
+</ul>
+</li>
+<li><strong>如果收到的选票的 Zxid &lt; 自己当前选票的 Zxid</strong>：<ul>
+<li>说明对方的数据更旧，<strong>直接忽略这张选票</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>第二轮比较：比较 myid (服务器ID)</strong></p>
+<ul>
+<li><strong>只有当双方选票的 Zxid 相等时</strong>，才会进入这一轮比较。</li>
+<li><strong>规则</strong>：比较双方选票中推举的 Leader 的 <code>myid</code>。</li>
+<li><strong>如果收到的选票的 myid &gt; 自己当前选票的 myid</strong>：<ul>
+<li>在数据一样新的前提下，选择那个 ID 更大的服务器作为 Leader。这是一个<strong>打破平局</strong>的机制，确保大家能快速达成一致，避免僵局。</li>
+<li><strong>行动</strong>：节点会更新自己的选票，改为支持那个 myid 更大的服务器，并广播更新。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>步骤 4: 统计选票与确认 Leader</strong></p>
+<ul>
+<li>节点在不断地接收和更新选票的过程中，也会统计<strong>有多少张选票最终指向了同一个 myid</strong>。</li>
+<li>一旦发现某个被推举的 myid 获得了<strong>超过半数（Quorum）</strong> 的投票，该节点就会确认这个 myid 对应的服务器就是新的 Leader。</li>
+<li>此时，该节点将自己的状态从 LOOKING 切换为 <strong>FOLLOWING</strong>（如果自己是 Leader 则切换为 LEADING），并开始与新的 Leader 进行数据同步。</li>
+</ul>
+<hr>
+<h3 id="重点解析：为什么-Zxid-和-myid-越大越容易成为-Leader？"><a href="#重点解析：为什么-Zxid-和-myid-越大越容易成为-Leader？" class="headerlink" title="重点解析：为什么 Zxid 和 myid 越大越容易成为 Leader？"></a>重点解析：为什么 Zxid 和 myid 越大越容易成为 Leader？</h3><h4 id="1-为什么-Zxid-越大越优先？（核心原因：数据一致性）"><a href="#1-为什么-Zxid-越大越优先？（核心原因：数据一致性）" class="headerlink" title="1. 为什么 Zxid 越大越优先？（核心原因：数据一致性）"></a>1. 为什么 Zxid 越大越优先？（核心原因：数据一致性）</h4><p><strong>Zxid 的本质是数据版本号。Zxid 越大，代表该节点处理过（或应该拥有）越新的事务。</strong></p>
+<ul>
+<li><strong>根本目标</strong>：分布式系统的核心目标之一就是保证数据一致性，避免数据丢失或回退。</li>
+<li><strong>灾难场景</strong>：如果让一个 Zxid 很小的节点（数据很旧）当上了 Leader，会发生什么？<ul>
+<li>这个新 Leader 会开始广播新的事务，它的本地日志会增长。</li>
+<li>但那些 Zxid 比它大的 Follower 节点，拥有一些这个新 Leader <strong>不知道的、已提交的事务</strong>。</li>
+<li>根据 ZAB 的崩溃恢复协议，新 Leader 会要求 Follower 与自己同步，这可能导致 <strong>Follower 上那些更新的数据被旧 Leader 的日志覆盖而丢失</strong>。这是绝对不允许发生的。</li>
+</ul>
+</li>
+</ul>
+<p><strong>因此，选举时优先选择 Zxid 最大的节点，是为了保证“拥有最全数据的节点成为 Leader”，从而杜绝数据丢失，这是 ZAB 协议安全性的基石。</strong></p>
+<blockquote>
+<p><strong>为什么 Zxid 比较小，就要把票更新？</strong><br>正是因为上述原因。当你发现另一张选票推举的候选人拥有更大的 Zxid（更新的数据）时，你必须“识时务”地改变你的支持对象。你手中的那一票投给数据旧的节点，是在助长“数据丢失”的风险。为了整个集群的数据安全，你必须立刻“倒戈”，把票投给数据更全的那个候选人，并告诉其他同伴也这样做。</p>
+</blockquote>
+<h4 id="2-为什么-myid-大是次要优势？（辅助原因：快速收敛）"><a href="#2-为什么-myid-大是次要优势？（辅助原因：快速收敛）" class="headerlink" title="2. 为什么 myid 大是次要优势？（辅助原因：快速收敛）"></a>2. 为什么 myid 大是次要优势？（辅助原因：快速收敛）</h4><p><strong>myid 是一个预设的、唯一的服务器标识符，与数据无关。</strong></p>
+<ul>
+<li><strong>作用场景</strong>：当两个或多个候选节点的 <strong>Zxid 一模一样</strong> 时，证明它们的数据完备性是完全相同的。</li>
+<li><strong>解决的问题</strong>：在这种情况下，选谁当 Leader 在数据层面都是安全的。那么，就需要一个<strong>确定性的、无歧义的规则</strong>来快速选出 Leader，避免集群陷入投票僵局。</li>
+<li><strong>为什么是 myid 大？</strong> 这是一个简单有效的规则。它不关心服务器的性能或网络位置，只关心一个预设的 ID。选择 myid 最大的，可以确保所有节点在遇到 Zxid 相同的情况时，都会做出<strong>同样的选择</strong>，从而迅速达成共识。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li><strong>Zxid 是硬指标</strong>，决定了<strong>谁能当</strong>Leader（数据最全者胜），保证了<strong>安全性</strong>。</li>
+<li><strong>myid 是软指标</strong>，决定了在资格相同时<strong>谁优先</strong>，保证了<strong>选举效率</strong>和<strong>确定性</strong>。</li>
+<li><strong>“更新选票”</strong> 的机制是确保这个“数据最全者胜”的规则能够像潮水一样在集群中扩散开，最终让所有诚实节点都汇聚到同一个正确的候选人身上。</li>
+</ul>
+<h2 id="与raft协议的区别"><a href="#与raft协议的区别" class="headerlink" title="与raft协议的区别"></a>与<code>raft</code>协议的区别</h2><p>好的，这是对 ZAB 协议和 Raft 协议区别的总结。</p>
+<h3 id="分点总结"><a href="#分点总结" class="headerlink" title="分点总结"></a>分点总结</h3><ol>
+<li><p><strong>核心目标与设计出发点</strong></p>
+<ul>
+<li><strong>ZAB</strong>： 为 ZooKeeper 量身定做，其主要目标是<strong>保证操作的顺序性</strong>，以实现分布式协调服务（如锁、配置管理）的强一致性。</li>
+<li><strong>Raft</strong>： 一个通用的、易于理解的<strong>分布式共识算法</strong>，其目标是安全地复制一个状态机，适用于各种需要共识的场景。</li>
+</ul>
+</li>
+<li><p><strong>状态机复制核心</strong></p>
+<ul>
+<li><strong>ZAB</strong>： 核心是<strong>广播状态变化</strong>，即“日志条目”本身就是最终状态的变化量。它更关注将一系列状态更新按顺序广播出去。</li>
+<li><strong>Raft</strong>： 核心是<strong>复制日志</strong>，日志条目是状态机执行的命令。它强调日志本身的一致性，只要日志一致，状态机最终状态就一致。</li>
+</ul>
+</li>
+<li><p><strong>日志允许的差异与提交方式</strong></p>
+<ul>
+<li><strong>ZAB</strong>： 在恢复阶段，新 Leader 会<strong>覆盖</strong> Follower 上与自己不同的日志。它只提交一个提案序列，不要求所有节点的日志在提交时完全一致。</li>
+<li><strong>Raft</strong>： <strong>强制保持日志一致性</strong>，新 Leader 不会覆盖 Follower 的日志，而是通过一致性检查找到最后一致的点，然后追加新日志。它提交的是具体的日志条目。</li>
+</ul>
+</li>
+<li><p><strong>Leader选举的约束条件</strong></p>
+<ul>
+<li><strong>ZAB</strong>： 选举时主要比较 <code>zxid</code>（先 epoch，后计数器），<strong>拥有最新数据的节点</strong>（<code>zxid</code> 最大）更可能成为 Leader，这减少了数据丢失风险，是实现<strong>Primary-Backup</strong>模型的关键。</li>
+<li><strong>Raft</strong>： 选举时除了需要获得多数派投票，还对候选人的日志新旧有要求（Term 更大或 Term 相同但索引更大）。它保证了 Leader 一定包含所有已提交的日志条目，是实现<strong>State Machine Replication</strong>的关键。</li>
+</ul>
+</li>
+<li><p><strong>术语与可理解性</strong></p>
+<ul>
+<li><strong>ZAB</strong>： 术语与流程紧密耦合在 ZooKeeper 的实现中（如 <code>zxid</code>, Proposal, Commit），相对复杂。</li>
+<li><strong>Raft</strong>： 被设计得<strong>易于理解</strong>，其概念（Leader, Term, Log Index）清晰，模块化（领导选举、日志复制、安全性）明确，便于教学和实现。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="区别对比表格"><a href="#区别对比表格" class="headerlink" title="区别对比表格"></a>区别对比表格</h3><table>
+<thead>
+<tr>
+<th align="left">对比维度</th>
+<th align="left">ZAB 协议</th>
+<th align="left">Raft 协议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>核心设计目标</strong></td>
+<td align="left">为 ZooKeeper 实现<strong>原子广播</strong>，<strong>保证操作顺序</strong></td>
+<td align="left">通用的<strong>分布式共识</strong>，管理<strong>复制状态机</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>设计出发点</strong></td>
+<td align="left">服务于特定的协调服务（如发布&#x2F;订阅、锁）</td>
+<td align="left">构建一个易于理解和实现的通用共识模块</td>
+</tr>
+<tr>
+<td align="left"><strong>状态机复制核心</strong></td>
+<td align="left"><strong>广播状态变化</strong>（日志是状态增量）</td>
+<td align="left"><strong>复制日志命令</strong>（日志是状态机输入）</td>
+</tr>
+<tr>
+<td align="left"><strong>日志处理方式</strong></td>
+<td align="left">恢复阶段，Leader 可以<strong>覆盖</strong> Follower 的日志</td>
+<td align="left"><strong>强制日志一致性</strong>，通过追加方式同步日志</td>
+</tr>
+<tr>
+<td align="left"><strong>提交机制</strong></td>
+<td align="left">提交一个<strong>提案序列</strong></td>
+<td align="left">提交具体的<strong>日志条目</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>Leader选举约束</strong></td>
+<td align="left">主要看谁的数据<strong>最新</strong>（<code>zxid</code> 最大）</td>
+<td align="left">需要多数派投票，且候选人日志必须<strong>足够新</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>核心标识</strong></td>
+<td align="left"><strong>Zxid</strong> (64位： epoch + 计数器)</td>
+<td align="left"><strong>Term</strong> (任期号) + <strong>Log Index</strong> (日志索引)</td>
+</tr>
+<tr>
+<td align="left"><strong>术语与复杂度</strong></td>
+<td align="left">与 ZooKeeper 实现耦合，相对复杂</td>
+<td align="left">模块清晰，术语通俗，<strong>易于理解</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>典型应用</strong></td>
+<td align="left"><strong>Apache ZooKeeper</strong></td>
+<td align="left"><strong>ETCD</strong>, <strong>Consul</strong>, <strong>TiKV</strong> 等</td>
+</tr>
+</tbody></table>
+<p><strong>核心思想差异总结</strong>：ZAB 协议更像一个 <strong>主-从复制（Primary-Backup）</strong> 协议，其核心是让备份节点（Backup）严格按顺序执行主节点（Primary）的状态更新指令。而 Raft 是一个标准的 <strong>状态机复制（State Machine Replication）</strong> 协议，其核心是保证所有节点从同一个初始状态开始，按相同顺序执行相同的命令，从而得到相同的最终状态。</p>
+<p>好的，这个关于投票通信模式的观察非常准确，是 ZAB 和 Raft 在选举机制上一个显著且重要的区别。</p>
+<h3 id="ZAB-与-Raft-在选举通信模式上的区别"><a href="#ZAB-与-Raft-在选举通信模式上的区别" class="headerlink" title="ZAB 与 Raft 在选举通信模式上的区别"></a>ZAB 与 Raft 在选举通信模式上的区别</h3><p>这个区别的核心在于：<strong>Raft 使用请求-响应式的“拉票”模型，而 ZAB 使用广播式的“散票”模型。</strong></p>
+<hr>
+<h4 id="Raft-的“放射状”投票（拉票模型）"><a href="#Raft-的“放射状”投票（拉票模型）" class="headerlink" title="Raft 的“放射状”投票（拉票模型）"></a>Raft 的“放射状”投票（拉票模型）</h4><ol>
+<li><p><strong>发起方式</strong>：</p>
+<ul>
+<li>当一个 Follower 的选举超时器到期后，它会<strong>自增任期号</strong>，并<strong>将自己转换为候选人</strong>状态。</li>
+<li>然后，它<strong>向集群中的每一个其他节点</strong>，并行地发送 <strong>RequestVote RPC（请求投票RPC）</strong>。</li>
+</ul>
+</li>
+<li><p><strong>通信模式</strong>：</p>
+<ul>
+<li>这个过程就像候选人以自己为中心，向所有其他节点<strong>放射性地发出拉票请求</strong>。</li>
+<li>每个请求都是一个独立的 RPC 调用，候选人等待每个节点的单独响应。</li>
+</ul>
+</li>
+<li><p><strong>投票决策</strong>：</p>
+<ul>
+<li>其他节点收到 RequestVote RPC 后，根据其日志新旧度和当前任期，<strong>独立决定是否给这个候选人投票</strong>。</li>
+<li>如果同意，就投出自己的一票；如果拒绝，则告知原因。</li>
+</ul>
+</li>
+<li><p><strong>结果统计</strong>：</p>
+<ul>
+<li>候选人<strong>自己统计</strong>收到的同意票数。如果收到超过半数的同意票，它就晋升为 Leader。</li>
+</ul>
+</li>
+</ol>
+<p><strong>特点总结</strong>：Raft 的选举是候选人<strong>主动去“拉”票</strong>，整个通信流程是由候选人单向发起的请求-响应流，呈现出“放射状”。</p>
+<hr>
+<h4 id="ZAB-的“网状”投票（散票模型）"><a href="#ZAB-的“网状”投票（散票模型）" class="headerlink" title="ZAB 的“网状”投票（散票模型）"></a>ZAB 的“网状”投票（散票模型）</h4><ol>
+<li><p><strong>发起方式</strong>：</p>
+<ul>
+<li>当节点进入 LOOKING 状态后，它会<strong>创建一张包含自己投票信息（推举的 leader, Zxid, epoch）的选票</strong>。</li>
+<li>然后，它将这张选票<strong>广播给集群中的所有其他节点</strong>。同时，它自己也准备好接收来自所有其他节点的选票。</li>
+</ul>
+</li>
+<li><p><strong>通信模式</strong>：</p>
+<ul>
+<li>这是一个<strong>全互联的、多对多的广播通信</strong>。每个节点都同时在做两件事：广播自己的票，接收别人的票。</li>
+<li>信息流不是单向的请求-响应，而是所有节点之间相互交换和更新选票，形成一个<strong>网状的信息传播网络</strong>。</li>
+</ul>
+</li>
+<li><p><strong>投票决策与更新</strong>：</p>
+<ul>
+<li>节点收到别人的选票后，<strong>不是简单地回答“是”或“否”</strong>，而是根据我们之前讲的“两轮比较”规则，决定<strong>是否要更新自己当前所持的选票</strong>。</li>
+<li>如果决定更新，它会立即将这张<strong>更新后的新选票</strong>再次广播出去。这个过程是<strong>迭代和传染式</strong>的。</li>
+</ul>
+</li>
+<li><p><strong>结果确认</strong>：</p>
+<ul>
+<li>节点通过观察这个网状通信中流动的选票，来<strong>被动地发现</strong>哪个 myid 正在获得超过半数的支持。当它发现自己持有的选票所指派的 Leader 已经获得多数派时，选举结束。</li>
+</ul>
+</li>
+</ol>
+<p><strong>特点总结</strong>：ZAB 的选举是节点之间<strong>不断地“散”播和“更新”票</strong>，选票信息在节点组成的网中流动和演化，直到收敛到一个结果，呈现出“网状”。</p>
+<hr>
+<h3 id="对比表格与核心思想差异"><a href="#对比表格与核心思想差异" class="headerlink" title="对比表格与核心思想差异"></a>对比表格与核心思想差异</h3><table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left">Raft (放射状&#x2F;拉票)</th>
+<th align="left">ZAB (网状&#x2F;散票)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>通信模型</strong></td>
+<td align="left"><strong>请求-响应</strong></td>
+<td align="left"><strong>广播-更新</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>信息流</strong></td>
+<td align="left">候选人 → 所有节点 (放射状)</td>
+<td align="left">所有节点 ↔ 所有节点 (网状)</td>
+</tr>
+<tr>
+<td align="left"><strong>投票行为</strong></td>
+<td align="left">对候选人的拉票请求做出<strong>一次性决定</strong></td>
+<td align="left">根据接收到的信息<strong>不断更新</strong>自己的投票</td>
+</tr>
+<tr>
+<td align="left"><strong>核心逻辑位置</strong></td>
+<td align="left"><strong>投票者</strong>手中：投票者根据规则决定是否同意。</td>
+<td align="left"><strong>选票</strong>本身和<strong>比较算法</strong>中：节点只是规则的执行者。</td>
+</tr>
+<tr>
+<td align="left"><strong>比喻</strong></td>
+<td align="left"><strong>总统竞选</strong>：候选人到处演讲拉票，选民投出固定的一票。</td>
+<td align="left"><strong>推举盟主</strong>：江湖中人不断互通消息， consensus 在交流中逐渐形成，最后大家发现“天下英雄，唯使君与操耳”。</td>
+</tr>
+</tbody></table>
+<p><strong>核心思想差异</strong>：</p>
+<ul>
+<li><strong>Raft</strong> 的设计哲学是<strong>清晰和模块化</strong>。它的选举过程像一个严格的投票程序：你申请，我审核，我投票。逻辑封装在每一个投票者的决策中，易于理解和实现。</li>
+<li><strong>ZAB</strong> 的设计哲学是<strong>高效收敛和对数据一致性的极致追求</strong>。它的网状模型允许投票信息快速传播，并且“更新选票”机制确保了<strong>拥有最新数据的节点能够像磁铁一样，把所有选票都吸引过来</strong>。这个过程虽然看似复杂，但能非常高效地在动态网络中确保最合适的节点成为 Leader。</li>
+</ul>
+<h2 id="问题总结："><a href="#问题总结：" class="headerlink" title="问题总结："></a>问题总结：</h2><ol>
+<li><h3 id="什么是zookeeper"><a href="#什么是zookeeper" class="headerlink" title="什么是zookeeper?"></a>什么是zookeeper?</h3></li>
+</ol>
+<p>好的，简单来讲：</p>
+<p><strong>ZooKeeper 是一个分布式的、开源的协调服务，它相当于分布式系统的“后台管理员”或“神经中枢”。</strong></p>
+<p>它的核心功能是为分布式应用提供一些<strong>最基础但至关重要的服务</strong>，让开发人员不用重复造轮子。</p>
+<hr>
+<h3 id="一个生动的比喻：餐厅的后台管理员"><a href="#一个生动的比喻：餐厅的后台管理员" class="headerlink" title="一个生动的比喻：餐厅的后台管理员"></a>一个生动的比喻：餐厅的后台管理员</h3><p>想象一个大型餐厅的后厨：</p>
+<ul>
+<li><strong>厨师们</strong>（分布式应用中的各个节点）需要协同工作。</li>
+<li>他们需要知道<strong>今天什么菜不能做</strong>（配置信息）。</li>
+<li>他们需要<strong>排队有序地使用烤箱</strong>，避免冲突（分布式锁）。</li>
+<li>需要知道<strong>哪个订单由哪个主厨负责</strong>（主节点选举）。</li>
+</ul>
+<p>ZooKeeper 就像是这个后厨的<strong>后台管理员</strong>。厨师们有任何协调需求，都去找这个管理员。管理员维护着一个<strong>共享的备忘录</strong>（ZooKeeper 的数据模型），所有厨师都可以查看和申请修改这个备忘录，从而达成协同。</p>
+<hr>
+<h3 id="ZooKeeper-的核心特点"><a href="#ZooKeeper-的核心特点" class="headerlink" title="ZooKeeper 的核心特点"></a>ZooKeeper 的核心特点</h3><ol>
+<li><p><strong>数据模型：类似文件系统的树形结构</strong></p>
+<ul>
+<li>它维护着一个类似于小型文件系统的<strong>树状节点</strong>，这些节点叫做 <strong>Znode</strong>。</li>
+<li>你可以通过路径（如 <code>/Services/OrderService</code>）来访问这些 Znode。</li>
+</ul>
+</li>
+<li><p><strong>保证分布式一致性</strong></p>
+<ul>
+<li>ZooKeeper 集群自身由多个服务器组成，使用我们之前讨论的 <strong>ZAB 协议</strong>来保证数据在所有服务器上的一致性。</li>
+<li>客户端无论连接到集群中的哪台服务器，看到的数据视图都是一样的。</li>
+</ul>
+</li>
+<li><p><strong>提供核心协调服务</strong></p>
+<ul>
+<li><strong>配置管理</strong>：可以将系统的通用配置（如数据库地址）写入一个 Znode，所有应用节点监听它，配置一变，大家都能即时感知。</li>
+<li><strong>命名服务</strong>：通过路径地址来定位资源或服务。</li>
+<li><strong>分布式锁</strong>：多个客户端可以竞争创建一个“临时”Znode，创建成功的那个就相当于获得了锁。</li>
+<li><strong>集群管理</strong>：可以利用“临时节点”来监控节点的存活状态。节点下线，其创建的临时节点会自动消失，其他节点就能立刻知道。</li>
+</ul>
+</li>
+<li><p><strong>可靠性与顺序性</strong></p>
+<ul>
+<li><strong>顺序一致性</strong>：来自客户端的更新请求会严格按照其发送顺序被应用。这是实现分布式锁等功能的基石。</li>
+<li><strong>高可用性</strong>：只要集群中超过半数的服务器存活，整个服务就是可用的。</li>
+</ul>
+</li>
+</ol>
+<p>简单来说，ZooKeeper <strong>不是一个用于存储海量业务数据的数据库</strong>，而是一个<strong>专门用来解决分布式系统中共性协调问题的工具</strong>。它通过一个简单的树形数据模型和一套高效的协议，为构建复杂的分布式系统（如 Hadoop, Kafka, HBase 等）提供了坚实可靠的底层支撑。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/10/04/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A32/">https://kizzy899.github.io/2025/10/04/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A32/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a></div><div class="post-share"><div class="social-share" data-image="/aaaset/cover_15.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/10/10/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" title="关于Git 子模块（子文档）"><img class="cover" src="/aaaset/cover_18.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">关于Git 子模块（子文档）</div></div><div class="info-2"><div class="info-item-1">问题发现&amp;解决什么是子模块（子文档） 定义：Git 子模块（submodule）是一个嵌套在父仓库中的独立 Git 仓库。 作用：允许你在一个 Git 仓库中引用另一个仓库，并保持独立版本控制。 特点： 有自己的 .git 目录或由父仓库 .gitmodules 管理。 GitHub 上显示为 箭头文件夹，点击会跳转到子模块的远程仓库。 本地未初始化或更新时，会出现 in unpopulated submodule 报错。     如何发现文件夹被上传成子模块  GitHub 文件浏览器：  文件夹前有 箭头标记。 点击会跳到子模块对应的远程仓库，而不是显示普通文件列表。   本地操作：  执行 git status 或 git submodule status 可能显示子模块信息。  对未初始化的子模块操作文件会报错，例如： 1in unpopulated submodule     为什么文件夹会被识别为子模块 误操作添加子模块： 1git submodule add &lt;repo_url&gt; 子文件夹名   Git 会记录子模块信息在 .gitmodules...</div></div></div></a><a class="pagination-related" href="/2025/09/29/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A31/" title="分布式详解1"><img class="cover" src="/aaaset/cover_14.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">分布式详解1</div></div><div class="info-2"><div class="info-item-1">CAP理论简述CAP理论  **数据一致性 (Consistency)**：如果系统对一个写操作返回成功，那么之后的读请求都必须读到这个新数据；如果返回失败，那么所有读操作都不能读到这个数据。对调用者而言数据具有强一致性。 **服务可用性 (Availability)**：所有读写请求在一定时间内得到响应，可终止、不会一直等待。 **分区容错性 (Partition Tolerance)**：在网络分区的情况下，被分解的节点仍能正常对外服务。  如果选择了CA而放弃了P，那么当发生分区现象时，为了保证C，系统需要禁止写入，当有写入请求时，系统返回error，这又和A冲突了，因为A要求返回no error和no timeout。因此，分布式系统理论上不可能选择CA架构，只能选择CP或者AP架构。 反证：如果CAP三者可同时满足，由于允许P的存在，则一定存在节点之间的丢包，如此则不能保证C。因为允许分区容错，写操作可能在节点1上成功，在节点2上失败，这时候对于Client1（读取节点1）和Client2（读取节点2），就会读取到不一致的值，出现不一致的情况。如果要保持一致性，写操作必...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/29/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A31/" title="分布式详解1"><img class="cover" src="/aaaset/cover_14.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-29</div><div class="info-item-2">分布式详解1</div></div><div class="info-2"><div class="info-item-1">CAP理论简述CAP理论  **数据一致性 (Consistency)**：如果系统对一个写操作返回成功，那么之后的读请求都必须读到这个新数据；如果返回失败，那么所有读操作都不能读到这个数据。对调用者而言数据具有强一致性。 **服务可用性 (Availability)**：所有读写请求在一定时间内得到响应，可终止、不会一直等待。 **分区容错性 (Partition Tolerance)**：在网络分区的情况下，被分解的节点仍能正常对外服务。  如果选择了CA而放弃了P，那么当发生分区现象时，为了保证C，系统需要禁止写入，当有写入请求时，系统返回error，这又和A冲突了，因为A要求返回no error和no timeout。因此，分布式系统理论上不可能选择CA架构，只能选择CP或者AP架构。 反证：如果CAP三者可同时满足，由于允许P的存在，则一定存在节点之间的丢包，如此则不能保证C。因为允许分区容错，写操作可能在节点1上成功，在节点2上失败，这时候对于Client1（读取节点1）和Client2（读取节点2），就会读取到不一致的值，出现不一致的情况。如果要保持一致性，写操作必...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ZAB%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.</span> <span class="toc-text">ZAB协议</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ZAB%E5%8D%8F%E8%AE%AE%E5%AE%9A%E4%B9%89"><span class="toc-number">1.1.</span> <span class="toc-text">ZAB协议定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZAB%E5%8D%8F%E8%AE%AE%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="toc-number">1.2.</span> <span class="toc-text">ZAB协议组成部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E5%B9%BF%E6%92%AD"><span class="toc-number">1.2.1.</span> <span class="toc-text">消息广播</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B4%A9%E6%BA%83%E6%81%A2%E5%A4%8D"><span class="toc-number">1.2.2.</span> <span class="toc-text">崩溃恢复</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZAB%E5%8D%8F%E8%AE%AE%E4%BD%9C%E7%94%A8"><span class="toc-number">1.3.</span> <span class="toc-text">ZAB协议作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Zxid%E4%BA%8B%E5%8A%A1%E7%BC%96%E5%8F%B7"><span class="toc-number">1.4.</span> <span class="toc-text">Zxid事务编号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZAB%E8%8A%82%E7%82%B9%E7%8A%B6%E6%80%81"><span class="toc-number">1.5.</span> <span class="toc-text">ZAB节点状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZAB%E9%80%89%E4%B8%BE%E6%B5%81%E7%A8%8B"><span class="toc-number">1.6.</span> <span class="toc-text">ZAB选举流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ZAB-%E9%80%89%E4%B8%BE%E6%B5%81%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.6.1.</span> <span class="toc-text">ZAB 选举流程详解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E7%82%B9%E8%A7%A3%E6%9E%90%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88-Zxid-%E5%92%8C-myid-%E8%B6%8A%E5%A4%A7%E8%B6%8A%E5%AE%B9%E6%98%93%E6%88%90%E4%B8%BA-Leader%EF%BC%9F"><span class="toc-number">1.6.2.</span> <span class="toc-text">重点解析：为什么 Zxid 和 myid 越大越容易成为 Leader？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88-Zxid-%E8%B6%8A%E5%A4%A7%E8%B6%8A%E4%BC%98%E5%85%88%EF%BC%9F%EF%BC%88%E6%A0%B8%E5%BF%83%E5%8E%9F%E5%9B%A0%EF%BC%9A%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%EF%BC%89"><span class="toc-number">1.6.2.1.</span> <span class="toc-text">1. 为什么 Zxid 越大越优先？（核心原因：数据一致性）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%B8%BA%E4%BB%80%E4%B9%88-myid-%E5%A4%A7%E6%98%AF%E6%AC%A1%E8%A6%81%E4%BC%98%E5%8A%BF%EF%BC%9F%EF%BC%88%E8%BE%85%E5%8A%A9%E5%8E%9F%E5%9B%A0%EF%BC%9A%E5%BF%AB%E9%80%9F%E6%94%B6%E6%95%9B%EF%BC%89"><span class="toc-number">1.6.2.2.</span> <span class="toc-text">2. 为什么 myid 大是次要优势？（辅助原因：快速收敛）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.6.3.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8Eraft%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.7.</span> <span class="toc-text">与raft协议的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%82%B9%E6%80%BB%E7%BB%93"><span class="toc-number">1.7.1.</span> <span class="toc-text">分点总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%E5%AF%B9%E6%AF%94%E8%A1%A8%E6%A0%BC"><span class="toc-number">1.7.2.</span> <span class="toc-text">区别对比表格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZAB-%E4%B8%8E-Raft-%E5%9C%A8%E9%80%89%E4%B8%BE%E9%80%9A%E4%BF%A1%E6%A8%A1%E5%BC%8F%E4%B8%8A%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.7.3.</span> <span class="toc-text">ZAB 与 Raft 在选举通信模式上的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Raft-%E7%9A%84%E2%80%9C%E6%94%BE%E5%B0%84%E7%8A%B6%E2%80%9D%E6%8A%95%E7%A5%A8%EF%BC%88%E6%8B%89%E7%A5%A8%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="toc-number">1.7.3.1.</span> <span class="toc-text">Raft 的“放射状”投票（拉票模型）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ZAB-%E7%9A%84%E2%80%9C%E7%BD%91%E7%8A%B6%E2%80%9D%E6%8A%95%E7%A5%A8%EF%BC%88%E6%95%A3%E7%A5%A8%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="toc-number">1.7.3.2.</span> <span class="toc-text">ZAB 的“网状”投票（散票模型）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94%E8%A1%A8%E6%A0%BC%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%E5%B7%AE%E5%BC%82"><span class="toc-number">1.7.4.</span> <span class="toc-text">对比表格与核心思想差异</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">1.8.</span> <span class="toc-text">问题总结：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFzookeeper"><span class="toc-number">1.8.1.</span> <span class="toc-text">什么是zookeeper?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E7%94%9F%E5%8A%A8%E7%9A%84%E6%AF%94%E5%96%BB%EF%BC%9A%E9%A4%90%E5%8E%85%E7%9A%84%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E5%91%98"><span class="toc-number">1.8.2.</span> <span class="toc-text">一个生动的比喻：餐厅的后台管理员</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZooKeeper-%E7%9A%84%E6%A0%B8%E5%BF%83%E7%89%B9%E7%82%B9"><span class="toc-number">1.8.3.</span> <span class="toc-text">ZooKeeper 的核心特点</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'kizzy899/kizzy899.github.io',
+      'data-repo-id': 'R_kgDONCC1iQ',
+      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
