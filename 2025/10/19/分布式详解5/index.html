@@ -1,0 +1,469 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>分布式详解5 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="分布式事务有哪些解决方案基于XA协议的两阶段提交和三阶段提交，需要数据库层面支持。 XA协议通常不是通过简单的单条SQL命令来完成的，而是通过一组命令&#x2F;API调用来管理一个分布式事务的完整生命周期。这些命令通常由事务管理器 调用，而应用程序则通过高级抽象（如Java JTA）来间接使用。 一些核心命令：    段 命令&#x2F;函数名 说明 常见实现举例    阶段一：准备阶段 xa_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式详解5">
+<meta property="og:url" content="https://kizzy899.github.io/2025/10/19/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A35/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="分布式事务有哪些解决方案基于XA协议的两阶段提交和三阶段提交，需要数据库层面支持。 XA协议通常不是通过简单的单条SQL命令来完成的，而是通过一组命令&#x2F;API调用来管理一个分布式事务的完整生命周期。这些命令通常由事务管理器 调用，而应用程序则通过高级抽象（如Java JTA）来间接使用。 一些核心命令：    段 命令&#x2F;函数名 说明 常见实现举例    阶段一：准备阶段 xa_">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/aaaset/cover_7.jpg">
+<meta property="article:published_time" content="2025-10-19T09:34:17.000Z">
+<meta property="article:modified_time" content="2025-10-19T11:12:35.561Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="分布式系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/aaaset/cover_7.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "分布式详解5",
+  "url": "https://kizzy899.github.io/2025/10/19/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A35/",
+  "image": "https://kizzy899.github.io/aaaset/cover_7.jpg",
+  "datePublished": "2025-10-19T09:34:17.000Z",
+  "dateModified": "2025-10-19T11:12:35.561Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "kizy",
+      "url": "https://kizzy899.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2025/10/19/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A35/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '分布式详解5',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">71</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/aaaset/cover_7.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">分布式详解5</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">分布式详解5</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-10-19T09:34:17.000Z" title="发表于 2025-10-19 17:34:17">2025-10-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-10-19T11:12:35.561Z" title="更新于 2025-10-19 19:12:35">2025-10-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="分布式事务有哪些解决方案"><a href="#分布式事务有哪些解决方案" class="headerlink" title="分布式事务有哪些解决方案"></a>分布式事务有哪些解决方案</h1><h2 id="基于XA协议的"><a href="#基于XA协议的" class="headerlink" title="基于XA协议的"></a><strong>基于XA协议的</strong></h2><p>两阶段提交和三阶段提交，需要数据库层面支持。</p>
+<p>XA协议通常不是通过简单的单条SQL命令来完成的，而是通过<strong>一组命令&#x2F;API调用来管理一个分布式事务的完整生命周期</strong>。这些命令通常由<strong>事务管理器</strong> 调用，而应用程序则通过高级抽象（如Java JTA）来间接使用。</p>
+<p>一些核心命令：</p>
+<table>
+<thead>
+<tr>
+<th align="left">段</th>
+<th align="left">命令&#x2F;函数名</th>
+<th align="left">说明</th>
+<th align="left">常见实现举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>阶段一：准备阶段</strong></td>
+<td align="left"><code>xa_start</code></td>
+<td align="left">开启一个分布式事务分支，将其与一个全局事务ID（XID）关联。</td>
+<td align="left">C API &#x2F; 数据库驱动内部调用</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>xa_end</code></td>
+<td align="left">结束当前线程与分布式事务分支的关联。</td>
+<td align="left">C API &#x2F; 数据库驱动内部调用</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>xa_prepare</code></td>
+<td align="left"><strong>核心命令</strong>。事务管理器向所有参与者发出此命令。参与者将事务内容持久化到日志中，并锁定相关资源，然后返回“就绪”或“失败”状态。</td>
+<td align="left">MySQL: <code>XA PREPARE &#39;&lt;xid&gt;&#39;</code></td>
+</tr>
+<tr>
+<td align="left"><strong>阶段二：提交&#x2F;回滚阶段</strong></td>
+<td align="left"><code>xa_commit</code></td>
+<td align="left"><strong>提交命令</strong>。如果所有参与者都返回“就绪”，事务管理器向所有参与者发出此命令，要求提交事务。参与者完成持久化操作并释放资源。</td>
+<td align="left">MySQL: <code>XA COMMIT &#39;&lt;xid&gt;&#39;</code></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"><code>xa_rollback</code></td>
+<td align="left"><strong>回滚命令</strong>。如果任何参与者返回“失败”或超时，事务管理器向所有参与者发出此命令，要求回滚事务。参与者根据准备阶段的日志进行回滚并释放资源。</td>
+<td align="left">MySQL: <code>XA ROLLBACK &#39;&lt;xid&gt;&#39;</code></td>
+</tr>
+<tr>
+<td align="left"><strong>恢复</strong></td>
+<td align="left"><code>xa_recover</code></td>
+<td align="left">事务管理器查询资源管理器，找回那些处于“准备完成”状态（即已<code>PREPARE</code>但未<code>COMMIT</code>&#x2F;<code>ROLLBACK</code>）的分布式事务，用于故障恢复。</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h3 id="阶段提交示例"><a href="#阶段提交示例" class="headerlink" title="阶段提交示例"></a>阶段提交示例</h3><h4 id="1-两阶段提交流程"><a href="#1-两阶段提交流程" class="headerlink" title="1. 两阶段提交流程"></a>1. 两阶段提交流程</h4><p>假设我们有一个全局事务，需要同时更新<code>db1</code>和<code>db2</code>中的账户。</p>
+<p><strong>第一步：在两个数据库连接上分别开启并执行事务</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 在连接1（负责账户A）上</span></span><br><span class="line">XA <span class="keyword">START</span> <span class="string">&#x27;12345&#x27;</span>,<span class="string">&#x27;1&#x27;</span>; <span class="comment">-- &#x27;12345&#x27;是gtrid，&#x27;1&#x27;是bqual</span></span><br><span class="line"><span class="keyword">UPDATE</span> account <span class="keyword">SET</span> balance <span class="operator">=</span> balance <span class="operator">-</span> <span class="number">100</span> <span class="keyword">WHERE</span> <span class="keyword">user</span> <span class="operator">=</span> <span class="string">&#x27;A&#x27;</span>;</span><br><span class="line">XA <span class="keyword">END</span> <span class="string">&#x27;12345&#x27;</span>,<span class="string">&#x27;1&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 在连接2（负责账户B）上</span></span><br><span class="line">XA <span class="keyword">START</span> <span class="string">&#x27;12345&#x27;</span>,<span class="string">&#x27;2&#x27;</span>; <span class="comment">-- 使用相同的gtrid &#x27;12345&#x27;，不同的bqual &#x27;2&#x27;</span></span><br><span class="line"><span class="keyword">UPDATE</span> account <span class="keyword">SET</span> balance <span class="operator">=</span> balance <span class="operator">+</span> <span class="number">100</span> <span class="keyword">WHERE</span> <span class="keyword">user</span> <span class="operator">=</span> <span class="string">&#x27;B&#x27;</span>;</span><br><span class="line">XA <span class="keyword">END</span> <span class="string">&#x27;12345&#x27;</span>,<span class="string">&#x27;2&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>第二步：准备阶段 - 事务管理器发出 <code>PREPARE</code></strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 在连接1上</span></span><br><span class="line">XA <span class="keyword">PREPARE</span> <span class="string">&#x27;12345&#x27;</span>,<span class="string">&#x27;1&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 在连接2上</span></span><br><span class="line">XA <span class="keyword">PREPARE</span> <span class="string">&#x27;12345&#x27;</span>,<span class="string">&#x27;2&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>此时，两个MySQL实例都将事务结果写入日志，并锁定相关行，进入<code>PREPARED</code>状态。</p>
+<p><strong>第三步：提交阶段 - 事务管理器发出 <code>COMMIT</code></strong> 如果两个<code>PREPARE</code>都成功：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 在连接1上</span></span><br><span class="line">XA <span class="keyword">COMMIT</span> <span class="string">&#x27;12345&#x27;</span>,<span class="string">&#x27;1&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 在连接2上</span></span><br><span class="line">XA <span class="keyword">COMMIT</span> <span class="string">&#x27;12345&#x27;</span>,<span class="string">&#x27;2&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>至此，分布式事务完成。</p>
+<p>如果在第二步中任何一个<code>PREPARE</code>失败，或者在第三步前发生了故障，事务管理器则应向所有参与者发出：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">XA <span class="keyword">ROLLBACK</span> <span class="string">&#x27;12345&#x27;</span>,<span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">XA <span class="keyword">ROLLBACK</span> <span class="string">&#x27;12345&#x27;</span>,<span class="string">&#x27;2&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-相关监控命令"><a href="#2-相关监控命令" class="headerlink" title="2. 相关监控命令"></a>2. 相关监控命令</h4><ul>
+<li><p>查看MySQL中处于<code>PREPARED</code>状态的XA事务：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">XA RECOVER;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这条命令会输出所有已经准备但尚未提交或回滚的XA事务的XID信息。</p>
+</li>
+</ul>
+<h2 id="基于事务补偿机制的"><a href="#基于事务补偿机制的" class="headerlink" title="基于事务补偿机制的"></a><strong>基于事务补偿机制的</strong></h2><p>TCC，基于业务层面实现</p>
+<h3 id="简述TCC事务模型"><a href="#简述TCC事务模型" class="headerlink" title="简述TCC事务模型"></a>简述TCC事务模型</h3><p><strong>TCC（补偿事务）</strong>：<code>Try</code>、<code>Confirm</code>、<code>Cancel</code></p>
+<p>针对每个操作，都要注册一个与其对应的确认和补偿（撤销）操作</p>
+<ul>
+<li><strong><code>Try</code>操作</strong>：做业务检查及资源预留</li>
+<li><strong><code>Confirm</code>操作</strong>：做业务确认操作</li>
+<li><strong><code>Cancel</code>操作</strong>：实现一个与<code>Try</code>相反的操作即回滚操作</li>
+</ul>
+<p><strong>执行流程</strong>：<br><code>TM</code>（事务管理器）首先发起所有的分支事务的<code>try</code>操作，任何一个分支事务的<code>try</code>操作执行失败，<code>TM</code>将会发起所有分支事务的<code>Cancel</code>操作；若<code>try</code>操作全部成功，<code>TM</code>将会发起所有分支事务的<code>Confirm</code>操作。其中<code>Confirm</code>&#x2F;<code>Cancel</code>操作若执行失败，<code>TM</code>会进行重试。</p>
+<p><strong>特点与要求</strong>：</p>
+<ul>
+<li>TCC模型对业务的侵入性较强，改造的难度较大</li>
+<li>每个操作都需要有 <code>try</code>、<code>confirm</code>、<code>cancel</code> 三个接口实现</li>
+<li>TCC中会添加事务日志，如果<code>Confirm</code>或者<code>Cancel</code>阶段出错，则会进行重试</li>
+<li><code>Confirm</code>和<code>Cancel</code>操作需要支持<strong>幂等</strong></li>
+<li>如果重试失败，则需要人工介入进行恢复和处理</li>
+</ul>
+<h3 id="本地消息表"><a href="#本地消息表" class="headerlink" title="本地消息表"></a>本地消息表</h3><p>这是一种<strong>最终一致性</strong>的解决方案，其核心思想是<strong>利用本地数据库的事务性，将消息生产和业务操作绑定在同一个本地事务中</strong>，然后通过异步重试机制来保证消息一定能被下游服务消费。</p>
+<h4 id="核心流程"><a href="#核心流程" class="headerlink" title="核心流程"></a><strong>核心流程</strong></h4><ol>
+<li><strong>消息生产与业务操作同步</strong><ul>
+<li>业务执行方在同一个本地数据库事务中：<ul>
+<li>执行业务SQL操作（如：订单库中插入一条订单记录，状态为<code>待确认</code>）。</li>
+<li>向同一数据库的<strong>本地消息表</strong>插入一条消息记录（内容为“扣减库存”或“增加积分”等），此消息的状态为 <code>进行中</code> 或 <code>未发送</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>异步投递消息</strong><ul>
+<li>一个独立的<strong>消息发送者</strong>（通常是定时任务）轮询扫描本地消息表，抓取状态为 <code>进行中</code> 的消息。</li>
+<li>将消息内容发送给消息队列。</li>
+<li>如果发送成功，就将本地消息表中原记录的状态更新为 <code>已发送</code> 或直接删除该记录。</li>
+</ul>
+</li>
+<li><strong>消息消费与确认</strong><ul>
+<li>下游服务（如库存服务）消费消息队列中的消息，执行自身的业务逻辑。</li>
+<li>执行成功后，下游服务可以选择向另一个回调队列发送一条“成功确认”消息。</li>
+</ul>
+</li>
+<li><strong>补偿机制（扫表重试）</strong><ul>
+<li>这是该方案的关键。另一个定时任务会周期性地检查本地消息表中长时间处于 <code>进行中</code> 状态的消息。</li>
+<li>对于这些消息，它会重新执行第2步（投递消息）。由于消息可能已经被成功消费但确认失败，所以<strong>下游服务的接口必须支持幂等</strong>，防止重复处理。</li>
+</ul>
+</li>
+</ol>
+<h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a><strong>优缺点</strong></h4><ul>
+<li><strong>优点</strong>：<ul>
+<li>方案简单，与具体MQ组件解耦，甚至可以用MySQL表代替MQ。</li>
+<li>实现了业务的最终一致性。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li>消息数据与业务数据强耦合，占用业务数据库资源。</li>
+<li>需要维护额外的定时任务来扫表和重发，架构稍显繁琐。</li>
+<li>实时性相对较差，依赖于定时任务的扫描间隔。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="基于事务消息"><a href="#基于事务消息" class="headerlink" title="基于事务消息"></a>基于事务消息</h2><p>这种方案通常需要<strong>支持事务消息模型的中间件</strong>（如RocketMQ）来原生支持。其核心思想是<strong>通过两阶段提交，将消息的投递与本地事务绑定，确保消息能成功发出，并且最终一定能被消费</strong>。</p>
+<h4 id="核心流程（以RocketMQ为例）"><a href="#核心流程（以RocketMQ为例）" class="headerlink" title="核心流程（以RocketMQ为例）"></a><strong>核心流程（以RocketMQ为例）</strong></h4><ol>
+<li><strong>发送半消息</strong><ul>
+<li>业务执行方首先向MQ Server发送一条 <strong>“半消息”</strong> 或 <strong>“预备消息”</strong>。这条消息对下游消费者是<strong>不可见</strong>的，即此时不会被消费。</li>
+</ul>
+</li>
+<li><strong>执行本地事务</strong><ul>
+<li>MQ Server持久化半消息后，返回确认。</li>
+<li>业务执行方开始执行本地事务（如：在订单库中插入订单记录）。</li>
+</ul>
+</li>
+<li><strong>提交或回滚消息</strong><ul>
+<li>本地事务执行完成后，根据结果向MQ Server发送 <strong>二次确认</strong>：<ul>
+<li><strong>Commit</strong>： 本地事务成功。MQ Server此时将半消息转为<strong>正式消息</strong>，下游消费者现在可以消费这条消息了。</li>
+<li><strong>Rollback</strong>： 本地事务失败。MQ Server将丢弃这条半消息。</li>
+<li><strong>未知</strong>： 如果因为网络等原因，MQ Server没有收到二次确认。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>回查机制</strong><ul>
+<li>对于状态为 <strong>未知</strong> 的消息，MQ Server会定期向消息生产者发起 <strong>回查</strong>。</li>
+<li>生产者需要检查对应的本地事务的执行状态。</li>
+<li>根据检查结果（成功&#x2F;失败），再次向MQ Server发送Commit或Rollback指令。</li>
+</ul>
+</li>
+<li><strong>消息消费</strong><ul>
+<li>一旦消息被Commit，下游服务即可正常消费。同样，下游服务接口需要<strong>幂等</strong>处理，因为网络抖动可能导致消息重投。</li>
+</ul>
+</li>
+</ol>
+<h4 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a><strong>优缺点</strong></h4><ul>
+<li><strong>优点</strong>：<ul>
+<li>数据隔离性好，消息逻辑不侵入业务数据库。</li>
+<li>由MQ中间件提供高可用的消息存储和可靠投递，可靠性更高。</li>
+<li>无需自己实现扫表任务，架构更优雅。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li>强依赖于支持事务消息的MQ，技术选型受限。</li>
+<li>需要实现回查接口，增加了开发工作量。</li>
+</ul>
+</li>
+</ul>
+<h1 id="在XA协议中，对比二阶段，三阶段有什么改进"><a href="#在XA协议中，对比二阶段，三阶段有什么改进" class="headerlink" title="在XA协议中，对比二阶段，三阶段有什么改进"></a>在XA协议中，对比二阶段，三阶段有什么改进</h1><h3 id="二阶段："><a href="#二阶段：" class="headerlink" title="二阶段："></a>二阶段：</h3><p><img src="https://s2.loli.net/2025/10/19/lZ7pNTJ86eYr9uf.png" alt="image.png"></p>
+<h3 id="三阶段："><a href="#三阶段：" class="headerlink" title="三阶段："></a>三阶段：</h3><p><img src="https://s2.loli.net/2025/10/19/9fiyhGTVS3XLMK2.png" alt="image.png"></p>
+<p>第一阶段（prepare）：每个参与者执行本地事务但不提交，进入 ready 状态，并通知协调者已经准备就绪。</p>
+<p>第二阶段（commit）当协调者确认每个参与者都 ready 后，通知参与者进行 commit 操作；如果有参与者 fail ，则发送 rollback 命令，各参与者做回滚。</p>
+<p>问题：</p>
+<ul>
+<li>单点故障：一旦事务管理器出现故障，整个系统不可用（参与者都会阻塞住）</li>
+<li>数据不一致：在阶段二，如果事务管理器只发送了部分 commit 消息，此时网络发生异常，那么只有部分参与者接收到 commit 消息，也就是说只有部分参与者提交了事务，使得系统数据不一致。</li>
+<li>响应时间较长：参与者和协调者资源都被锁住，提交或者回滚之后才能释放</li>
+<li>不确定性：当协调者管理器发送 commit 之后，并且此时只有一个参与者收到了 commit，那么当该参与者与事务管理器同时机之后，重新选举的事务管理器无法确定该条消息是否提交成功。</li>
+</ul>
+<hr>
+<p>三阶段协议:主要是针对两阶段的优化，解决了2PC单点故障的问题，但是性能问题和不一致问题仍然没有根本解决</p>
+<blockquote>
+<p><strong>2PC</strong> 是 <strong>两阶段提交</strong> 的缩写，英文全称为 <strong>Two-Phase Commit</strong></p>
+</blockquote>
+<p>引入了超时机制解决参与者阻塞的问题，超时后本地提交，2pc只有协调者有超时机制</p>
+<ul>
+<li><p>第一阶段：<code>CanCommit</code>阶段，协调者询问事务参与者，是否有能力完成此次事务。</p>
+</li>
+<li><p>如果都返回<code>yes</code>，则进入第二阶段</p>
+</li>
+<li><p>有一个返回<code>no</code>或等待响应超时，则中断事务，并向所有参与者发送<code>abort</code>请求</p>
+</li>
+<li><p>第二阶段：<code>PreCommit</code>阶段，此时协调者会向所有的参与者发送<code>PreCommit</code>请求，参与者收到后开始执行事务操作。参与者执行完事务操作后（此时属于未提交事务的状态），就会向协调者反馈“<code>Ack</code>”表示我已经准备好提交了，并等待协调者的下一步指令。</p>
+</li>
+<li><p>第三阶段：<code>DoCommit</code>阶段，在阶段二中如果所有的参与者节点都返回了<code>Ack</code>，那么协调者就会从“预提交状态”转变为“提交状态”。然后向所有的参与者节点发送“<code>doCommit</code>”请求，参与者节点在收到提交请求后就会各自执行事务提交操作，并向协调者节点反馈“<code>Ack</code>”消息，协调者收到所有参与者的<code>Ack</code>消息后完成事务。相反，如果有一个参与者节点未完成<code>PreCommit</code>的反馈或者反馈超时，那么协调者都会向所有的参与者节点发送<code>abort</code>请求，从而中断事务。</p>
+</li>
+</ul>
+<h1 id="如何理解RPC"><a href="#如何理解RPC" class="headerlink" title="如何理解RPC"></a>如何理解RPC</h1><h2 id="远程过程调用"><a href="#远程过程调用" class="headerlink" title="远程过程调用"></a>远程过程调用</h2><p>RPC要求在调用方中放置被调用的方法的接口。调用方只要调用了这些接口，就相当于调用了被调用的实际方法，十分易用。于是，调用方可以像调用内部接口一样调用远程的方法，而不用封装参数名和参数值等操作。</p>
+<h3 id="包含组件"><a href="#包含组件" class="headerlink" title="包含组件"></a>包含组件</h3><ol>
+<li><strong>动态代理</strong>：封装调用细节  </li>
+<li><strong>序列化与反序列化</strong>：数据传输与接收  </li>
+<li><strong>通信</strong>：可以选择七层的HTTP，四层的TCP&#x2F;UDP  </li>
+<li><strong>异常处理</strong>等</li>
+</ol>
+<h3 id="RPC调用流程"><a href="#RPC调用流程" class="headerlink" title="RPC调用流程"></a>RPC调用流程</h3><p><strong>调用方流程：</strong><br>首先，调用方调用的是接口，必须为接口构造一个假的实现。显然，要使用动态代理。这样，调用方的调用就被动态代理接收到了。</p>
+<p>动态代理收到调用后，应该想办法调用远程的实际实现。这包括下面几步：</p>
+<ul>
+<li>识别具体要调用的远程方法的IP、端口  </li>
+<li>将调用方法的入参进行序列化  </li>
+<li>通过通信将请求发送到远程的方法中</li>
+</ul>
+<p><strong>被调用方流程：</strong><br>这样，远程的服务就接收到了调用方的请求。它应该：</p>
+<ul>
+<li>反序列化各个调用参数  </li>
+<li>定位到实际要调用的方法，然后输入参数，执行方法  </li>
+<li>按照调用的路径返回调用的结果</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/10/19/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A35/">https://kizzy899.github.io/2025/10/19/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A35/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a></div><div class="post-share"><div class="social-share" data-image="/aaaset/cover_7.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/10/19/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A34/" title="分布式详解4"><img class="cover" src="/aaaset/cover_3.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">分布式详解4</div></div><div class="info-2"><div class="info-item-1">集群、分布式、SOA、微服务的概念及区别集群不同服务器部署同一套应用服务对外提供访问，实现服务的负载均衡或者互备(热备，主从等)，指向一种组件的多个实例，形成的逻辑上的整体。单个节点可以提供完整服务。集群是物理形态 问题“节点对等”是理想集群的一个核心特征，而“Nginx分发”是实现这一特征的最常用技术手段之一。  集群是一种系统架构的目标和组织形式。  节点对等是实现该目标的一种优秀内部结构和设计原则，它使得集群易于扩展和高可用。  Nginx分发是实现该目标的一个关键外部工具和流量调度机制，它负责将用户请求合理地分配给内部那些对等的节点，是集群能力的“放大器”。   详细解释1. “集群中的节点位置对等”与集群的关系这个概念描述的是集群内部节点的一种理想关系。  什么是对等？ 功能对等：每个节点都运行着完全相同的一份代码或服务（例如，都部署了你的Web应用）。 身份对等：从负载均衡器的角度看，这些节点没有本质区别，任何一个节点都可以处理任何一个请求。它们通常是无状态的。 可替代性：如果其中一个节点宕机，其他节点可以立刻接管它的工作，用户不会感知到任何区别（除了可能的短暂性能波...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/09/29/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A31/" title="分布式详解1"><img class="cover" src="/aaaset/cover_14.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-29</div><div class="info-item-2">分布式详解1</div></div><div class="info-2"><div class="info-item-1">CAP理论简述CAP理论  **数据一致性 (Consistency)**：如果系统对一个写操作返回成功，那么之后的读请求都必须读到这个新数据；如果返回失败，那么所有读操作都不能读到这个数据。对调用者而言数据具有强一致性。 **服务可用性 (Availability)**：所有读写请求在一定时间内得到响应，可终止、不会一直等待。 **分区容错性 (Partition Tolerance)**：在网络分区的情况下，被分解的节点仍能正常对外服务。  如果选择了CA而放弃了P，那么当发生分区现象时，为了保证C，系统需要禁止写入，当有写入请求时，系统返回error，这又和A冲突了，因为A要求返回no error和no timeout。因此，分布式系统理论上不可能选择CA架构，只能选择CP或者AP架构。 反证：如果CAP三者可同时满足，由于允许P的存在，则一定存在节点之间的丢包，如此则不能保证C。因为允许分区容错，写操作可能在节点1上成功，在节点2上失败，这时候对于Client1（读取节点1）和Client2（读取节点2），就会读取到不一致的值，出现不一致的情况。如果要保持一致性，写操作必...</div></div></div></a><a class="pagination-related" href="/2025/10/04/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A32/" title="分布式详解2"><img class="cover" src="/aaaset/cover_15.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-04</div><div class="info-item-2">分布式详解2</div></div><div class="info-2"><div class="info-item-1">ZAB协议ZAB协议定义ZAB协议是为分布式协调服务Zookeeper专门设计的一种支持崩溃恢复的原子广播协议，实现分布式数据一致性。 ZAB协议组成部分消息广播 集群中所有的事务请求都由Leader节点来处理，其他服务器为Follower Leader将客户端的事务请求转换为事务Proposal，并且将Proposal分发给集群中其他所有的Follower 完成广播之后，Leader等待Follower反馈，当有过半数的Follower反馈信息后，Leader将再次向集群内Follower广播Commit信息 Commit信息就是确认将之前的Proposal提交 Leader节点的写入是一个两步操作：第一步是广播事务操作，第二步是广播提交操作 过半数指的是反馈的节点数 &gt;&#x3D;N&#x2F;2+1，N是全部的Follower节点数量  崩溃恢复 在以下情况下会进入崩溃恢复模式： 初始化集群，刚刚启动的时候 Leader崩溃，因为故障宕机 Leader失去了半数的机器支持，与集群中超过一半的节点断连   此时开启新一轮Leader选举，选举产生的Leader会与过半的...</div></div></div></a><a class="pagination-related" href="/2025/10/19/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A33%E4%B9%8B%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/" title="分布式详解3之负载均衡策略"><img class="cover" src="/aaaset/cover_9.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-19</div><div class="info-item-2">分布式详解3之负载均衡策略</div></div><div class="info-2"><div class="info-item-1">1. 轮询法 原理：将请求按顺序轮流分配到后端服务器。 特点： 均衡对待所有服务器； 不考虑服务器实际负载或连接数。    将请求按顺序轮流地分配到后端服务器上，它均衡地对待后端的每一台服务器，而不关心服务器实际的连接数和当前的系统负载。  即第n个请求对应第n个节点，很不现实，因为实际节点的配置不相同，配置高的节点收到很低的请求量实在浪费，配置低的节点收到过高请求量会崩溃。   2. 加权轮询法 原理：在轮询的基础上，为不同性能的服务器分配不同权重。 特点： 配置高、负载低的服务器权重更高，处理更多请求； 实现按能力分配负载，更灵活合理。    不同的后端服务器可能机器的配置和当前系统的负载并不相同，因此它们的抗压能力也不相同。给配置高、负载低的机器配置更高的权重，让其处理更多的前端；而配置低、负载高的机器，给其分配较低的权重，降低其系统负载，加权轮询能很好地处理这一问题，并将请求顺序且按照权重分配到后端。  实现：可以设置配置高的节点在轮询表中的节点数不止一个，如A1,A2的表示法，但是A节点的实际物理个数还是一个。   3. 随机法 原理：随机从服务器列表中选择一台处理请求...</div></div></div></a><a class="pagination-related" href="/2025/10/19/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%A6%E8%A7%A34/" title="分布式详解4"><img class="cover" src="/aaaset/cover_3.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-19</div><div class="info-item-2">分布式详解4</div></div><div class="info-2"><div class="info-item-1">集群、分布式、SOA、微服务的概念及区别集群不同服务器部署同一套应用服务对外提供访问，实现服务的负载均衡或者互备(热备，主从等)，指向一种组件的多个实例，形成的逻辑上的整体。单个节点可以提供完整服务。集群是物理形态 问题“节点对等”是理想集群的一个核心特征，而“Nginx分发”是实现这一特征的最常用技术手段之一。  集群是一种系统架构的目标和组织形式。  节点对等是实现该目标的一种优秀内部结构和设计原则，它使得集群易于扩展和高可用。  Nginx分发是实现该目标的一个关键外部工具和流量调度机制，它负责将用户请求合理地分配给内部那些对等的节点，是集群能力的“放大器”。   详细解释1. “集群中的节点位置对等”与集群的关系这个概念描述的是集群内部节点的一种理想关系。  什么是对等？ 功能对等：每个节点都运行着完全相同的一份代码或服务（例如，都部署了你的Web应用）。 身份对等：从负载均衡器的角度看，这些节点没有本质区别，任何一个节点都可以处理任何一个请求。它们通常是无状态的。 可替代性：如果其中一个节点宕机，其他节点可以立刻接管它的工作，用户不会感知到任何区别（除了可能的短暂性能波...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">71</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E6%9C%89%E5%93%AA%E4%BA%9B%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">1.</span> <span class="toc-text">分布式事务有哪些解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EXA%E5%8D%8F%E8%AE%AE%E7%9A%84"><span class="toc-number">1.1.</span> <span class="toc-text">基于XA协议的</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.1.1.</span> <span class="toc-text">阶段提交示例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E6%B5%81%E7%A8%8B"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">1. 两阶段提交流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%9B%B8%E5%85%B3%E7%9B%91%E6%8E%A7%E5%91%BD%E4%BB%A4"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">2. 相关监控命令</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E4%BA%8B%E5%8A%A1%E8%A1%A5%E5%81%BF%E6%9C%BA%E5%88%B6%E7%9A%84"><span class="toc-number">1.2.</span> <span class="toc-text">基于事务补偿机制的</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E8%BF%B0TCC%E4%BA%8B%E5%8A%A1%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">简述TCC事务模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%B6%88%E6%81%AF%E8%A1%A8"><span class="toc-number">1.2.2.</span> <span class="toc-text">本地消息表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">核心流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">优缺点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF"><span class="toc-number">1.3.</span> <span class="toc-text">基于事务消息</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%EF%BC%88%E4%BB%A5RocketMQ%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">1.3.0.1.</span> <span class="toc-text">核心流程（以RocketMQ为例）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9-1"><span class="toc-number">1.3.0.2.</span> <span class="toc-text">优缺点</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8XA%E5%8D%8F%E8%AE%AE%E4%B8%AD%EF%BC%8C%E5%AF%B9%E6%AF%94%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%8C%E4%B8%89%E9%98%B6%E6%AE%B5%E6%9C%89%E4%BB%80%E4%B9%88%E6%94%B9%E8%BF%9B"><span class="toc-number">2.</span> <span class="toc-text">在XA协议中，对比二阶段，三阶段有什么改进</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%9A"><span class="toc-number">2.0.1.</span> <span class="toc-text">二阶段：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E9%98%B6%E6%AE%B5%EF%BC%9A"><span class="toc-number">2.0.2.</span> <span class="toc-text">三阶段：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3RPC"><span class="toc-number">3.</span> <span class="toc-text">如何理解RPC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E8%BF%87%E7%A8%8B%E8%B0%83%E7%94%A8"><span class="toc-number">3.1.</span> <span class="toc-text">远程过程调用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%85%E5%90%AB%E7%BB%84%E4%BB%B6"><span class="toc-number">3.1.1.</span> <span class="toc-text">包含组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RPC%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="toc-number">3.1.2.</span> <span class="toc-text">RPC调用流程</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'kizzy899/kizzy899.github.io',
+      'data-repo-id': 'R_kgDONCC1iQ',
+      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
