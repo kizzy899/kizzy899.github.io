@@ -1,0 +1,385 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>WSL中与DNS相关的问题 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="WSL中与DNS相关的问题 场景：配置claude code  一、问题一：curl &#x2F; npm &#x2F; apt 报错，提示域名无法解析问题 curl: Could not resolve host npm ERR! getaddrinfo EAI_AGAIN apt: Temporary failure resolving &#39;archive.ubuntu.com&#39;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WSL中与DNS相关的问题">
+<meta property="og:url" content="https://kizzy899.github.io/2026/01/13/WSL&DNS/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="WSL中与DNS相关的问题 场景：配置claude code  一、问题一：curl &#x2F; npm &#x2F; apt 报错，提示域名无法解析问题 curl: Could not resolve host npm ERR! getaddrinfo EAI_AGAIN apt: Temporary failure resolving &#39;archive.ubuntu.com&#39;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/cover/cover5.jpg">
+<meta property="article:published_time" content="2026-01-13T11:32:12.000Z">
+<meta property="article:modified_time" content="2026-01-15T09:27:16.294Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/cover/cover5.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "WSL中与DNS相关的问题",
+  "url": "https://kizzy899.github.io/2026/01/13/WSL&DNS/",
+  "image": "https://kizzy899.github.io/cover/cover5.jpg",
+  "datePublished": "2026-01-13T11:32:12.000Z",
+  "dateModified": "2026-01-15T09:27:16.294Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "kizy",
+      "url": "https://kizzy899.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2026/01/13/WSL&amp;DNS/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'WSL中与DNS相关的问题',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/cover/cover5.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">WSL中与DNS相关的问题</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">WSL中与DNS相关的问题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-01-13T11:32:12.000Z" title="发表于 2026-01-13 19:32:12">2026-01-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-01-15T09:27:16.294Z" title="更新于 2026-01-15 17:27:16">2026-01-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="WSL中与DNS相关的问题"><a href="#WSL中与DNS相关的问题" class="headerlink" title="WSL中与DNS相关的问题"></a>WSL中与DNS相关的问题</h1><blockquote>
+<p>场景：配置claude code</p>
+</blockquote>
+<h2 id="一、问题一：curl-npm-apt-报错，提示域名无法解析"><a href="#一、问题一：curl-npm-apt-报错，提示域名无法解析" class="headerlink" title="一、问题一：curl &#x2F; npm &#x2F; apt 报错，提示域名无法解析"></a>一、问题一：curl &#x2F; npm &#x2F; apt 报错，提示域名无法解析</h2><h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li><code>curl: Could not resolve host</code></li>
+<li><code>npm ERR! getaddrinfo EAI_AGAIN</code></li>
+<li><code>apt: Temporary failure resolving &#39;archive.ubuntu.com&#39;</code></li>
+</ul>
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><ul>
+<li>WSL 内部的 <strong>DNS 解析不稳定 &#x2F; 失败</strong></li>
+<li>常见于：<ul>
+<li>WSL2 网络初始化异常</li>
+<li>DNS 被代理 &#x2F; 网络环境干扰</li>
+<li>系统在 IPv6 &#x2F; IPv4 间切换导致解析异常</li>
+</ul>
+</li>
+</ul>
+<h3 id="答案"><a href="#答案" class="headerlink" title="答案"></a>答案</h3><ul>
+<li><p>先验证 DNS 是否真的失效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">getent hosts google.com</span><br><span class="line">getent hosts registry.npmjs.org</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>若能解析但应用报错，通常不是 DNS 本身，而是 <strong>后续网络出口问题</strong></p>
+</li>
+<li><p>必要时重启 WSL：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl <span class="literal">--shutdown</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h2 id="二、问题二：npm-能访问，但-Claude-Code-仍然无法连接"><a href="#二、问题二：npm-能访问，但-Claude-Code-仍然无法连接" class="headerlink" title="二、问题二：npm 能访问，但 Claude Code 仍然无法连接"></a>二、问题二：npm 能访问，但 Claude Code 仍然无法连接</h2><h3 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h3><ul>
+<li><p><code>claude</code> 报错：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Unable to connect to Anthropic services</span><br><span class="line">Failed to connect to api.anthropic.com</span><br><span class="line">ERR_BAD_REQUEST</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>但：</p>
+<ul>
+<li><code>npm install</code> 已成功</li>
+<li><code>claude -v</code> 能输出版本号</li>
+</ul>
+</li>
+</ul>
+<h3 id="原因-1"><a href="#原因-1" class="headerlink" title="原因"></a>原因</h3><ul>
+<li><strong>Claude Code CLI 会直连 <code>api.anthropic.com</code></strong></li>
+<li>Anthropic API <strong>按“网络出口国家”做访问控制</strong></li>
+<li>与 DNS 是否可解析无关</li>
+</ul>
+<h3 id="答案-1"><a href="#答案-1" class="headerlink" title="答案"></a>答案</h3><ul>
+<li><p>判断当前网络出口国家：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s https://ipinfo.io/country</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>若输出：</p>
+<ul>
+<li><code>CN</code> → Claude Code <strong>必然不可用</strong></li>
+<li><code>US / JP / SG / EU</code> → 可用</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="三、问题三：浏览器-Claude-能用，但-WSL-CLI-不能"><a href="#三、问题三：浏览器-Claude-能用，但-WSL-CLI-不能" class="headerlink" title="三、问题三：浏览器 Claude 能用，但 WSL &#x2F; CLI 不能"></a>三、问题三：浏览器 Claude 能用，但 WSL &#x2F; CLI 不能</h2><h3 id="问题-2"><a href="#问题-2" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>浏览器中 Claude.ai 可正常登录</li>
+<li>WSL 中 <code>claude</code> 仍提示地区不支持</li>
+</ul>
+<h3 id="原因-2"><a href="#原因-2" class="headerlink" title="原因"></a>原因</h3><ul>
+<li>浏览器使用的是 <strong>浏览器代理</strong></li>
+<li>CLI &#x2F; WSL 使用的是 <strong>系统网络出口</strong></li>
+<li>两者并不共享代理配置</li>
+</ul>
+<h3 id="答案-2"><a href="#答案-2" class="headerlink" title="答案"></a>答案</h3><ul>
+<li><p>必须让 <strong>WSL 的流量也走代理</strong></p>
+</li>
+<li><p>判断标准永远只有一句话：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -s https://ipinfo.io/country</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h2 id="四、问题四：已使用-Clash-Verge，但-WSL-仍然是-CN"><a href="#四、问题四：已使用-Clash-Verge，但-WSL-仍然是-CN" class="headerlink" title="四、问题四：已使用 Clash Verge，但 WSL 仍然是 CN"></a>四、问题四：已使用 Clash Verge，但 WSL 仍然是 CN</h2><h3 id="问题-3"><a href="#问题-3" class="headerlink" title="问题"></a>问题</h3><ul>
+<li><p>Windows 下已开启 Clash Verge</p>
+</li>
+<li><p><strong>Clash Verge也已经开启LAN</strong></p>
+</li>
+<li><p>WSL 中设置代理后：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https://ipinfo.io/country</span><br></pre></td></tr></table></figure>
+
+<p>无输出或仍为 CN</p>
+</li>
+</ul>
+<h3 id="原因-3"><a href="#原因-3" class="headerlink" title="原因"></a>原因</h3><ol>
+<li><strong>WSL2 与 Windows 使用不同的网络栈</strong></li>
+<li>WSL 内的 <code>127.0.0.1</code> ≠ Windows 的 <code>127.0.0.1</code></li>
+<li>Clash 监听在 Windows 本机，但 WSL 无法通过 localhost 访问</li>
+</ol>
+<h3 id="答案-3"><a href="#答案-3" class="headerlink" title="答案"></a>答案</h3><ul>
+<li>使用 <strong>Windows 的真实局域网 IP</strong>，而不是 127.0.0.1</li>
+<li>例如 Windows WLAN IP 为 <code>172.26.176.1</code></li>
+</ul>
+<p>在 WSL 中设置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> HTTP_PROXY=http://172.26.176.1:7897</span><br><span class="line"><span class="built_in">export</span> HTTPS_PROXY=http://172.26.176.1:7897</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>同时确保 Clash Verge：</p>
+<ul>
+<li>✅ Allow LAN &#x3D; ON</li>
+<li>✅ System Proxy &#x3D; ON</li>
+<li>（可选）TUN Mode &#x3D; ON</li>
+</ul>
+</li>
+<li><p>重启 WSL：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl <span class="literal">--shutdown</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<p>永久性配置代理：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;export http_proxy=http://192.168.43.186:7890&#x27;</span> &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;export https_proxy=http://192.168.43.186:7890&#x27;</span> &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+
+
+<p>代理配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1️⃣ 清空旧代理</span></span><br><span class="line"><span class="built_in">unset</span> http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2️⃣ 强制使用 HTTP 代理（即使 Clash 实际是 mixed-port）</span></span><br><span class="line"><span class="built_in">export</span> http_proxy=http://172.26.176.1:7897</span><br><span class="line"><span class="built_in">export</span> https_proxy=http://172.26.176.1:7897</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="最终成功步骤"><a href="#最终成功步骤" class="headerlink" title="最终成功步骤"></a>最终成功步骤</h1><h3 id="第-1-步：关掉-WSL-的自动-DNS"><a href="#第-1-步：关掉-WSL-的自动-DNS" class="headerlink" title="第 1 步：关掉 WSL 的自动 DNS"></a>第 1 步：关掉 WSL 的自动 DNS</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/wsl.conf &lt;&lt; <span class="string">&#x27;EOF&#x27;</span></span><br><span class="line">[network]</span><br><span class="line">generateResolvConf = <span class="literal">false</span></span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="第-2-步：手动写-DNS（稳定方案）"><a href="#第-2-步：手动写-DNS（稳定方案）" class="headerlink" title="第 2 步：手动写 DNS（稳定方案）"></a>第 2 步：手动写 DNS（稳定方案）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">rm</span> -f /etc/resolv.conf</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/resolv.conf &lt;&lt; <span class="string">&#x27;EOF&#x27;</span></span><br><span class="line">nameserver 1.1.1.1</span><br><span class="line">nameserver 8.8.8.8</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="第三步：上锁"><a href="#第三步：上锁" class="headerlink" title="第三步：上锁"></a>第三步：上锁</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> chattr -i /etc/resolv.conf</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="第四步：验证"><a href="#第四步：验证" class="headerlink" title="第四步：验证"></a>第四步：验证</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ping google.com</span><br><span class="line">curl https://google.com</span><br><span class="line">curl https://claude.ai</span><br></pre></td></tr></table></figure>
+
+<p>如果 <code>curl</code> 能返回 HTML &#x2F; 重定向信息，说明 <strong>DNS 已彻底修好</strong>。</p>
+<h4 id="验证dns是否真的稳了"><a href="#验证dns是否真的稳了" class="headerlink" title="验证dns是否真的稳了"></a>验证dns是否真的稳了</h4><p>for i in {1..5}; do nslookup registry.npmjs.org; done</p>
+<blockquote>
+<p>sudo apt update<br>sudo apt install -y dnsutils</p>
+</blockquote>
+<h4 id="验证能否走代理："><a href="#验证能否走代理：" class="headerlink" title="验证能否走代理："></a>验证能否走代理：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">eightjiu89@LAPTOP-JG60Q7QB:~$ <span class="comment"># 安装</span></span><br><span class="line">npm install node-fetch@2</span><br><span class="line"></span><br><span class="line">测试</span><br><span class="line"></span><br><span class="line">node -e <span class="string">&quot;</span></span><br><span class="line"><span class="string">const fetch = require(&#x27;node-fetch&#x27;);</span></span><br><span class="line"><span class="string">const &#123; HttpsProxyAgent &#125; = require(&#x27;https-proxy-agent&#x27;);</span></span><br><span class="line"><span class="string">const agent = new HttpsProxyAgent(&#x27;http://172.26.176.1:7897&#x27;);</span></span><br><span class="line"><span class="string">fetch(&#x27;https://ipinfo.io/country&#x27;, &#123; agent &#125;)</span></span><br><span class="line"><span class="string">  .then(r =&gt; r.text())</span></span><br><span class="line"><span class="string">  .then(console.log)</span></span><br><span class="line"><span class="string">  .catch(console.error);</span></span><br><span class="line"><span class="string">&quot;</span></span><br><span class="line"></span><br><span class="line">added 4 packages, and audited 9 packages <span class="keyword">in</span> 21s</span><br><span class="line"></span><br><span class="line">found 0 vulnerabilities</span><br><span class="line">SG</span><br></pre></td></tr></table></figure>
+
+<h4 id="验证-Node-是否真的走代理"><a href="#验证-Node-是否真的走代理" class="headerlink" title="验证 Node 是否真的走代理"></a>验证 Node 是否真的走代理</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node -e &quot;fetch(&#x27;https://ipinfo.io/country&#x27;).then(r=&gt;r.text()).then(console.log)&quot;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>export HTTP_PROXY&#x3D;”<a target="_blank" rel="noopener" href="http://172.26.176.1:7897/">http://172.26.176.1:7897</a>“ </p>
+<p>export HTTPS_PROXY&#x3D;”<a target="_blank" rel="noopener" href="http://172.26.176.1:7897/">http://172.26.176.1:7897</a>“ </p>
+</blockquote>
+<h1 id="API"><a href="#API" class="headerlink" title="API"></a>API</h1><p>直接在WSL中配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> ANTHROPIC_API_KEY=<span class="string">&quot;sk-ant-xxx&quot;</span></span><br><span class="line"></span><br><span class="line">npm install @anthropic-ai/sdk</span><br><span class="line"></span><br><span class="line">node index.js</span><br><span class="line"></span><br><span class="line">npm官方源：npm config <span class="built_in">set</span> registry https://registry.npmjs.org/</span><br></pre></td></tr></table></figure>
+
+<p>然后启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">claude</span><br></pre></td></tr></table></figure>
+
+
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2026/01/13/WSL&amp;DNS/">https://kizzy899.github.io/2026/01/13/WSL&amp;DNS/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></div><div class="post-share"><div class="social-share" data-image="/cover/cover5.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/12/30/AI%E5%90%8D%E8%AF%8D%E6%89%AB%E7%9B%B2/" title="AI名词扫盲"><img class="cover" src="/cover/cover4.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">AI名词扫盲</div></div><div class="info-2"><div class="info-item-1">一、初始AI模型交互与提示词演进1.1 用户提示词（User Prompt） 定义：用户发送给AI模型的消息，通常是问题或意图表达。 局限性： AI模型缺乏预设“人设”“背景”； 回答通用、中规中矩，无个性化和趣味性； 无法根据上下文&#x2F;角色给出差异化反馈。  1.2 系统提示词（System Prompt） 产生背景：解决AI模型缺乏人设的问题，避免将人设与用户请求打包导致内容不自然。 定义：把人设、性格、背景、语气等非用户直接说出的内容独立出来的提示信息。 机制：网页&#x2F;聊天机器人中，系统会自动将其与用户提示词一同发送给AI模型。 应用场景： 部分端侧系统预设的系统提示词用户无法直接修改； 部分平台（如ChatGPT）自定义偏好会自动整合为系统提示词的一部分。  二、AI智能体（AI Agent）及其工具（Agent Tool）2.1 AI Agent的引入 需求背景：AI模型仅能提供答案&#x2F;操作建议，无法自主执行任务。 概念： AI Agent：协调AI模型、工具与最终用户的通信程序； Agent Tool：供AI模型调用的本地小程序&#x2F;服务...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/04/20/MobaXterm%E6%93%8D%E4%BD%9C/" title="MobaXterm操作"><img class="cover" src="/cover/cover13.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-20</div><div class="info-item-2">MobaXterm操作</div></div><div class="info-2"><div class="info-item-1">前置条件利用ubantu系统在VMware上配置Linux系统虚拟机 【两分半钟完成VMware安装及Linux-Ubuntu安装（全程无废话）】https://www.bilibili.com/video/BV1W34y1k7ge?vd_source=8d7dd382f6f8f6be47abce702685a0b0 （参考此视频） 虚拟机上Ssh的开启与安装 【Linux虚拟机开启SSH服务 -  CSDN App】http://t.csdnimg.cn/JE5nY Ps:还要注意要将虚拟机和电脑主机的防火墙关闭 过程一、查看虚拟机的 Host 信息启动 VMware 虚拟机，进入 Ubuntu 系统。在虚拟机内，点击 应用程序，然后选择 终端 打开命令行界面。(或者直接快捷键Ctrl + Alt + T 打开终端)输入命令 ifconfig 查看虚拟机的 IP 地址和主机信息。红框中显示的是虚拟机的 IP 地址。  下面显示的是虚拟机的用户名（如：root123）。  注：用户名和密码是创建虚拟机时设定的。 二、通过 MobaXterm 连接虚拟机  打开 MobaXterm...</div></div></div></a><a class="pagination-related" href="/2025/01/11/TEE%E7%9A%84%E5%88%9D%E6%AD%A5%E7%90%86%E8%A7%A3%E4%B8%8E%E8%AE%A4%E8%AF%86/" title="TEE的初步理解与认识"><img class="cover" src="/cover/cover7.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-11</div><div class="info-item-2">TEE的初步理解与认识</div></div><div class="info-2"><div class="info-item-1">【论文阅读摘要】 关键词：可信执行环境   定义可信执行环境（trusted execution environment, TEE）技术，用于保护非可信平台中应用和数据可信 执行. TEE 通常采用隔离部分软硬件资源的方法构 建安全区域，确保在其中运行的程序和数据保密性 和完整性不受外部干扰。 一个可靠的TEE 需要提供 4 方面的安全保障 1）数据隔离：一个可信应用使用的数据不能被其他应用访问、修改，包括可信应用的数据对外部操作系统隔离以及多个可信应用之间的数据隔离.。 2）计算隔离：可信应用的计算资源不能被其他应用观测和拦截，同时需要清理可信应用执行后的痕迹，并防御来自侧信道的攻击。 3）通信控制：非可信应用和可信应用、多个可信应用之间的会话和数据交互不能破坏隔离性. 4） 错误隔离：非可信区域的安 全漏洞不能扩散到可信应用中. 实用的 TEE 设计思路是基于硬件隔离基础，通过数据加解密和特权指令执行实现其安 全服务. 特点现有的 TEE 技术具有 3 个明显特点 1）面向用户设计 2）硬件辅助支持设计：从基于 x86 到 RISC-V 架 构的平台均引入了新硬件特性 3）共...</div></div></div></a><a class="pagination-related" href="/2024/11/06/penetration_testing_steps/" title="【学习笔记】渗透测试过程1"><img class="cover" src="/cover/cover5.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-06</div><div class="info-item-2">【学习笔记】渗透测试过程1</div></div><div class="info-2"><div class="info-item-1">1. 设置网络环境 将 Kali 虚拟机和靶机的网络适配器改为桥接模式。  在 Kali 虚拟机和靶机相互 ping 通，确保网络连通性。  切换到 root 模式进行操作。  Nmap（用于信息收集 资产探测：ip存活、系统、软件、软件版本、端口）  扫描网段： 1nmap -sn 192.168.42.0/24  查看网段中存活的主机。    全面扫描靶机： 1nmap -A &lt;靶机IP&gt;  在本实验获取数据库端口（1433）。   判断系统类型： 1nmap -O &lt;靶机IP&gt;  在 running: 后面查看主机系统信息。  【图片2】  服务版本扫描(运行软件）： 1nmap -sV &lt;靶机IP&gt;   端口扫描： 1nmap -p1-65535 (目标端口)&lt;靶机IP&gt;   端口 27689 测试：扫描出异常(unknown）端口，在浏览器访问 &lt;靶机IP&gt;:27689。  随机 IP 扫描： 1nmap -v -iR(随机) &lt;数量&gt; -Pn -p 80  如果对方开了防火墙——（报）filter...</div></div></div></a><a class="pagination-related" href="/2024/10/23/vlan%E9%85%8D%E7%BD%AE/" title="【学习笔记】简单网络结构的搭建&#x2F;vlan配置"><img class="cover" src="/cover/cover11.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-23</div><div class="info-item-2">【学习笔记】简单网络结构的搭建&#x2F;vlan配置</div></div><div class="info-2"><div class="info-item-1">(重新粗糙存档一下，过程图基本都丢失了，仅用于个人学习笔记使用)  网络基础架构图 网络通信的原理 软件的使用  ​       a. 关于拓扑图： 接入层交换机，汇聚层交换机 ​        b.技术实现6要求 Vlan trunk 不同vlan间的通信（三层交换技术）交换机的基础命令&#x2F;知识： vlan: 虚拟局域网  vlan trunk stp 链路聚合  hsrp(vrrp)——公司内部的网络系统  将pc1和pc2放入不同vlan可以实现隔离 (同一虚拟网之间的电脑可以通信，不同的不可通信)  vlan范围： 1-4094  关于常见接口类型：   ​	交换机常见接口类型：有Access和trunk ​	Access用来接入终端，电脑，打印机，服务器 ​	trunk用在交换机与交换机之间 ​	trunk技术解决交换机之间传输vlan数据的问题  命令行敲错后，跳出卡顿：ctrl+shift+1   三种模式：  Enable   #  Config    Exit 退出  查看都在#模式中；  配置文件的查看：show run (running-config...</div></div></div></a><a class="pagination-related" href="/2025/01/10/%E5%85%B3%E4%BA%8E%E6%9E%B6%E6%9E%84/" title="关于架构"><img class="cover" src="/cover/cover7.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-10</div><div class="info-item-2">关于架构</div></div><div class="info-2"><div class="info-item-1">企业架构  企业架构是企业进行项目决策的重要依据，同时也是支撑企业后续发展的重要基石。业务架构、数据架构、应用架构和技术架构是企业架构中的四个主要架构，它们在关注的方面和功能上有所不同，但是它们是相互关联和相互支持的，共同构成了企业的总体架构。 企业架构之4A架构4A架构关键词： 业务架构：战略，价值链，端到端，业务流程，业务组件，自上而下分解 应用架构：系统建设，系统集成，中台，自下而上抽象 技术架构：技术选型，框架，PaaS平台，云原生，DevOps，微服务，容器化，部署架构 数据架构：数据标准，数据采集加工，数据入湖，数据治理，数据共享服务，数据安全，数据质量，数据架构 【1】 业务结构业务架构定义了业务策略、治理、组织和关键业务过程。是企业架构的核心内容，承接了企业战略，直接决定企业战略的实现能力，是其他架构领域工作的前置条件。 主要目标是根据企业战略愿景，分析业务现状，识别现有业务能力及问题，提出业务改进需求，设计目标业务架构。（以价值链梳理分析业务开展流程，识别上下游依赖关系，从业务和产品的视角，描述整个平台或者产品的实现） 设计步骤：  识别战略，走访业务部门，问卷...</div></div></div></a><a class="pagination-related" href="/2025/08/05/3CDaemon%20+%20MobaXterm%20%E8%BF%90%E7%BB%B4%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="3CDaemon + MobaXterm运维"><img class="cover" src="/cover/cover_15.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-05</div><div class="info-item-2">3CDaemon + MobaXterm运维</div></div><div class="info-2"><div class="info-item-1">3CDaemon + MobaXterm 运维学习笔记📑 目录 一、FTP 配置与使用 二、SSH 与 SFTP 基础 三、BS 运维（Browser–Server 模式） 四、CS 运维（Client–Server 模式） 参考链接与原文标题   一、FTP 配置与使用 3CDaemon 创建 FTP 用户 打开 3CDaemon → 点击 FTP 用户（创建前先选择一个真实存在的文件夹路径，例如 D:\）。 新建用户： 账号：admin 密码：123123   确认保存。   开启 FTP 服务 进入 配置 → 服务管理 → 端口配置。 默认端口为 21，如需自定义可改为 20021。   在堡垒机添加 FTP 资产 新建资产： IP：主机 IP 端口：FTP 服务端口（如 21 或 20021） 删除系统自带账号，添加刚刚在 3CDaemon 中新建的账号（用户名：admin，密码：123123）。 服务类型选择 FTP。   确认保存。 在 授权管理 中，为刚建的资产分配用户权限。   MobaXterm 连接 FTP 在 个人工作台 中找到刚建的 FTP 资产，使用 ...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#WSL%E4%B8%AD%E4%B8%8EDNS%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">WSL中与DNS相关的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E9%97%AE%E9%A2%98%E4%B8%80%EF%BC%9Acurl-npm-apt-%E6%8A%A5%E9%94%99%EF%BC%8C%E6%8F%90%E7%A4%BA%E5%9F%9F%E5%90%8D%E6%97%A0%E6%B3%95%E8%A7%A3%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">一、问题一：curl &#x2F; npm &#x2F; apt 报错，提示域名无法解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-number">1.1.1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0"><span class="toc-number">1.1.2.</span> <span class="toc-text">原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AD%94%E6%A1%88"><span class="toc-number">1.1.3.</span> <span class="toc-text">答案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E9%97%AE%E9%A2%98%E4%BA%8C%EF%BC%9Anpm-%E8%83%BD%E8%AE%BF%E9%97%AE%EF%BC%8C%E4%BD%86-Claude-Code-%E4%BB%8D%E7%84%B6%E6%97%A0%E6%B3%95%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.2.</span> <span class="toc-text">二、问题二：npm 能访问，但 Claude Code 仍然无法连接</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0-1"><span class="toc-number">1.2.2.</span> <span class="toc-text">原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AD%94%E6%A1%88-1"><span class="toc-number">1.2.3.</span> <span class="toc-text">答案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%97%AE%E9%A2%98%E4%B8%89%EF%BC%9A%E6%B5%8F%E8%A7%88%E5%99%A8-Claude-%E8%83%BD%E7%94%A8%EF%BC%8C%E4%BD%86-WSL-CLI-%E4%B8%8D%E8%83%BD"><span class="toc-number">1.3.</span> <span class="toc-text">三、问题三：浏览器 Claude 能用，但 WSL &#x2F; CLI 不能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98-2"><span class="toc-number">1.3.1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0-2"><span class="toc-number">1.3.2.</span> <span class="toc-text">原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AD%94%E6%A1%88-2"><span class="toc-number">1.3.3.</span> <span class="toc-text">答案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E9%97%AE%E9%A2%98%E5%9B%9B%EF%BC%9A%E5%B7%B2%E4%BD%BF%E7%94%A8-Clash-Verge%EF%BC%8C%E4%BD%86-WSL-%E4%BB%8D%E7%84%B6%E6%98%AF-CN"><span class="toc-number">1.4.</span> <span class="toc-text">四、问题四：已使用 Clash Verge，但 WSL 仍然是 CN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98-3"><span class="toc-number">1.4.1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0-3"><span class="toc-number">1.4.2.</span> <span class="toc-text">原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AD%94%E6%A1%88-3"><span class="toc-number">1.4.3.</span> <span class="toc-text">答案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E6%88%90%E5%8A%9F%E6%AD%A5%E9%AA%A4"><span class="toc-number">2.</span> <span class="toc-text">最终成功步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC-1-%E6%AD%A5%EF%BC%9A%E5%85%B3%E6%8E%89-WSL-%E7%9A%84%E8%87%AA%E5%8A%A8-DNS"><span class="toc-number">2.0.1.</span> <span class="toc-text">第 1 步：关掉 WSL 的自动 DNS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC-2-%E6%AD%A5%EF%BC%9A%E6%89%8B%E5%8A%A8%E5%86%99-DNS%EF%BC%88%E7%A8%B3%E5%AE%9A%E6%96%B9%E6%A1%88%EF%BC%89"><span class="toc-number">2.0.2.</span> <span class="toc-text">第 2 步：手动写 DNS（稳定方案）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E4%B8%8A%E9%94%81"><span class="toc-number">2.0.3.</span> <span class="toc-text">第三步：上锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E9%AA%8C%E8%AF%81"><span class="toc-number">2.0.4.</span> <span class="toc-text">第四步：验证</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81dns%E6%98%AF%E5%90%A6%E7%9C%9F%E7%9A%84%E7%A8%B3%E4%BA%86"><span class="toc-number">2.0.4.1.</span> <span class="toc-text">验证dns是否真的稳了</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81%E8%83%BD%E5%90%A6%E8%B5%B0%E4%BB%A3%E7%90%86%EF%BC%9A"><span class="toc-number">2.0.4.2.</span> <span class="toc-text">验证能否走代理：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81-Node-%E6%98%AF%E5%90%A6%E7%9C%9F%E7%9A%84%E8%B5%B0%E4%BB%A3%E7%90%86"><span class="toc-number">2.0.4.3.</span> <span class="toc-text">验证 Node 是否真的走代理</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#API"><span class="toc-number">3.</span> <span class="toc-text">API</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'kizzy899/kizzy899.github.io',
+      'data-repo-id': 'R_kgDONCC1iQ',
+      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
