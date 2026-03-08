@@ -1,0 +1,514 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>aboutRAG | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="RAG的定义给定知识库，从知识库中检索出合适的参考内容，让大模型据此回答。  AI客服|政策查询|AI搜索   RAG（Retrieval-Augmented Generation）是将检索外部知识库与大语言模型（LLM）生成相结合的技术，核心是让LLM基于精准的参考知识回答问题，避免幻觉。  简易流程 简易流程可分为知识库构建（离线阶段） 和问答推理（在线阶段） 两大核心环节，具体分点详解如下：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="aboutRAG">
+<meta property="og:url" content="https://kizzy899.github.io/2026/03/08/aboutRAG/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="RAG的定义给定知识库，从知识库中检索出合适的参考内容，让大模型据此回答。  AI客服|政策查询|AI搜索   RAG（Retrieval-Augmented Generation）是将检索外部知识库与大语言模型（LLM）生成相结合的技术，核心是让LLM基于精准的参考知识回答问题，避免幻觉。  简易流程 简易流程可分为知识库构建（离线阶段） 和问答推理（在线阶段） 两大核心环节，具体分点详解如下：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/cover/cover_12.jpg">
+<meta property="article:published_time" content="2026-03-08T13:01:53.000Z">
+<meta property="article:modified_time" content="2026-03-08T15:33:47.110Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/cover/cover_12.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "aboutRAG",
+  "url": "https://kizzy899.github.io/2026/03/08/aboutRAG/",
+  "image": "https://kizzy899.github.io/cover/cover_12.jpg",
+  "datePublished": "2026-03-08T13:01:53.000Z",
+  "dateModified": "2026-03-08T15:33:47.110Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "kizy",
+      "url": "https://kizzy899.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2026/03/08/aboutRAG/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'aboutRAG',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/cover/cover_12.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">aboutRAG</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">aboutRAG</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-08T13:01:53.000Z" title="发表于 2026-03-08 21:01:53">2026-03-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-08T15:33:47.110Z" title="更新于 2026-03-08 23:33:47">2026-03-08</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="RAG的定义"><a href="#RAG的定义" class="headerlink" title="RAG的定义"></a>RAG的定义</h1><p>给定<strong>知识库</strong>，从知识库中<strong>检索</strong>出合适的参考内容，让大模型据此<strong>回答</strong>。</p>
+<blockquote>
+<p>AI客服|政策查询|AI搜索</p>
+</blockquote>
+<blockquote>
+<p>RAG（Retrieval-Augmented Generation）是将检索外部知识库与大语言模型（LLM）生成相结合的技术，核心是让LLM基于精准的参考知识回答问题，避免幻觉。</p>
+</blockquote>
+<h3 id="简易流程"><a href="#简易流程" class="headerlink" title="简易流程"></a>简易流程</h3><p><img src="/../img/RAG/image1.png" alt="图片描述"></p>
+<p>简易流程可分为<strong>知识库构建（离线阶段） 和问答推理（在线阶段）</strong> 两大核心环节，具体分点详解如下：</p>
+<h4 id="一、知识库构建阶段"><a href="#一、知识库构建阶段" class="headerlink" title="一、知识库构建阶段"></a>一、知识库构建阶段</h4><blockquote>
+<p>（离线准备，核心是将原始知识转化为可检索的向量数据）</p>
+</blockquote>
+<p>该阶段为后续问答提供数据支撑，完成后知识将以向量形式存储在数据库中，具体步骤：</p>
+<ol>
+<li><p>原始知识输入<br>准备需要用于问答的基础信息（如产品保修条款、专业文献、行业资料等），作为RAG流程的数据源。</p>
+</li>
+<li><p>切割器处理：生成知识块<br>利用切割器将海量、完整的原始知识拆分为大小适中、逻辑独立的知识块。</p>
+</li>
+</ol>
+<p>◦ 作用：解决原始知识篇幅过长、无法被模型高效处理的问题，让检索更精准。</p>
+<ol start="3">
+<li>Embedding模型处理：生成文本向量<br>将拆分后的知识块输入Embedding（嵌入）模型，模型会将非结构化的文本知识转化为计算机可识别的数值型文本向量（如示例中的[0.2,0.5,0.6……]）。</li>
+</ol>
+<p>◦ 核心逻辑：文本向量能通过数学方式表征语义，语义越相近的文本，向量相似度越高。</p>
+<ol start="4">
+<li>存入向量数据库<br>将生成的文本向量与对应的知识块关联，统一存入向量数据库，形成可供检索的“知识库”，完成离线阶段的全部准备。</li>
+</ol>
+<h4 id="二、问答推理阶段"><a href="#二、问答推理阶段" class="headerlink" title="二、问答推理阶段"></a>二、问答推理阶段</h4><blockquote>
+<p>（在线交互，核心是基于用户提问匹配知识并生成答案）</p>
+</blockquote>
+<p>该阶段是用户实际使用RAG的过程，从接收提问到输出结果，步骤环环相扣：</p>
+<ol>
+<li><p>接收用户提问<br>获取用户的自然语言问题（如示例中的“手机可以保修多久”）。</p>
+</li>
+<li><p>提问向量化处理<br>将用户提问输入同一Embedding模型，生成与知识库格式一致的提问文本向量（如[0.2,0.5,0.6……]）。</p>
+</li>
+</ol>
+<blockquote>
+<p> 关键要求：必须使用与知识库构建时相同的Embedding模型，确保向量语义空间一致，才能准确匹配。</p>
+</blockquote>
+<ol start="3">
+<li><p>向量数据库检索：获取参考文档<br>向量数据库根据提问文本向量，通过“相似度计算”检索出语义最匹配的知识块，将这些知识块作为参考文档（示例中为包含保修期限的相关条款）输出。</p>
+</li>
+<li><p>提示词模版填充：生成提示词<br>将用户问题与参考文档按照预设的提示词模版进行组合，生成标准化的提示词。</p>
+</li>
+</ol>
+<p>◦ 模版示例：“请基于参考材料回答问题，如果不知道就答复‘暂不清楚’。问题：手机保修期是多久。参考资料：1.…… 2.…… 3.……”</p>
+<p>◦ 作用：约束LLM的回答逻辑，强制其仅基于检索到的参考文档输出结果，杜绝幻觉。</p>
+<ol start="5">
+<li>LLM生成：输出最终结果<br>将填充好的提示词输入大语言模型（LLM），模型结合参考文档的信息进行推理、整合，最终输出精准的自然语言答案（如示例中的“可以保修五年”）。</li>
+</ol>
+<h2 id="准备知识库"><a href="#准备知识库" class="headerlink" title="准备知识库"></a>准备知识库</h2><h3 id="1-收集知识"><a href="#1-收集知识" class="headerlink" title="1.收集知识"></a>1.收集知识</h3><p>1.1 知识存储位置</p>
+<p>1.2 数据的格式</p>
+<p>1.3 数据清洗</p>
+<h3 id="2-文档切分"><a href="#2-文档切分" class="headerlink" title="2.文档切分"></a>2.文档切分</h3><blockquote>
+<p>根据知识库来定</p>
+</blockquote>
+<p>保证文本语义<strong>统一</strong>（不要太长），<strong>完全</strong>（不要太短）。</p>
+<ol>
+<li>固定大小切分（token数）</li>
+<li>按照标点符号（如：换行符）</li>
+<li>按照文档结构（标题、章节）</li>
+<li>按照语义划分：将句子按相关性合并成段落。</li>
+</ol>
+<h3 id="3-文本向量转换"><a href="#3-文本向量转换" class="headerlink" title="3.文本向量转换"></a>3.文本向量转换</h3><blockquote>
+<p>目的：计算机处理文字</p>
+</blockquote>
+<ul>
+<li>去重词袋法（有为1，无为0）</li>
+<li>不去重词袋法（数字为出现数量）</li>
+<li><code>tf-idf</code>:词的数值用特定公式计算</li>
+</ul>
+<p><strong>向量</strong>：</p>
+<p>稀疏向量：向量中大部分都是0的向量</p>
+<p>稠密向量</p>
+<blockquote>
+<p>词嵌入方法（维度表示文字）——有点：语义相关性捕捉得更好</p>
+</blockquote>
+<h4 id="Embedding-model"><a href="#Embedding-model" class="headerlink" title="Embedding model"></a>Embedding model</h4><blockquote>
+<p>查看哪个模型比较好： <a target="_blank" rel="noopener" href="https://huggingface.co/spaces/mteb/leaderboard">https://huggingface.co/spaces/mteb/leaderboard</a></p>
+</blockquote>
+<h3 id="4-向量数据库"><a href="#4-向量数据库" class="headerlink" title="4.向量数据库"></a>4.向量数据库</h3><p>使用： 构建知识库时，直接存储文本，则向量数据库会使用默认的向量模型（可以个人指定）将文本向量化，然后存入数据库。然后可以实现相似度分析。</p>
+<blockquote>
+<p>常见数据库：Chromadb FAISS等</p>
+</blockquote>
+<h2 id="检索"><a href="#检索" class="headerlink" title="检索"></a>检索</h2><h3 id="1-基于文本相似度的检索"><a href="#1-基于文本相似度的检索" class="headerlink" title="1. 基于文本相似度的检索"></a>1. 基于文本相似度的检索</h3><p><img src="/../img/RAG/image2.png" alt="图片描述"></p>
+<blockquote>
+<p> 余弦相似度能够更好地理解语义，挖掘用途，容错率更高。</p>
+</blockquote>
+<h3 id="2-基于关键字的检索"><a href="#2-基于关键字的检索" class="headerlink" title="2. 基于关键字的检索"></a>2. 基于关键字的检索</h3><ol>
+<li>构建 关键词&amp;对应文档 的映射表</li>
+<li>应用</li>
+</ol>
+<blockquote>
+<p>命中率高，适用于准确文档准确提问</p>
+</blockquote>
+<h2 id="生成"><a href="#生成" class="headerlink" title="生成"></a>生成</h2><ol>
+<li>提示词构造</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">请基于参考资料回答问题，如果不知道就直接答复“不清楚”</span><br><span class="line"></span><br><span class="line">问题：...</span><br><span class="line">参考资料：</span><br><span class="line">1. xxx</span><br><span class="line">2. xxx</span><br><span class="line">3. xxx</span><br><span class="line">回答要求：...</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>模型</li>
+</ol>
+<ul>
+<li>自行部署：开源</li>
+<li>调用外部接口：闭源</li>
+</ul>
+<h1 id="RAG进阶优化"><a href="#RAG进阶优化" class="headerlink" title="RAG进阶优化"></a>RAG进阶优化</h1><h2 id="检索优化的技巧"><a href="#检索优化的技巧" class="headerlink" title="检索优化的技巧"></a>检索优化的技巧</h2><blockquote>
+<p> small to big</p>
+</blockquote>
+<h3 id="摘要检索"><a href="#摘要检索" class="headerlink" title="摘要检索"></a>摘要检索</h3><p>主要是用大模型处理<strong>总结文本摘要，提炼知识块，语义简练</strong>，提升检索效果；然后生成阶段又用的知识块原文，保证了生成的质量。</p>
+<h3 id="子问题检索"><a href="#子问题检索" class="headerlink" title="子问题检索"></a>子问题检索</h3><p>用大模型针对知识块<strong>生成几个子问题，数据库中就存储生成的子问题</strong>；在生成阶段，用用户提示词中的问题去找到相似&#x2F;相对应的子问题，然后同样，映射到原知识块，生成回答。</p>
+<h3 id="句子窗口检索"><a href="#句子窗口检索" class="headerlink" title="句子窗口检索"></a>句子窗口检索</h3><p>切割成最小语义知识块，<strong>检索时拼接前后文档</strong>，一定程度减少歧义；生成阶段根据拼接的文档去生成回答。</p>
+<h3 id="多路召回"><a href="#多路召回" class="headerlink" title="多路召回"></a>多路召回</h3><p><img src="D:\blog\source\img\RAG\image3.png" alt="image-20260308224227095"></p>
+<blockquote>
+<p>平滑得分:RRF算法(指数也可以自己设置)</p>
+</blockquote>
+<h3 id="Rerank"><a href="#Rerank" class="headerlink" title="Rerank"></a>Rerank</h3><p><img src="D:\blog\source\img\RAG\image4.png" alt="image-20260308225213360"></p>
+<blockquote>
+<ol>
+<li><p>右边每个分数对应的每个文档的相关性得分</p>
+</li>
+<li><p>去重目的:rerank模型比较耗费资源，粗筛以提升响应速率</p>
+</li>
+</ol>
+<p>Cross-Encoder模型</p>
+</blockquote>
+<h2 id="生成优化的技巧"><a href="#生成优化的技巧" class="headerlink" title="生成优化的技巧"></a>生成优化的技巧</h2><blockquote>
+<p>如何利用众多参考文档？</p>
+</blockquote>
+<h3 id="refine模式"><a href="#refine模式" class="headerlink" title="refine模式"></a>refine模式</h3><p>一个一个地去给大模型输送所有参考文档，得到最终答案。</p>
+<blockquote>
+<p>成本高</p>
+</blockquote>
+<h3 id="多文档场景下的refine模式"><a href="#多文档场景下的refine模式" class="headerlink" title="多文档场景下的refine模式"></a>多文档场景下的refine模式</h3><p>相比于<code>refine</code>模式，多一个输送前的<strong>打包</strong>步骤</p>
+<h3 id="tree-summarize"><a href="#tree-summarize" class="headerlink" title="tree_summarize"></a>tree_summarize</h3><p><img src="D:\blog\source\img\RAG\image5.png" alt="image-20260308231126827"></p>
+<blockquote>
+<p>将后面的答案当做参考文档继续输送。</p>
+</blockquote>
+<h3 id="改写提问"><a href="#改写提问" class="headerlink" title="改写提问"></a>改写提问</h3><blockquote>
+<p>原因：提问不规范、多轮对话、复杂提问均可能为改写原因</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>特征&#x2F;需求</th>
+<th>基于规则的改写</th>
+<th>基于模型的改写</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>问题复杂度</td>
+<td>简单、规则明确的情况</td>
+<td>复杂、多样化的问题</td>
+</tr>
+<tr>
+<td>可控性</td>
+<td>高，可精确控制</td>
+<td>低，可自由生成，但可能不完全可控</td>
+</tr>
+<tr>
+<td>计算资源</td>
+<td>低，快速</td>
+<td>高，需要更多计算资源</td>
+</tr>
+<tr>
+<td>灵活性</td>
+<td>低，规则固定</td>
+<td>高，可以处理各种变体</td>
+</tr>
+<tr>
+<td>应用场景</td>
+<td>实时性高、规则化强的场景（如FAQ、客服机器人）</td>
+<td>自然对话系统、多领域应用、复杂问题求解</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>也可以给用户提供提问模板</p>
+</blockquote>
+<h3 id="合理利用元数据"><a href="#合理利用元数据" class="headerlink" title="合理利用元数据"></a>合理利用元数据</h3><p>• 什么是元数据：对文档的描述，如类型、作者、创建日期、来源等</p>
+<p>• 检索前过滤：如：剔除无关文档、检索最近文档</p>
+<p>• 检索中评估相关性：如：重要文档给予更高的权重加成</p>
+<p>• 检索后重排：如：重要文档排前面</p>
+<p>• 生成时提升用户体验：提供参考文档来源，增加可信度</p>
+<blockquote>
+<p>示例问题：我问你房价是多少</p>
+</blockquote>
+<h1 id="如何评估RAG"><a href="#如何评估RAG" class="headerlink" title="如何评估RAG"></a>如何评估RAG</h1><blockquote>
+<p>量化成效，快速迭代</p>
+</blockquote>
+<h3 id="RAG的评估指标"><a href="#RAG的评估指标" class="headerlink" title="RAG的评估指标"></a>RAG的评估指标</h3><p>• 准确率：直接站在用户视角，看答案是否符合实际情况</p>
+<p>• 忠实度：生成的内容是否忠实于提供的上下文或背景信息</p>
+<p>• 召回率、精确率、F1：评估参考文档有没有准确的、完整的给找出来</p>
+<h3 id="RAG的评估方法"><a href="#RAG的评估方法" class="headerlink" title="RAG的评估方法"></a>RAG的评估方法</h3><h4 id="01-人工评估"><a href="#01-人工评估" class="headerlink" title="01 人工评估"></a>01 人工评估</h4><ol>
+<li><p>准备测试样本，包含问题、标准答案、评分标准</p>
+</li>
+<li><p>执行测试，得到作答结果</p>
+</li>
+<li><p>人工交叉评估，评估每个回答准确or错误，或者对每个回答评分</p>
+</li>
+<li><p>统计准确率，或者统计得分</p>
+</li>
+</ol>
+<h4 id="02-模型自动评估"><a href="#02-模型自动评估" class="headerlink" title="02 模型自动评估"></a>02 模型自动评估</h4><ol>
+<li><p>准备测试样本，包含问题、标准答案</p>
+</li>
+<li><p>执行测试，得到作答结果</p>
+</li>
+<li><p>模型评估方法1：将问题+作答结果输入Cross-Encoder模型，得到两者的相关性作为得分</p>
+</li>
+<li><p>模型评估方法2：评估标准答案和作答结果的文本相似度，得到结果作为评分</p>
+</li>
+<li><p>统计得分</p>
+</li>
+</ol>
+<blockquote>
+<p> 可以用人工评估也可以用模型评估</p>
+</blockquote>
+<h3 id="善用工具"><a href="#善用工具" class="headerlink" title="善用工具"></a>善用工具</h3><p>评估框架： LangSmith、Langfuse、RADS……</p>
+<h1 id="RAGvs微调"><a href="#RAGvs微调" class="headerlink" title="RAGvs微调"></a>RAGvs微调</h1><table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>RAG（检索增强生成）</th>
+<th>微调（Fine-tuning）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>核心原理</td>
+<td>外部知识库检索 + LLM生成</td>
+<td>直接修改模型权重，学习数据知识</td>
+</tr>
+<tr>
+<td>知识更新</td>
+<td>随时增删改知识库，实时更新</td>
+<td>需重新训练，更新成本高、周期长</td>
+</tr>
+<tr>
+<td>数据量要求</td>
+<td>少量文档即可，无需大量数据</td>
+<td>需要大量高质量标注数据</td>
+</tr>
+<tr>
+<td>计算资源</td>
+<td>低，主要是检索开销</td>
+<td>高，需要GPU&#x2F;显存，训练耗时</td>
+</tr>
+<tr>
+<td>幻觉（hallucination）</td>
+<td>低，答案基于检索事实</td>
+<td>可能产生幻觉，依赖训练数据质量</td>
+</tr>
+<tr>
+<td>可控性</td>
+<td>高，可溯源、可引用来源</td>
+<td>低，生成过程不可控</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>知识频繁更新、需要可解释、知识库大</td>
+<td>固定领域、风格对齐、能力增强</td>
+</tr>
+<tr>
+<td>部署成本</td>
+<td>低，易维护</td>
+<td>高，需持续训练与部署</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>相关英文翻译：</p>
+<p>• 切分前的知识文档：document</p>
+<p>• 切分后的知识块：chunk</p>
+<p>• 用户的提问：query</p>
+<p>• 模型检索出来的结果：context</p>
+<p>• 模型的回答：response</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2026/03/08/aboutRAG/">https://kizzy899.github.io/2026/03/08/aboutRAG/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI/">AI</a></div><div class="post-share"><div class="social-share" data-image="/cover/cover_12.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/03/06/rust%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" title="rust学习记录"><img class="cover" src="/cover/cover_15.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">rust学习记录</div></div><div class="info-2"><div class="info-item-1">Rust Book 第一章：基础入门🔧 核心概念Cargo 是什么？Cargo 是 Rust 的构建系统和包管理器，类似 npm&#x2F;pip。 📝 常用命令📁 项目结构hello_cargo&#x2F;├── Cargo.toml      # 项目配置文件├── src&#x2F;│   └── main.rs     # 源代码└── target&#x2F;         # 构建输出目录（自动生成）└── debug&#x2F;└── hello_cargo  (Windows: hello_cargo.exe) 注意：构建结果存放在 target/debug/ 目录，不与源代码混在一起。 💻 VS Code 连接云服务器方案 1：VS Code Remote-SSH（推荐）🔥 直接在 VS Code 里连接云服务器，像本地一样开发： \1. 安装扩展：VS Code → 扩展商店 → 搜 Remote - SSH → 安装 \2. 配置连接：    - Ctrl+Shift+P → Remote-SSH: Connect to Host...    -...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RAG%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">1.</span> <span class="toc-text">RAG的定义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E6%98%93%E6%B5%81%E7%A8%8B"><span class="toc-number">1.0.1.</span> <span class="toc-text">简易流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%9F%A5%E8%AF%86%E5%BA%93%E6%9E%84%E5%BB%BA%E9%98%B6%E6%AE%B5"><span class="toc-number">1.0.1.1.</span> <span class="toc-text">一、知识库构建阶段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E9%97%AE%E7%AD%94%E6%8E%A8%E7%90%86%E9%98%B6%E6%AE%B5"><span class="toc-number">1.0.1.2.</span> <span class="toc-text">二、问答推理阶段</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E7%9F%A5%E8%AF%86%E5%BA%93"><span class="toc-number">1.1.</span> <span class="toc-text">准备知识库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%94%B6%E9%9B%86%E7%9F%A5%E8%AF%86"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.收集知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%96%87%E6%A1%A3%E5%88%87%E5%88%86"><span class="toc-number">1.1.2.</span> <span class="toc-text">2.文档切分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%96%87%E6%9C%AC%E5%90%91%E9%87%8F%E8%BD%AC%E6%8D%A2"><span class="toc-number">1.1.3.</span> <span class="toc-text">3.文本向量转换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Embedding-model"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">Embedding model</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.1.4.</span> <span class="toc-text">4.向量数据库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E7%B4%A2"><span class="toc-number">1.2.</span> <span class="toc-text">检索</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9F%BA%E4%BA%8E%E6%96%87%E6%9C%AC%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%9A%84%E6%A3%80%E7%B4%A2"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 基于文本相似度的检索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9F%BA%E4%BA%8E%E5%85%B3%E9%94%AE%E5%AD%97%E7%9A%84%E6%A3%80%E7%B4%A2"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 基于关键字的检索</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90"><span class="toc-number">1.3.</span> <span class="toc-text">生成</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RAG%E8%BF%9B%E9%98%B6%E4%BC%98%E5%8C%96"><span class="toc-number">2.</span> <span class="toc-text">RAG进阶优化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E7%B4%A2%E4%BC%98%E5%8C%96%E7%9A%84%E6%8A%80%E5%B7%A7"><span class="toc-number">2.1.</span> <span class="toc-text">检索优化的技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%91%98%E8%A6%81%E6%A3%80%E7%B4%A2"><span class="toc-number">2.1.1.</span> <span class="toc-text">摘要检索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E9%97%AE%E9%A2%98%E6%A3%80%E7%B4%A2"><span class="toc-number">2.1.2.</span> <span class="toc-text">子问题检索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%A5%E5%AD%90%E7%AA%97%E5%8F%A3%E6%A3%80%E7%B4%A2"><span class="toc-number">2.1.3.</span> <span class="toc-text">句子窗口检索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E8%B7%AF%E5%8F%AC%E5%9B%9E"><span class="toc-number">2.1.4.</span> <span class="toc-text">多路召回</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Rerank"><span class="toc-number">2.1.5.</span> <span class="toc-text">Rerank</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E4%BC%98%E5%8C%96%E7%9A%84%E6%8A%80%E5%B7%A7"><span class="toc-number">2.2.</span> <span class="toc-text">生成优化的技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#refine%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.2.1.</span> <span class="toc-text">refine模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E6%96%87%E6%A1%A3%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84refine%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.2.2.</span> <span class="toc-text">多文档场景下的refine模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tree-summarize"><span class="toc-number">2.2.3.</span> <span class="toc-text">tree_summarize</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%94%B9%E5%86%99%E6%8F%90%E9%97%AE"><span class="toc-number">2.2.4.</span> <span class="toc-text">改写提问</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%88%E7%90%86%E5%88%A9%E7%94%A8%E5%85%83%E6%95%B0%E6%8D%AE"><span class="toc-number">2.2.5.</span> <span class="toc-text">合理利用元数据</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%AF%84%E4%BC%B0RAG"><span class="toc-number">3.</span> <span class="toc-text">如何评估RAG</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RAG%E7%9A%84%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87"><span class="toc-number">3.0.1.</span> <span class="toc-text">RAG的评估指标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RAG%E7%9A%84%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95"><span class="toc-number">3.0.2.</span> <span class="toc-text">RAG的评估方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#01-%E4%BA%BA%E5%B7%A5%E8%AF%84%E4%BC%B0"><span class="toc-number">3.0.2.1.</span> <span class="toc-text">01 人工评估</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#02-%E6%A8%A1%E5%9E%8B%E8%87%AA%E5%8A%A8%E8%AF%84%E4%BC%B0"><span class="toc-number">3.0.2.2.</span> <span class="toc-text">02 模型自动评估</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%96%84%E7%94%A8%E5%B7%A5%E5%85%B7"><span class="toc-number">3.0.3.</span> <span class="toc-text">善用工具</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RAGvs%E5%BE%AE%E8%B0%83"><span class="toc-number">4.</span> <span class="toc-text">RAGvs微调</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'kizzy899/kizzy899.github.io',
+      'data-repo-id': 'R_kgDONCC1iQ',
+      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
