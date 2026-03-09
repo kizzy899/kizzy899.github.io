@@ -1,0 +1,393 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RUST笔记一(基础与变量) | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="RUST-基础与变量第一章：基础入门与环境配置🔧 核心概念：CargoCargo 是 Rust 的构建系统和包管理器（类似 npm&#x2F;pip）。  常用命令： cargo new project_name：创建新项目 cargo build：编译项目 cargo run：编译并运行（日常开发最常用） cargo check：快速检查语法错误（不生成二进制文件，速度快）    📁 项目结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RUST笔记一(基础与变量)">
+<meta property="og:url" content="https://kizzy899.github.io/2026/03/09/rust%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="RUST-基础与变量第一章：基础入门与环境配置🔧 核心概念：CargoCargo 是 Rust 的构建系统和包管理器（类似 npm&#x2F;pip）。  常用命令： cargo new project_name：创建新项目 cargo build：编译项目 cargo run：编译并运行（日常开发最常用） cargo check：快速检查语法错误（不生成二进制文件，速度快）    📁 项目结">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/cover/cover_16.jpg">
+<meta property="article:published_time" content="2026-03-09T01:01:53.000Z">
+<meta property="article:modified_time" content="2026-03-09T03:02:51.322Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="RUST">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/cover/cover_16.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "RUST笔记一(基础与变量)",
+  "url": "https://kizzy899.github.io/2026/03/09/rust%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/",
+  "image": "https://kizzy899.github.io/cover/cover_16.jpg",
+  "datePublished": "2026-03-09T01:01:53.000Z",
+  "dateModified": "2026-03-09T03:02:51.322Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "kizy",
+      "url": "https://kizzy899.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2026/03/09/rust%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RUST笔记一(基础与变量)',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/cover/cover_16.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">RUST笔记一(基础与变量)</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">RUST笔记一(基础与变量)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-03-09T01:01:53.000Z" title="发表于 2026-03-09 09:01:53">2026-03-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-03-09T03:02:51.322Z" title="更新于 2026-03-09 11:02:51">2026-03-09</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="RUST-基础与变量"><a href="#RUST-基础与变量" class="headerlink" title="RUST-基础与变量"></a>RUST-基础与变量</h1><h2 id="第一章：基础入门与环境配置"><a href="#第一章：基础入门与环境配置" class="headerlink" title="第一章：基础入门与环境配置"></a>第一章：基础入门与环境配置</h2><h3 id="🔧-核心概念：Cargo"><a href="#🔧-核心概念：Cargo" class="headerlink" title="🔧 核心概念：Cargo"></a>🔧 核心概念：Cargo</h3><p>Cargo 是 Rust 的构建系统和包管理器（类似 npm&#x2F;pip）。</p>
+<ul>
+<li><strong>常用命令</strong>：<ul>
+<li><code>cargo new project_name</code>：创建新项目</li>
+<li><code>cargo build</code>：编译项目</li>
+<li><code>cargo run</code>：编译并运行（日常开发最常用）</li>
+<li><code>cargo check</code>：快速检查语法错误（不生成二进制文件，速度快）</li>
+</ul>
+</li>
+</ul>
+<h3 id="📁-项目结构"><a href="#📁-项目结构" class="headerlink" title="📁 项目结构"></a>📁 项目结构</h3><p>Plaintext</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hello_cargo/</span><br><span class="line">├── Cargo.toml      # 项目配置文件（依赖、元数据）</span><br><span class="line">├── src/</span><br><span class="line">│   └── main.rs     # 源代码入口</span><br><span class="line">└── target/         # 构建输出目录（自动生成）</span><br><span class="line">    └── debug/</span><br><span class="line">        └── hello_cargo  # 编译后的可执行文件</span><br></pre></td></tr></table></figure>
+
+<h3 id="💻-VS-Code-远程开发-Remote-SSH-🔥"><a href="#💻-VS-Code-远程开发-Remote-SSH-🔥" class="headerlink" title="💻 VS Code 远程开发 (Remote-SSH) 🔥"></a>💻 VS Code 远程开发 (Remote-SSH) 🔥</h3><p><strong>推荐方案</strong>：直接在云服务器上开发。</p>
+<ol>
+<li><strong>扩展</strong>：安装 <code>Remote - SSH</code>。</li>
+<li><strong>连接</strong>：<code>Ctrl+Shift+P</code> -&gt; <code>Remote-SSH: Connect to Host...</code> -&gt; <code>ssh user@ip</code>。</li>
+<li><strong>插件</strong>：在远程环境中安装 <code>rust-analyzer</code> 扩展。</li>
+</ol>
+<ul>
+<li><strong>优点</strong>：环境一致，编译运行都在服务器，不占用本地资源。</li>
+</ul>
+<hr>
+<h2 id="第二章：变量与输入输出-猜数字游戏"><a href="#第二章：变量与输入输出-猜数字游戏" class="headerlink" title="第二章：变量与输入输出 (猜数字游戏)"></a>第二章：变量与输入输出 (猜数字游戏)</h2><h3 id="🔣-变量声明与不可变性"><a href="#🔣-变量声明与不可变性" class="headerlink" title="🔣 变量声明与不可变性"></a>🔣 变量声明与不可变性</h3><p>Rust 设计理念：<strong>安全优先</strong>。</p>
+<ul>
+<li><code>let x = 5;</code> —— <strong>不可变</strong>（Immutable），绑定后不能修改。</li>
+<li><code>let mut x = 5;</code> —— <strong>可变</strong>（Mutable），显式声明后可修改。</li>
+</ul>
+<h3 id="⌨️-接收用户输入"><a href="#⌨️-接收用户输入" class="headerlink" title="⌨️ 接收用户输入"></a>⌨️ 接收用户输入</h3><p>Rust</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">use std::io;</span><br><span class="line"></span><br><span class="line">let mut guess = String::new();</span><br><span class="line">io::stdin()</span><br><span class="line">    .read_line(&amp;mut guess)</span><br><span class="line">    .expect(&quot;Failed to read line&quot;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>&amp;mut guess</code> 详解</strong>：<ul>
+<li><code>&amp;</code>：引用（Reference），允许程序多次访问同一数据而无需拷贝。</li>
+<li><code>mut</code>：可变。<code>read_line</code> 需要修改字符串内容，必须传入可变引用。</li>
+</ul>
+</li>
+<li><strong><code>.expect()</code> 处理结果</strong>：<ul>
+<li><code>read_line</code> 返回 <code>Result</code> 类型（<code>Ok</code> 或 <code>Err</code>）。</li>
+<li><code>.expect()</code> 会在 <code>Err</code> 时引发程序崩溃（Panic）并打印信息。</li>
+</ul>
+</li>
+</ul>
+<h3 id="📤-格式化打印"><a href="#📤-格式化打印" class="headerlink" title="📤 格式化打印"></a>📤 格式化打印</h3><p>Rust 1.58+ 支持命名参数：</p>
+<p>Rust</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let x = 5;</span><br><span class="line">let y = 10;</span><br><span class="line">println!(&quot;x = &#123;x&#125; and y + 2 = &#123;&#125;&quot;, y + 2); // 混合使用：变量名与占位符</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第三章：数据类型与格式化"><a href="#第三章：数据类型与格式化" class="headerlink" title="第三章：数据类型与格式化"></a>第三章：数据类型与格式化</h2><h3 id="一、-标量类型-Scalar-Types"><a href="#一、-标量类型-Scalar-Types" class="headerlink" title="一、 标量类型 (Scalar Types)"></a>一、 标量类型 (Scalar Types)</h3><table>
+<thead>
+<tr>
+<th><strong>位数</strong></th>
+<th><strong>有符号 (i)</strong></th>
+<th><strong>无符号 (u)</strong></th>
+<th><strong>范围说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>8-bit</strong></td>
+<td><code>i8</code></td>
+<td><code>u8</code></td>
+<td>$0$ 到 $255$ (u8)</td>
+</tr>
+<tr>
+<td><strong>32-bit</strong></td>
+<td><code>i32</code></td>
+<td><code>u32</code></td>
+<td><strong>默认类型</strong>，性能最优</td>
+</tr>
+<tr>
+<td><strong>arch</strong></td>
+<td><code>isize</code></td>
+<td><code>usize</code></td>
+<td>依赖机器架构，常用于数组索引</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>浮点型</strong>：<code>f32</code> 和 <code>f64</code>（默认，精度高）。</li>
+<li>**字符型 (<code>char</code>)**：占用 <strong>4 字节</strong>，支持 Unicode（Emoji、中文）。</li>
+</ul>
+<h3 id="二、-复合类型-Compound-Types"><a href="#二、-复合类型-Compound-Types" class="headerlink" title="二、 复合类型 (Compound Types)"></a>二、 复合类型 (Compound Types)</h3><ol>
+<li>**元组 (Tuple)**：长度固定，类型可不同。<ul>
+<li>访问：<code>tup.0</code> 或 <code>let (x, y) = tup;</code></li>
+</ul>
+</li>
+<li><strong>数组 (Array)<strong>：长度固定，</strong>类型必须相同</strong>，分配在栈上。<ul>
+<li>定义：<code>let a: [i32; 5] = [1, 2, 3, 4, 5];</code></li>
+<li>快捷初始化：<code>let b = [3; 5];</code> &#x2F;&#x2F; <code>[3, 3, 3, 3, 3]</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="三、-核心避坑指南-⚠️"><a href="#三、-核心避坑指南-⚠️" class="headerlink" title="三、 核心避坑指南 ⚠️"></a>三、 核心避坑指南 ⚠️</h3><ul>
+<li><strong>引号使用</strong>：<code>&#39;a&#39;</code> 是字符 (char)，<code>&quot;abc&quot;</code> 是字符串 (&amp;str)。</li>
+<li><strong>进阶打印占位符</strong>：<ul>
+<li><code>&#123;:x&#125;</code>：十六进制</li>
+<li><code>&#123;:b&#125;</code>：二进制</li>
+<li><code>&#123;:?&#125;</code>：Debug 打印（用于打印元组、数组等复杂类型）</li>
+</ul>
+</li>
+<li><strong>未使用变量</strong>：在变量名前加下划线（如 <code>let _x = 5;</code>）可消除警告。</li>
+</ul>
+<hr>
+<h2 id="第四章：变量进阶、常量与断言"><a href="#第四章：变量进阶、常量与断言" class="headerlink" title="第四章：变量进阶、常量与断言"></a>第四章：变量进阶、常量与断言</h2><h3 id="一、-断言-Assertions"><a href="#一、-断言-Assertions" class="headerlink" title="一、 断言 (Assertions)"></a>一、 断言 (Assertions)</h3><p>用于检查逻辑，失败时会触发 <strong>Panic</strong>。</p>
+<table>
+<thead>
+<tr>
+<th><strong>宏</strong></th>
+<th><strong>用途</strong></th>
+<th><strong>示例</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>assert_eq!(a, b)</code></td>
+<td>断言相等</td>
+<td><code>assert_eq!(2, 1 + 1);</code></td>
+</tr>
+<tr>
+<td><code>assert_ne!(a, b)</code></td>
+<td>断言不等</td>
+<td><code>assert_ne!(5, 10);</code></td>
+</tr>
+<tr>
+<td><code>assert!(cond)</code></td>
+<td>断言为真</td>
+<td><code>assert!(x &gt; 0);</code></td>
+</tr>
+</tbody></table>
+<h3 id="二、-常量-Constants"><a href="#二、-常量-Constants" class="headerlink" title="二、 常量 (Constants)"></a>二、 常量 (Constants)</h3><ul>
+<li><strong>语法</strong>：<code>const MAX_POINTS: u32 = 100_000;</code></li>
+<li><strong>特性</strong>：<ol>
+<li>必须使用 <code>const</code>。</li>
+<li><strong>必须显式标注类型</strong>。</li>
+<li>全局有效，永远不可变（不可加 <code>mut</code>）。</li>
+<li>命名约定：<code>SCREAMING_SNAKE_CASE</code>。</li>
+</ol>
+</li>
+</ul>
+<h3 id="三、-变量遮蔽-Shadowing"><a href="#三、-变量遮蔽-Shadowing" class="headerlink" title="三、 变量遮蔽 (Shadowing)"></a>三、 变量遮蔽 (Shadowing)</h3><p>允许声明同名新变量来覆盖旧变量。</p>
+<p>Rust</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let x = 5;</span><br><span class="line">let x = x + 1; // 遮蔽旧 x</span><br><span class="line">let x = &quot;Space&quot;; // 遮蔽并改变类型</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>与 <code>mut</code> 的区别</strong>：遮蔽通过 <code>let</code> 重新创建新变量，因此可以 <strong>改变类型</strong>；<code>mut</code> 只能修改原值，类型必须保持一致。</li>
+</ul>
+<h3 id="四、-变量绑定基础"><a href="#四、-变量绑定基础" class="headerlink" title="四、 变量绑定基础"></a>四、 变量绑定基础</h3><ul>
+<li><strong>解构绑定</strong>：<code>let (a, mut b) = (1, 2);</code> —— <code>a</code> 不可变，<code>b</code> 可变。</li>
+</ul>
+<hr>
+<h2 id="💡-学习心得总结"><a href="#💡-学习心得总结" class="headerlink" title="💡 学习心得总结"></a>💡 学习心得总结</h2><ol>
+<li><strong>安全为王</strong>：默认不可变、强制错误处理 (<code>Result</code>) 是 Rust 的灵魂。</li>
+<li><strong>引用借用</strong>：<code>&amp;</code> 借用和 <code>&amp;mut</code> 可变借用解决了数据竞争问题。</li>
+<li><strong>开发工具</strong>：Cargo 的集成度极高，极大提升了工程效率。</li>
+</ol>
+<hr>
+<p>📖 <a target="_blank" rel="noopener" href="https://practice-zh.course.rs/variables.html">变量绑定与解构 - Rust By Practice</a></p>
+<p>📚 <a target="_blank" rel="noopener" href="https://course.rs/basic/variable.html">Rust 语言圣经 - 变量</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2026/03/09/rust%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">https://kizzy899.github.io/2026/03/09/rust%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/RUST/">RUST</a></div><div class="post-share"><div class="social-share" data-image="/cover/cover_16.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/03/08/aboutRAG/" title="aboutRAG"><img class="cover" src="/cover/cover_12.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">aboutRAG</div></div><div class="info-2"><div class="info-item-1">RAG的定义给定知识库，从知识库中检索出合适的参考内容，让大模型据此回答。  AI客服|政策查询|AI搜索   RAG（Retrieval-Augmented Generation）是将检索外部知识库与大语言模型（LLM）生成相结合的技术，核心是让LLM基于精准的参考知识回答问题，避免幻觉。  简易流程 简易流程可分为知识库构建（离线阶段） 和问答推理（在线阶段） 两大核心环节，具体分点详解如下： 一、知识库构建阶段 （离线准备，核心是将原始知识转化为可检索的向量数据）  该阶段为后续问答提供数据支撑，完成后知识将以向量形式存储在数据库中，具体步骤：  原始知识输入准备需要用于问答的基础信息（如产品保修条款、专业文献、行业资料等），作为RAG流程的数据源。  切割器处理：生成知识块利用切割器将海量、完整的原始知识拆分为大小适中、逻辑独立的知识块。   ◦ 作用：解决原始知识篇幅过长、无法被模型高效处理的问题，让检索更精准。  Embedding模型处理：生成文本向量将拆分后的知识块输入Embedding（嵌入）模型，模型会将非结构化的文本知识转化为计算机可识别的数值型文本向量（如...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RUST-%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%8F%98%E9%87%8F"><span class="toc-number">1.</span> <span class="toc-text">RUST-基础与变量</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8%E4%B8%8E%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">第一章：基础入门与环境配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%A7-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%EF%BC%9ACargo"><span class="toc-number">1.1.1.</span> <span class="toc-text">🔧 核心概念：Cargo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%93%81-%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.2.</span> <span class="toc-text">📁 项目结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%92%BB-VS-Code-%E8%BF%9C%E7%A8%8B%E5%BC%80%E5%8F%91-Remote-SSH-%F0%9F%94%A5"><span class="toc-number">1.1.3.</span> <span class="toc-text">💻 VS Code 远程开发 (Remote-SSH) 🔥</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E5%8F%98%E9%87%8F%E4%B8%8E%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA-%E7%8C%9C%E6%95%B0%E5%AD%97%E6%B8%B8%E6%88%8F"><span class="toc-number">1.2.</span> <span class="toc-text">第二章：变量与输入输出 (猜数字游戏)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%A3-%E5%8F%98%E9%87%8F%E5%A3%B0%E6%98%8E%E4%B8%8E%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%80%A7"><span class="toc-number">1.2.1.</span> <span class="toc-text">🔣 变量声明与不可变性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%8C%A8%EF%B8%8F-%E6%8E%A5%E6%94%B6%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5"><span class="toc-number">1.2.2.</span> <span class="toc-text">⌨️ 接收用户输入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%93%A4-%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%89%93%E5%8D%B0"><span class="toc-number">1.2.3.</span> <span class="toc-text">📤 格式化打印</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0%EF%BC%9A%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="toc-number">1.3.</span> <span class="toc-text">第三章：数据类型与格式化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81-%E6%A0%87%E9%87%8F%E7%B1%BB%E5%9E%8B-Scalar-Types"><span class="toc-number">1.3.1.</span> <span class="toc-text">一、 标量类型 (Scalar Types)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81-%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B-Compound-Types"><span class="toc-number">1.3.2.</span> <span class="toc-text">二、 复合类型 (Compound Types)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81-%E6%A0%B8%E5%BF%83%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97-%E2%9A%A0%EF%B8%8F"><span class="toc-number">1.3.3.</span> <span class="toc-text">三、 核心避坑指南 ⚠️</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0%EF%BC%9A%E5%8F%98%E9%87%8F%E8%BF%9B%E9%98%B6%E3%80%81%E5%B8%B8%E9%87%8F%E4%B8%8E%E6%96%AD%E8%A8%80"><span class="toc-number">1.4.</span> <span class="toc-text">第四章：变量进阶、常量与断言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81-%E6%96%AD%E8%A8%80-Assertions"><span class="toc-number">1.4.1.</span> <span class="toc-text">一、 断言 (Assertions)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81-%E5%B8%B8%E9%87%8F-Constants"><span class="toc-number">1.4.2.</span> <span class="toc-text">二、 常量 (Constants)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81-%E5%8F%98%E9%87%8F%E9%81%AE%E8%94%BD-Shadowing"><span class="toc-number">1.4.3.</span> <span class="toc-text">三、 变量遮蔽 (Shadowing)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81-%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A%E5%9F%BA%E7%A1%80"><span class="toc-number">1.4.4.</span> <span class="toc-text">四、 变量绑定基础</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%92%A1-%E5%AD%A6%E4%B9%A0%E5%BF%83%E5%BE%97%E6%80%BB%E7%BB%93"><span class="toc-number">1.5.</span> <span class="toc-text">💡 学习心得总结</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'kizzy899/kizzy899.github.io',
+      'data-repo-id': 'R_kgDONCC1iQ',
+      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
