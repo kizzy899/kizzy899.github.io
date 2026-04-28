@@ -1,0 +1,639 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>OSS学习记录（Agent项目中） | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="下面是整理后的学习笔记（已去掉第十和第十三部分，并将关键数据结构改为表格形式）。  阿里云 OSS 与 Agent 联动学习笔记一、OSS 是什么Alibaba Cloud OSS（Object Storage Service）是一个云端对象存储服务。 它用于存放图片、视频、文档、日志、模型输出等文件。 在系统架构中：  数据库：存业务数据 OSS：存文件本体 Agent：处理逻辑 + 调用 OS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSS学习记录（Agent项目中）">
+<meta property="og:url" content="https://kizzy899.github.io/2026/04/28/OSS%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%EF%BC%88Agent%E9%A1%B9%E7%9B%AE%E4%B8%AD%EF%BC%89/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="下面是整理后的学习笔记（已去掉第十和第十三部分，并将关键数据结构改为表格形式）。  阿里云 OSS 与 Agent 联动学习笔记一、OSS 是什么Alibaba Cloud OSS（Object Storage Service）是一个云端对象存储服务。 它用于存放图片、视频、文档、日志、模型输出等文件。 在系统架构中：  数据库：存业务数据 OSS：存文件本体 Agent：处理逻辑 + 调用 OS">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/cover/page2.jpg">
+<meta property="article:published_time" content="2026-04-28T15:23:08.000Z">
+<meta property="article:modified_time" content="2026-04-28T15:25:31.995Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="学习记录">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/cover/page2.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "OSS学习记录（Agent项目中）",
+  "url": "https://kizzy899.github.io/2026/04/28/OSS%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%EF%BC%88Agent%E9%A1%B9%E7%9B%AE%E4%B8%AD%EF%BC%89/",
+  "image": "https://kizzy899.github.io/cover/page2.jpg",
+  "datePublished": "2026-04-28T15:23:08.000Z",
+  "dateModified": "2026-04-28T15:25:31.995Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "kizy",
+      "url": "https://kizzy899.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2026/04/28/OSS%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%EF%BC%88Agent%E9%A1%B9%E7%9B%AE%E4%B8%AD%EF%BC%89/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'OSS学习记录（Agent项目中）',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/cover/page2.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">OSS学习记录（Agent项目中）</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">OSS学习记录（Agent项目中）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-28T15:23:08.000Z" title="发表于 2026-04-28 23:23:08">2026-04-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-28T15:25:31.995Z" title="更新于 2026-04-28 23:25:31">2026-04-28</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>下面是整理后的学习笔记（已去掉第十和第十三部分，并将关键数据结构改为表格形式）。</p>
+<hr>
+<h1 id="阿里云-OSS-与-Agent-联动学习笔记"><a href="#阿里云-OSS-与-Agent-联动学习笔记" class="headerlink" title="阿里云 OSS 与 Agent 联动学习笔记"></a>阿里云 OSS 与 Agent 联动学习笔记</h1><h2 id="一、OSS-是什么"><a href="#一、OSS-是什么" class="headerlink" title="一、OSS 是什么"></a>一、OSS 是什么</h2><p>Alibaba Cloud OSS（Object Storage Service）是一个云端对象存储服务。</p>
+<p>它用于存放图片、视频、文档、日志、模型输出等文件。</p>
+<p>在系统架构中：</p>
+<ul>
+<li>数据库：存业务数据</li>
+<li>OSS：存文件本体</li>
+<li>Agent：处理逻辑 + 调用 OSS</li>
+</ul>
+<hr>
+<h2 id="二、OSS-核心概念"><a href="#二、OSS-核心概念" class="headerlink" title="二、OSS 核心概念"></a>二、OSS 核心概念</h2><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>含义</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bucket</td>
+<td>存储空间（类似顶级目录）</td>
+<td>product-images</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>实际文件</td>
+<td>main.jpg</td>
+</tr>
+<tr>
+<td>Object Key</td>
+<td>文件路径</td>
+<td>products&#x2F;10001&#x2F;main.jpg</td>
+</tr>
+<tr>
+<td>Endpoint</td>
+<td>访问域名</td>
+<td>oss-cn-hangzhou.aliyuncs.com</td>
+</tr>
+<tr>
+<td>AccessKey</td>
+<td>访问凭证</td>
+<td>AK &#x2F; SK</td>
+</tr>
+</tbody></table>
+<p>补充说明：</p>
+<ul>
+<li>Bucket 必须全局唯一</li>
+<li>Object Key 本质是字符串路径（没有真实文件夹）</li>
+<li>Endpoint 必须与地域一致</li>
+</ul>
+<hr>
+<h2 id="三、Agent-为什么需要-OSS"><a href="#三、Agent-为什么需要-OSS" class="headerlink" title="三、Agent 为什么需要 OSS"></a>三、Agent 为什么需要 OSS</h2><p>Agent 本质会“产出文件”，OSS 是这些文件的最终存储层。</p>
+<p>典型用途：</p>
+<ul>
+<li>生成图片 → 存 OSS → 返回 URL</li>
+<li>生成 PDF &#x2F; Word &#x2F; Excel → 存 OSS</li>
+<li>处理用户上传文件 → 结果存 OSS</li>
+<li>日志 &#x2F; JSON &#x2F; 中间结果归档</li>
+</ul>
+<p>一句话：</p>
+<p>OSS &#x3D; Agent 的文件存储基础设施</p>
+<hr>
+<h2 id="四、Agent-与-OSS-的标准流程"><a href="#四、Agent-与-OSS-的标准流程" class="headerlink" title="四、Agent 与 OSS 的标准流程"></a>四、Agent 与 OSS 的标准流程</h2><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>动作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>用户提交任务</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Agent 解析任务</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Agent 生成&#x2F;处理文件</td>
+</tr>
+<tr>
+<td>4</td>
+<td>上传文件到 OSS</td>
+</tr>
+<tr>
+<td>5</td>
+<td>OSS 返回 object key</td>
+</tr>
+<tr>
+<td>6</td>
+<td>生成访问 URL</td>
+</tr>
+<tr>
+<td>7</td>
+<td>写入数据库</td>
+</tr>
+<tr>
+<td>8</td>
+<td>返回给前端</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五、Agent-中-OSS-配置项"><a href="#五、Agent-中-OSS-配置项" class="headerlink" title="五、Agent 中 OSS 配置项"></a>五、Agent 中 OSS 配置项</h2><table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>示例</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OSS_REGION</td>
+<td>cn-hangzhou</td>
+<td>存储地域</td>
+</tr>
+<tr>
+<td>OSS_ENDPOINT</td>
+<td>oss-cn-hangzhou.aliyuncs.com</td>
+<td>接口地址</td>
+</tr>
+<tr>
+<td>OSS_BUCKET</td>
+<td>agent-bucket</td>
+<td>存储桶</td>
+</tr>
+<tr>
+<td>OSS_ACCESS_KEY_ID</td>
+<td>xxx</td>
+<td>身份ID</td>
+</tr>
+<tr>
+<td>OSS_ACCESS_KEY_SECRET</td>
+<td>xxx</td>
+<td>密钥</td>
+</tr>
+<tr>
+<td>OSS_PUBLIC_BASE_URL</td>
+<td><a target="_blank" rel="noopener" href="https://bucket.oss-cn-hangzhou.aliyuncs.com/">https://bucket.oss-cn-hangzhou.aliyuncs.com</a></td>
+<td>访问前缀</td>
+</tr>
+<tr>
+<td>OSS_PREFIX</td>
+<td>agent-output&#x2F;</td>
+<td>统一路径前缀</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、文件命名规范（强烈建议）"><a href="#六、文件命名规范（强烈建议）" class="headerlink" title="六、文件命名规范（强烈建议）"></a>六、文件命名规范（强烈建议）</h2><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>规则</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>通用任务文件</td>
+<td>agent-output&#x2F;{taskId}&#x2F;{timestamp}_{name}</td>
+<td>agent-output&#x2F;task001&#x2F;1714300_result.pdf</td>
+</tr>
+<tr>
+<td>商品图片</td>
+<td>products&#x2F;{productId}&#x2F;{picName}.jpg</td>
+<td>products&#x2F;SP001&#x2F;main.jpg</td>
+</tr>
+<tr>
+<td>Agent结果</td>
+<td>result&#x2F;{date}&#x2F;{uuid}.json</td>
+<td>result&#x2F;2026-04-28&#x2F;xxx.json</td>
+</tr>
+</tbody></table>
+<p>设计原则：</p>
+<ul>
+<li>可读</li>
+<li>不重复</li>
+<li>可追踪</li>
+<li>可分区（按业务 &#x2F; 时间）</li>
+</ul>
+<hr>
+<h2 id="七、Agent-上传-OSS-的核心步骤"><a href="#七、Agent-上传-OSS-的核心步骤" class="headerlink" title="七、Agent 上传 OSS 的核心步骤"></a>七、Agent 上传 OSS 的核心步骤</h2><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>读取文件</td>
+<td>本地文件 &#x2F; 内存流</td>
+</tr>
+<tr>
+<td>生成 key</td>
+<td>按规范生成路径</td>
+</tr>
+<tr>
+<td>上传 OSS</td>
+<td>SDK 调用</td>
+</tr>
+<tr>
+<td>设置类型</td>
+<td>Content-Type</td>
+</tr>
+<tr>
+<td>获取 URL</td>
+<td>拼接或返回</td>
+</tr>
+<tr>
+<td>持久化</td>
+<td>写数据库</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="八、权限设计建议"><a href="#八、权限设计建议" class="headerlink" title="八、权限设计建议"></a>八、权限设计建议</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>是否推荐</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主账号 AK</td>
+<td>不推荐</td>
+<td>权限过大</td>
+</tr>
+<tr>
+<td>RAM 子账号</td>
+<td>推荐</td>
+<td>最小权限</td>
+</tr>
+<tr>
+<td>硬编码 AK</td>
+<td>不推荐</td>
+<td>安全风险</td>
+</tr>
+<tr>
+<td>环境变量</td>
+<td>推荐</td>
+<td>安全隔离</td>
+</tr>
+<tr>
+<td>公共读写</td>
+<td>不推荐</td>
+<td>风险高</td>
+</tr>
+<tr>
+<td>公共读 + 私有写</td>
+<td>推荐</td>
+<td>常规方案</td>
+</tr>
+<tr>
+<td>STS 临时授权</td>
+<td>强烈推荐</td>
+<td>前端直传</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="九、推荐架构（Agent-OSS）"><a href="#九、推荐架构（Agent-OSS）" class="headerlink" title="九、推荐架构（Agent + OSS）"></a>九、推荐架构（Agent + OSS）</h2><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent</td>
+<td>业务逻辑 + 文件生成</td>
+</tr>
+<tr>
+<td>OSS</td>
+<td>文件存储</td>
+</tr>
+<tr>
+<td>数据库</td>
+<td>存 URL &#x2F; 元数据</td>
+</tr>
+<tr>
+<td>前端</td>
+<td>通过 URL 展示</td>
+</tr>
+</tbody></table>
+<p>对比：</p>
+<table>
+<thead>
+<tr>
+<th>错误做法</th>
+<th>正确做法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据库存图片 blob</td>
+<td>存 OSS URL</td>
+</tr>
+<tr>
+<td>本地磁盘存文件</td>
+<td>上传 OSS</td>
+</tr>
+<tr>
+<td>Agent 不持久化文件</td>
+<td>OSS 持久化</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十、常见-Agent-OSS-场景"><a href="#十、常见-Agent-OSS-场景" class="headerlink" title="十、常见 Agent + OSS 场景"></a>十、常见 Agent + OSS 场景</h2><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>流程</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>图片同步</td>
+<td>SQL Server → OSS → URL</td>
+</tr>
+<tr>
+<td>文档生成</td>
+<td>Agent → PDF → OSS</td>
+</tr>
+<tr>
+<td>数据报表</td>
+<td>Agent → Excel → OSS</td>
+</tr>
+<tr>
+<td>多媒体处理</td>
+<td>视频&#x2F;音频 → OSS</td>
+</tr>
+<tr>
+<td>日志归档</td>
+<td>JSON → OSS</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十一、配置注意事项"><a href="#十一、配置注意事项" class="headerlink" title="十一、配置注意事项"></a>十一、配置注意事项</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Endpoint</td>
+<td>必须匹配地域</td>
+</tr>
+<tr>
+<td>Key 命名</td>
+<td>不要特殊字符</td>
+</tr>
+<tr>
+<td>文件校验</td>
+<td>不为空</td>
+</tr>
+<tr>
+<td>Content-Type</td>
+<td>必须正确</td>
+</tr>
+<tr>
+<td>大文件</td>
+<td>分片上传</td>
+</tr>
+<tr>
+<td>私有文件</td>
+<td>使用签名 URL</td>
+</tr>
+</tbody></table>
+<p>常见 Content-Type：</p>
+<table>
+<thead>
+<tr>
+<th>文件类型</th>
+<th>Content-Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>jpg</td>
+<td>image&#x2F;jpeg</td>
+</tr>
+<tr>
+<td>png</td>
+<td>image&#x2F;png</td>
+</tr>
+<tr>
+<td>pdf</td>
+<td>application&#x2F;pdf</td>
+</tr>
+<tr>
+<td>docx</td>
+<td>application&#x2F;vnd.openxmlformats-officedocument.wordprocessingml.document</td>
+</tr>
+<tr>
+<td>xlsx</td>
+<td>application&#x2F;vnd.openxmlformats-officedocument.spreadsheetml.sheet</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="核心总结（工程视角）"><a href="#核心总结（工程视角）" class="headerlink" title="核心总结（工程视角）"></a>核心总结（工程视角）</h2><ul>
+<li>OSS 是文件存储，不是数据库</li>
+<li>Agent 负责“产生文件 + 上传文件”</li>
+<li>数据库只存 URL &#x2F; key</li>
+<li>文件访问统一走 OSS（可挂 CDN）</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2026/04/28/OSS%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%EF%BC%88Agent%E9%A1%B9%E7%9B%AE%E4%B8%AD%EF%BC%89/">https://kizzy899.github.io/2026/04/28/OSS%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%EF%BC%88Agent%E9%A1%B9%E7%9B%AE%E4%B8%AD%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">学习记录</a></div><div class="post-share"><div class="social-share" data-image="/cover/page2.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/03/30/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E4%B8%80%E4%B8%AA%E9%A1%B9%E7%9B%AE/" title="快速上手一个项目"><img class="cover" src="/cover/cover_14.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">快速上手一个项目</div></div><div class="info-2"><div class="info-item-1">新项目快速上手指南 一、先跑起来（不要一上来就读代码）目标确认系统是“活的”，避免在错误环境中分析代码。 操作步骤 阅读 README.md 或启动文档 安装依赖（如 npm install &#x2F; mvn install &#x2F; bun install） 启动服务（如 npm run dev &#x2F; java -jar &#x2F; docker-compose up） 访问接口或前端页面  你必须确认 服务是否成功启动（无致命报错） 服务端口（如 8080 &#x2F; 3000） 是否有异常日志 数据库是否连接成功（连接池 &#x2F; ORM 日志）  常见问题 端口被占用 环境变量未配置（如 .env） 数据库未启动 &#x2F; 账号密码错误 依赖未安装完整  👉 结论：系统跑不起来，一切分析没有意义  二、搞清项目结构（10分钟扫一遍）目标快速定位代码职责分层，避免“迷路式阅读代码”。 核心目录说明12345controller / api     👉 接口入口（处理请求）service              👉 核心业务逻辑reposi...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/03/19/%E5%B9%B6%E5%8F%91%E5%AD%A6%E4%B9%A0/" title="并发编程与数据隔离"><img class="cover" src="/cover/cover_17.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-19</div><div class="info-item-2">并发编程与数据隔离</div></div><div class="info-2"><div class="info-item-1">并发编程与数据隔离核心问题并发场景下的典型数据问题：    问题 描述 例子    竞态条件 多个线程同时读写同一数据，结果依赖执行顺序 两个请求同时修改用户余额   脏读 读到未提交的事务数据 A 修改未提交，B 读到了   丢失更新 后提交的覆盖先提交的 两人同时编辑同一文档   幻读 同一查询在不同时间返回不同行数 统计用户数时有人新注册   数据库层面解决方案事务隔离级别：    隔离级别 脏读 丢失更新 幻读 默认数据库    Read Uncommitted ❌ ❌ ❌ -   Read Committed ✅ ❌ ❌ Oracle, PostgreSQL   Repeatable Read ✅ ✅ ❌ MySQL   Serializable ✅ ✅ ✅ -   乐观锁 vs 悲观锁： 12345678-- 悲观锁（先锁再改）SELECT * FROM users WHERE id = 1 FOR UPDATE;UPDATE users SET balance = balance - 100 WHERE id = 1;-- 乐观锁（先改再检查版本号）UPDATE u...</div></div></div></a><a class="pagination-related" href="/2026/03/22/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8E%E9%83%A8%E7%BD%B2%E7%9B%B8%E5%85%B3/" title="服务器与部署相关"><img class="cover" src="/cover/cover_16.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-22</div><div class="info-item-2">服务器与部署相关</div></div><div class="info-2"><div class="info-item-1">可以，而且这套东西你一旦理顺，后面做项目就不会一直“哪里都懂一点，但一上手就慌”。 你现在遇到的，本质上是 开发环境、测试环境、生产环境 三套东西混在一起了。先给你一句最核心的话： 写代码可以在服务器上，但“调试前端、联调接口、连数据库、发版部署”通常都要区分清楚你现在到底在操作哪一个环境。 我用最接地气的方式带你搭框架。  一、你现在到底在做什么你现在说的场景，一般是这样的：  代码放在服务器上你通过 VSCode Remote SSH、终端、跳板机之类连到服务器开发。 前端想在本机浏览器看效果因为浏览器在你电脑上，不在远程服务器上，所以你需要： 要么把前端项目在本机跑起来 要么把服务器上的前端端口转发到本机   后端和数据库可能在不同地方常见组合有： 前端在本机，后端在测试服务器，数据库也在测试服务器 前后端都在服务器，数据库单独一台 前端本机，后端本机，数据库 Docker &#x2F; 本机 &#x2F; 远程库   部署到测试环境不是“写完代码自动就有了”，而是把你改的代码发到测试环境机器上，再启动服务。 上线把测试通过的版本发布到生产环境。   二、你先建立这 4 个...</div></div></div></a><a class="pagination-related" href="/2026/03/23/%E9%83%A8%E7%BD%B2%E8%84%9A%E6%9C%AC%E7%BC%96%E5%86%99%E7%9B%B8%E5%85%B3/" title="部署脚本编写相关"><img class="cover" src="/cover/cover_6.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-23</div><div class="info-item-2">部署脚本编写相关</div></div><div class="info-2"><div class="info-item-1">部署验证流程跑通验证的 6 个步骤12345678910111. 本地执行部署脚本   ↓2. 代码上传到生产服务器 (47.242.65.47)   ↓3. Docker 容器启动   ↓4. Nginx 配置生效   ↓5. 访问 http://www.chronode.net/ 能正常打开   ↓6. 确认功能 OK  核心思想：别纸上谈兵，先实际部署一次看看 执行步骤Step 1：本地准备12345678910# 1. clone 项目git clone https://github.com/xiaoxijin/gf_v3cd gf_v3# 2. 安装依赖bun install# 3. 检查部署脚本ls -la deploy.shcat deploy.sh  # 确认配置（服务器 IP、端口等）  Step 2：执行部署123# 运行部署脚本（需要设置密码环境变量）export SERVER_PASSWORD=&quot;你的服务器密码&quot;bash deploy.sh  Step 3：验证结果12345678910111213# 1. SSH 连上服务器ssh r...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%98%BF%E9%87%8C%E4%BA%91-OSS-%E4%B8%8E-Agent-%E8%81%94%E5%8A%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">阿里云 OSS 与 Agent 联动学习笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81OSS-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.1.</span> <span class="toc-text">一、OSS 是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81OSS-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">1.2.</span> <span class="toc-text">二、OSS 核心概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81Agent-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81-OSS"><span class="toc-number">1.3.</span> <span class="toc-text">三、Agent 为什么需要 OSS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81Agent-%E4%B8%8E-OSS-%E7%9A%84%E6%A0%87%E5%87%86%E6%B5%81%E7%A8%8B"><span class="toc-number">1.4.</span> <span class="toc-text">四、Agent 与 OSS 的标准流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81Agent-%E4%B8%AD-OSS-%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="toc-number">1.5.</span> <span class="toc-text">五、Agent 中 OSS 配置项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%96%87%E4%BB%B6%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83%EF%BC%88%E5%BC%BA%E7%83%88%E5%BB%BA%E8%AE%AE%EF%BC%89"><span class="toc-number">1.6.</span> <span class="toc-text">六、文件命名规范（强烈建议）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81Agent-%E4%B8%8A%E4%BC%A0-OSS-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.7.</span> <span class="toc-text">七、Agent 上传 OSS 的核心步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E6%9D%83%E9%99%90%E8%AE%BE%E8%AE%A1%E5%BB%BA%E8%AE%AE"><span class="toc-number">1.8.</span> <span class="toc-text">八、权限设计建议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E6%8E%A8%E8%8D%90%E6%9E%B6%E6%9E%84%EF%BC%88Agent-OSS%EF%BC%89"><span class="toc-number">1.9.</span> <span class="toc-text">九、推荐架构（Agent + OSS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E5%B8%B8%E8%A7%81-Agent-OSS-%E5%9C%BA%E6%99%AF"><span class="toc-number">1.10.</span> <span class="toc-text">十、常见 Agent + OSS 场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E9%85%8D%E7%BD%AE%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">1.11.</span> <span class="toc-text">十一、配置注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%BB%E7%BB%93%EF%BC%88%E5%B7%A5%E7%A8%8B%E8%A7%86%E8%A7%92%EF%BC%89"><span class="toc-number">1.12.</span> <span class="toc-text">核心总结（工程视角）</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'kizzy899/kizzy899.github.io',
+      'data-repo-id': 'R_kgDONCC1iQ',
+      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
