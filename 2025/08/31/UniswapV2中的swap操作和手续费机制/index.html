@@ -1,0 +1,454 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>V2中的swap操作和手续费机制 | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Swap操作关于DAI&#x2F;USDT的单交换 逻辑：  Router02.sol   SwapexactTokensForTokens( ) SwapTokensForexactTokens( )   资金转换 transferFrom( ) [ pair DAI&#x2F;USDT]  Swap   transfer(币转给用户)    多Tokens之间的交换此时path参数 1path">
+<meta property="og:type" content="article">
+<meta property="og:title" content="V2中的swap操作和手续费机制">
+<meta property="og:url" content="https://kizzy899.github.io/2025/08/31/UniswapV2%E4%B8%AD%E7%9A%84swap%E6%93%8D%E4%BD%9C%E5%92%8C%E6%89%8B%E7%BB%AD%E8%B4%B9%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="Swap操作关于DAI&#x2F;USDT的单交换 逻辑：  Router02.sol   SwapexactTokensForTokens( ) SwapTokensForexactTokens( )   资金转换 transferFrom( ) [ pair DAI&#x2F;USDT]  Swap   transfer(币转给用户)    多Tokens之间的交换此时path参数 1path">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/cover/cover7.jpg">
+<meta property="article:published_time" content="2025-08-31T04:03:27.000Z">
+<meta property="article:modified_time" content="2025-08-31T09:41:00.948Z">
+<meta property="article:author" content="kizy">
+<meta property="article:tag" content="Uniswap">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/cover/cover7.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "V2中的swap操作和手续费机制",
+  "url": "https://kizzy899.github.io/2025/08/31/UniswapV2%E4%B8%AD%E7%9A%84swap%E6%93%8D%E4%BD%9C%E5%92%8C%E6%89%8B%E7%BB%AD%E8%B4%B9%E6%9C%BA%E5%88%B6/",
+  "image": "https://kizzy899.github.io/cover/cover7.jpg",
+  "datePublished": "2025-08-31T04:03:27.000Z",
+  "dateModified": "2025-08-31T09:41:00.948Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "kizy",
+      "url": "https://kizzy899.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/2025/08/31/UniswapV2%E4%B8%AD%E7%9A%84swap%E6%93%8D%E4%BD%9C%E5%92%8C%E6%89%8B%E7%BB%AD%E8%B4%B9%E6%9C%BA%E5%88%B6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'V2中的swap操作和手续费机制',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">92</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/cover/cover7.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a><a class="nav-page-title" href="/"><span class="site-name">V2中的swap操作和手续费机制</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">V2中的swap操作和手续费机制</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-08-31T04:03:27.000Z" title="发表于 2025-08-31 12:03:27">2025-08-31</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-08-31T09:41:00.948Z" title="更新于 2025-08-31 17:41:00">2025-08-31</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Swap操作"><a href="#Swap操作" class="headerlink" title="Swap操作"></a>Swap操作</h1><h2 id="关于DAI-USDT的单交换"><a href="#关于DAI-USDT的单交换" class="headerlink" title="关于DAI&#x2F;USDT的单交换"></a>关于DAI&#x2F;USDT的单交换</h2><p><img src="https://s2.loli.net/2025/08/31/Ydybvp1ZoSnweNq.png" alt="image.png"></p>
+<p>逻辑：</p>
+<ol>
+<li>Router02.sol</li>
+</ol>
+<ul>
+<li>SwapexactTokensForTokens( )</li>
+<li>SwapTokensForexactTokens( )</li>
+</ul>
+<ol start="2">
+<li><p>资金转换 transferFrom( ) [ pair DAI&#x2F;USDT]</p>
+</li>
+<li><p>Swap </p>
+</li>
+<li><p>transfer(币转给用户)</p>
+</li>
+</ol>
+<hr>
+<h2 id="多Tokens之间的交换"><a href="#多Tokens之间的交换" class="headerlink" title="多Tokens之间的交换"></a>多Tokens之间的交换</h2><p>此时path参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">path = [DAI, WBTC, USDC];</span><br></pre></td></tr></table></figure>
+
+<p>流程图：</p>
+<p><img src="https://s2.loli.net/2025/08/31/pmyd6NMk8YWjPE5.png" alt="image.png"></p>
+<p>逻辑：</p>
+<ol>
+<li><p>用户调用 Router02 的 <code>swapExactTokensForTokens</code>，传入 <code>path = [DAI, WBTC, USDC]</code>。</p>
+</li>
+<li><p>Router02 先把用户的 <strong>DAI 转入</strong> <code>DAI-WBTC</code> Pair。</p>
+</li>
+<li><p><code>DAI-WBTC</code> Pair 执行 <code>swap</code>，把 <strong>WBTC</strong> 发给下一个 Pair（由 Router02 转发）。</p>
+</li>
+<li><p>Router02 把 WBTC 继续送入 <code>WBTC-USDC</code> Pair。</p>
+</li>
+<li><p><code>WBTC-USDC</code> Pair 执行 <code>swap</code>，把 <strong>USDC</strong> 最终发给用户。</p>
+</li>
+<li><p>用户完成从 DAI → WBTC → USDC 的兑换。</p>
+</li>
+</ol>
+<hr>
+<p><strong>多跳交换 &#x3D; 一次函数调用 + 多个 Pair 的 <code>swap()</code> 串联</strong>。</p>
+<hr>
+<h2 id="源代码部分"><a href="#源代码部分" class="headerlink" title="源代码部分"></a>源代码部分</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">function swapExactTokensForTokens(</span><br><span class="line">       uint amountIn,</span><br><span class="line">       uint amountOutMin,</span><br><span class="line">       address[] calldata path,</span><br><span class="line">       address to,</span><br><span class="line">       uint deadline</span><br><span class="line">   ) external virtual override ensure(deadline) returns (uint[] memory amounts) &#123;</span><br><span class="line">       amounts = UniswapV2Library.getAmountsOut(factory, amountIn, path);</span><br><span class="line">       require(amounts[amounts.length - 1] &gt;= amountOutMin, &#x27;UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT&#x27;);</span><br><span class="line">       TransferHelper.safeTransferFrom(</span><br><span class="line">           path[0], msg.sender, UniswapV2Library.pairFor(factory, path[0], path[1]), amounts[0]</span><br><span class="line">       );</span><br><span class="line">       _swap(amounts, path, to);</span><br><span class="line">   &#125;</span><br><span class="line">   function swapTokensForExactTokens(</span><br><span class="line">       uint amountOut,</span><br><span class="line">       uint amountInMax,</span><br><span class="line">       address[] calldata path,</span><br><span class="line">       address to,</span><br><span class="line">       uint deadline</span><br><span class="line">   ) external virtual override ensure(deadline) returns (uint[] memory amounts) &#123;</span><br><span class="line">       amounts = UniswapV2Library.getAmountsIn(factory, amountOut, path);</span><br><span class="line">       require(amounts[0] &lt;= amountInMax, &#x27;UniswapV2Router: EXCESSIVE_INPUT_AMOUNT&#x27;);</span><br><span class="line">       TransferHelper.safeTransferFrom(</span><br><span class="line">           path[0], msg.sender, UniswapV2Library.pairFor(factory, path[0], path[1]), amounts[0]</span><br><span class="line">       );</span><br><span class="line">       _swap(amounts, path, to);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="getAmountsOut-getAmountsIn"><a href="#getAmountsOut-getAmountsIn" class="headerlink" title="getAmountsOut( )&amp;getAmountsIn( )"></a>getAmountsOut( )&amp;getAmountsIn( )</h2><p><img src="https://s2.loli.net/2025/08/31/5eVfnq39FpMgAwL.jpg" alt="ba166abfd595c589a17f9f67c19f153b.jpg"></p>
+<h3 id="什么时候收取手续费"><a href="#什么时候收取手续费" class="headerlink" title="什么时候收取手续费"></a>什么时候收取手续费</h3><p><strong>每次 swap 都会收取一次手续费</strong>（每笔交易执行时收取，且直接从交易金额中扣除）</p>
+<ul>
+<li>所以用户会找短的 swap 路径</li>
+<li>但有时套利机器人会选择更长的路径(终可获得 Z 数量最多)</li>
+</ul>
+<h4 id="🔹-为什么套利机器人会选择更长路径？"><a href="#🔹-为什么套利机器人会选择更长路径？" class="headerlink" title="🔹 为什么套利机器人会选择更长路径？"></a>🔹 为什么套利机器人会选择更长路径？</h4><ol>
+<li><strong>追求更高利润</strong><ul>
+<li>直接 A → Z 交易<strong>可能滑点大，兑换率不高</strong></li>
+<li>经过中间代币 B、C，可能找到更优的汇率</li>
+<li>机器人计算路径收益：选择 <strong>最终可获得 Z 数量最多的路径</strong></li>
+</ul>
+</li>
+<li><strong>捕捉跨池套利机会</strong><ul>
+<li>A → B → C → D → Z 可能涉及不同交易对</li>
+<li>某些小池子价格偏离较大，通过多跳可以 <strong>利用价格差套利</strong></li>
+</ul>
+</li>
+<li><strong>减少滑点（Slippage）</strong><ul>
+<li>大额交易直接 A → Z 会导致池子价格大幅变化</li>
+<li>分多跳交易，每一跳量小，减少对单个池子的冲击</li>
+<li>最终拿到更多目标代币</li>
+</ul>
+</li>
+<li><strong>结合多个 DEX</strong><ul>
+<li>虽然 V2 Router 只在单链 Uniswap V2，但套利机器人会模拟多跳路径，包括跨 DEX（SushiSwap、Curve）</li>
+<li>长路径可以把不同池子的价格差整合起来，提高 MEV 或套利收益</li>
+</ul>
+</li>
+<li><strong>Gas 成本 vs 收益平衡</strong><ul>
+<li>多跳增加交易复杂度和 Gas，但如果利润足够大，机器人仍然选择长路径</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="🔹-总结"><a href="#🔹-总结" class="headerlink" title="🔹 总结"></a>🔹 总结</h4><ul>
+<li><strong>短路径</strong>：直接交易，Gas 低，但可能兑换率不佳</li>
+<li><strong>长路径</strong>：多跳交易，可以：<ul>
+<li>获得更优汇率</li>
+<li>捕捉多个池子间的套利机会</li>
+<li>减少单池滑点，提高最终收益</li>
+</ul>
+</li>
+</ul>
+<p>✅ 一句话概括：<br> <strong>套利机器人选择更长的 swap 路径，是为了最大化最终收益，同时降低滑点和利用跨池套利机会。</strong></p>
+<hr>
+<h1 id="手续费机制"><a href="#手续费机制" class="headerlink" title="手续费机制"></a>手续费机制</h1><p><strong>手续费分配</strong></p>
+<ul>
+<li>手续费直接加入 <strong>流动性池（Pool）</strong></li>
+<li>LP（流动性提供者）按份额共享手续费收益</li>
+<li><strong>Protocol fee</strong></li>
+</ul>
+<p>源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">function _mintFee(uint112 _reserve0, uint112 _reserve1) private returns (bool feeOn) &#123;</span><br><span class="line">    address _feeTo = IUniswapV2Factory(factory).feeTo();</span><br><span class="line">    feeOn = _feeTo != address(0);</span><br><span class="line">    uint _kLast = kLast; // 上一次存储的储备乘积</span><br><span class="line">    if (feeOn) &#123;</span><br><span class="line">        if (_kLast != 0) &#123;</span><br><span class="line">            uint rootK = Math.sqrt(uint(_reserve0) * _reserve1);</span><br><span class="line">            uint rootKLast = Math.sqrt(_kLast);</span><br><span class="line">            if (rootK &gt; rootKLast) &#123;</span><br><span class="line">                uint numerator = totalSupply * (rootK - rootKLast);</span><br><span class="line">                uint denominator = rootK * 5 + rootKLast;</span><br><span class="line">                uint liquidity = numerator / denominator;</span><br><span class="line">                if (liquidity &gt; 0) _mint(_feeTo, liquidity);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    kLast = uint(_reserve0) * _reserve1; // 更新 kLast</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://s2.loli.net/2025/08/31/ajkYBK3fcUWRANd.jpg" alt="0405b6f2c5e0c2a30f8ae87b83d212a1.jpg"></p>
+<p>最后蓝字部分解释：</p>
+<p><strong>Protocol Fee（协议费）</strong> 并不是默认开启的，而是通过 <strong><code>UniswapV2Factory</code> 和 <code>UniswapV2Pair</code></strong> 的一些变量和函数控制的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">address public feeTo;       // 协议费用接收地址</span><br><span class="line">address public feeToSetter; // 谁可以设置 feeTo</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h1><h2 id="MEV"><a href="#MEV" class="headerlink" title="MEV"></a>MEV</h2><h3 id="🔹-什么是-MEV？"><a href="#🔹-什么是-MEV？" class="headerlink" title="🔹 什么是 MEV？"></a>🔹 什么是 MEV？</h3><p><strong>MEV (Maximum Extractable Value)</strong><br> &#x3D; <strong>最大可提取价值</strong></p>
+<p>它指的是：</p>
+<blockquote>
+<p>区块链中的 <strong>区块生产者（矿工&#x2F;验证者&#x2F;排序者）</strong>，通过对 <strong>区块中交易的排序、插入、删除</strong> 等操作，可以获得的额外收益。</p>
+</blockquote>
+<hr>
+<h3 id="🔹-为什么会有-MEV？"><a href="#🔹-为什么会有-MEV？" class="headerlink" title="🔹 为什么会有 MEV？"></a>🔹 为什么会有 MEV？</h3><p>因为区块链交易执行顺序不是完全固定的：</p>
+<ul>
+<li>当你提交一笔交易到 mempool（交易池）时，矿工&#x2F;验证者有权决定 <strong>哪些交易打包、以什么顺序执行</strong>。</li>
+<li>在 DeFi 场景下，<strong>交易顺序影响结果</strong>（尤其是 AMM 交易价格）。</li>
+</ul>
+<p>于是，矿工&#x2F;验证者（或者 MEV Bot）就能利用这个“排序权”来获利。</p>
+<hr>
+<h3 id="🔹-MEV-常见类型"><a href="#🔹-MEV-常见类型" class="headerlink" title="🔹 MEV 常见类型"></a>🔹 MEV 常见类型</h3><ol>
+<li><strong>套利（Arbitrage）</strong><ul>
+<li>当不同 DEX（Uniswap、SushiSwap、Curve）间存在价格差时，MEV bot 会抢先打包套利交易。</li>
+</ul>
+</li>
+<li><strong>三明治攻击（Sandwich Attack）</strong><ul>
+<li>用户要在 Uniswap 买入某代币，MEV bot 看到这笔交易：<ul>
+<li>先抢先买入（推高价格）。</li>
+<li>等用户交易执行（在高价买）。</li>
+<li>再立即卖出获利。</li>
+</ul>
+</li>
+<li>用户因此付出了更高的滑点。</li>
+</ul>
+</li>
+<li><strong>清算（Liquidation）</strong><ul>
+<li>在借贷协议（Aave、Compound）中，当有人抵押物不足时，MEV bot 会抢先清算，赚取清算奖励。</li>
+</ul>
+</li>
+<li><strong>时间套利 &#x2F; 跨链套利</strong><ul>
+<li>抢先在跨链桥、预言机更新等场景中获取收益。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="🔹-MEV-与-Uniswap-的关系"><a href="#🔹-MEV-与-Uniswap-的关系" class="headerlink" title="🔹 MEV 与 Uniswap 的关系"></a>🔹 MEV 与 Uniswap 的关系</h3><ul>
+<li>在 <strong>Uniswap V2&#x2F;V3</strong> 里，交易价格由 <strong>恒定乘积公式 x*y&#x3D;k</strong> 决定。</li>
+<li>任何大额交易都会影响价格（滑点）。</li>
+<li>MEV bot 会监听 mempool，发现大额交易时，利用 <strong>三明治攻击</strong> 来赚取差价。</li>
+</ul>
+<hr>
+<h3 id="🔹-MEV-的利与弊"><a href="#🔹-MEV-的利与弊" class="headerlink" title="🔹 MEV 的利与弊"></a>🔹 MEV 的利与弊</h3><ul>
+<li><strong>利</strong>：<ul>
+<li>保持市场价格一致（套利让不同市场趋于平衡）。</li>
+<li>提供流动性效率。</li>
+</ul>
+</li>
+<li><strong>弊</strong>：<ul>
+<li>用户体验差（被三明治攻击，付出更高费用）。</li>
+<li>Gas 费大战（多个 bot 竞争插队，推高网络拥堵）。</li>
+<li>中心化风险（MEV 收益过于集中在少数矿工&#x2F;验证者）。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="🔹-如何缓解-MEV？"><a href="#🔹-如何缓解-MEV？" class="headerlink" title="🔹 如何缓解 MEV？"></a>🔹 如何缓解 MEV？</h3><ul>
+<li><strong>Flashbots &#x2F; MEV-Boost</strong>：<ul>
+<li>提供一个“公平竞拍”的系统，让 MEV 更透明。</li>
+</ul>
+</li>
+<li><strong>私有交易池</strong>（如 Eden Network）：<ul>
+<li>用户把交易发到私有通道，避免被三明治攻击。</li>
+</ul>
+</li>
+<li><strong>协议级防护</strong>：<ul>
+<li>一些 DEX（如 CowSwap）尝试使用批量拍卖机制，减少 MEV 攻击面。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>✅ 一句话总结：<br> <strong>MEV &#x3D; 区块链世界里的“隐藏税”</strong>，是由区块生产者&#x2F;排序者通过操纵交易顺序所获取的额外收益，在 Uniswap 等 DeFi 协议里尤其常见。</p>
+<h3 id="三明治攻击"><a href="#三明治攻击" class="headerlink" title="三明治攻击"></a>三明治攻击</h3><h4 id="🔹-什么是三明治攻击？"><a href="#🔹-什么是三明治攻击？" class="headerlink" title="🔹 什么是三明治攻击？"></a>🔹 什么是三明治攻击？</h4><p>三明治攻击是一种 <strong>针对去中心化交易所（DEX）的前后夹击攻击</strong>，常发生在 <strong>Uniswap V2&#x2F;V3</strong> 这样的 AMM 上。</p>
+<p>简单来说：</p>
+<blockquote>
+<p>攻击者在用户交易前买入代币，然后在用户交易后卖出代币，从中赚取差价。</p>
+</blockquote>
+<hr>
+<h4 id="🔹-例子理解"><a href="#🔹-例子理解" class="headerlink" title="🔹 例子理解"></a>🔹 例子理解</h4><p>假设用户想用 <strong>ETH 换 DAI</strong>：</p>
+<ol>
+<li>用户提交交易：买 1000 DAI。</li>
+<li><strong>MEV bot 前置交易</strong>：抢先买入 DAI → 导致 DAI 价格上涨。</li>
+<li>用户交易执行：因为价格被抬高，用户买入 DAI 的成本更高。</li>
+<li><strong>MEV bot 后置交易</strong>：卖出之前买入的 DAI → 获利。</li>
+</ol>
+<p>所以整个过程就像“<strong>三明治</strong>”：</p>
+<ul>
+<li>MEV bot 买 → 用户交易 → MEV bot 卖</li>
+<li>用户被夹在中间 → 支付了更高价格</li>
+</ul>
+<hr>
+<h4 id="🔹-特点"><a href="#🔹-特点" class="headerlink" title="🔹 特点"></a>🔹 特点</h4><ul>
+<li>利用 <strong>交易顺序权</strong>（矿工或验证者可以决定区块交易顺序）。</li>
+<li>攻击者无需抵押，只需抢先提交交易即可获利。</li>
+<li>用户承受额外滑点和手续费。</li>
+</ul>
+<h2 id="MEV-三明治攻击流程图"><a href="#MEV-三明治攻击流程图" class="headerlink" title="MEV 三明治攻击流程图"></a>MEV 三明治攻击流程图</h2><p><img src="https://s2.loli.net/2025/08/31/4zxXcfLarIE672D.png" alt="image.png"></p>
+<ul>
+<li><code>_mintFee</code> 会在 <strong>每次 swap、mint 或 burn 时调用</strong>。</li>
+<li>核心逻辑：<ol>
+<li>通过 <code>feeTo</code> 判断是否开启协议费</li>
+<li>计算额外 LP token 数量</li>
+<li>mint 给 <code>feeTo</code> 地址</li>
+</ol>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io">kizy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://kizzy899.github.io/2025/08/31/UniswapV2%E4%B8%AD%E7%9A%84swap%E6%93%8D%E4%BD%9C%E5%92%8C%E6%89%8B%E7%BB%AD%E8%B4%B9%E6%9C%BA%E5%88%B6/">https://kizzy899.github.io/2025/08/31/UniswapV2%E4%B8%AD%E7%9A%84swap%E6%93%8D%E4%BD%9C%E5%92%8C%E6%89%8B%E7%BB%AD%E8%B4%B9%E6%9C%BA%E5%88%B6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://kizzy899.github.io" target="_blank">EIGHTJIU</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Uniswap/">Uniswap</a></div><div class="post-share"><div class="social-share" data-image="/cover/cover7.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/08/31/V2%E4%B8%AD%E6%B7%BB%E5%8A%A0-%E7%A7%BB%E9%99%A4%E6%B5%81%E5%8A%A8%E6%80%A7/" title="V2中添加/移除流动性&amp;无常损失"><img class="cover" src="/cover/cover_19.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">V2中添加/移除流动性&无常损失</div></div><div class="info-2"><div class="info-item-1">  前置文章: https://kizzy899.github.io/2025/08/06/Uniswap%E4%B8%93%E9%A1%B9/    项目代码: https://github.com/Uniswap/v2-core/blob/master/contracts/UniswapV2Pair.sol  添加流动性 在 Router.addLiquidity() 流程中：  Router 会先调用 Factory.getPair(tokenA, tokenB) 检查池子是否存在   getPair[token0][token1] 用来查询该交易对是否已经存在 Pair 合约。 如果返回 非零地址，说明这个交易对已经有 Pair 了 → **不会再调用 create2**。 如果返回 零地址，才会用 create2 部署新的 Pair 合约，并初始化。   如果不存在 → Factory.createPair(tokenA, tokenB) 创建一个新的 Pair 合约  然后 Router 才把用户代币转到 Pair 并调用 mint()    mint() : 把用户...</div></div></div></a><a class="pagination-related" href="/2025/08/31/v1-v4%E7%AE%80%E4%BB%8B/" title="Uniswapv1-v4简介"><img class="cover" src="/cover/cover_20.jpg" onerror="onerror=null;src='/img/404page.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Uniswapv1-v4简介</div></div><div class="info-2"><div class="info-item-1">Uniswap V1 2018年11月2日发布 使用 Vyper 语言编写 仅支持 ERC20-ETH 直接互换或者通过ETH进行互换: 合约地址: Uniswap&#x2F;v1-contracts: Uniswap V1 smartcontracts (github.com)  合约重点：  Exchange——交易逻辑  factory——创建交易对   createchange( )    Uniswap V2 2020年5月发布; 增加 ERC20-ERC20直接互换:。增加 Flash Swap; 增加 Oracle; 改进手续费收取方式; 引爆了 DeFi 赛道; 2020年9月，发行治理代币UNI;   什么是DeFilamaDeFiLlama 是一个 去中心化金融（DeFi）数据聚合平台，主要提供各种区块链 DeFi 协议的统计数据和分析。它的特点是 中立、免费、开源，不像一些由 VC 资助的平台，它更倾向于社区驱动。 DeFiLlama 提供什么功能？ TVL（Total Value Locked）数据 可以看到不同链（以太坊、BSC、Arbitrum、Pol...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/08/06/Uniswap%E4%B8%93%E9%A1%B9/" title="Uniswap专项"><img class="cover" src="/cover/cover_17.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-06</div><div class="info-item-2">Uniswap专项</div></div><div class="info-2"><div class="info-item-1">恒定乘积自动做市商算法核心公式恒定乘积做市商的核心公式是：x * y = k其中：  ( x ) 是第一种资产的数量（如ETH） ( y ) 是第二种资产的数量（如USDT） ( k ) 是常数乘积  价格变动机制当交易发生时，资产数量的变化遵循：[ (x + dx)(y - dy) &#x3D; k ][ (x - dx)(y + dy) &#x3D; k ] 滑点计算滑点计算公式（纯文本格式）滑点(S) &#x3D; [(实际执行价格 - 预期价格) &#x2F; 预期价格] × 100% 变量说明： 滑点(S)：以百分比(%)表示的价格偏差 实际执行价格：交易实际成交的价格 预期价格：交易发起时预期的市场价格  示例：如果预期价格是2000 USDT，实际执行价格是2666.66 USDT，那么：滑点 &#x3D; [(2666.66 - 2000)&#x2F;2000] × 100% &#x3D; 33.33% 公式解读： 先计算实际价格与预期价格的差值 将差值除以预期价格，得到相对偏差 乘以100%转换为百分比形式  注意事项： 正值表示实际价格高于预期（对买方不利） ...</div></div></div></a><a class="pagination-related" href="/2025/08/31/V2%E4%B8%AD%E6%B7%BB%E5%8A%A0-%E7%A7%BB%E9%99%A4%E6%B5%81%E5%8A%A8%E6%80%A7/" title="V2中添加&#x2F;移除流动性&amp;无常损失"><img class="cover" src="/cover/cover_19.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-31</div><div class="info-item-2">V2中添加&#x2F;移除流动性&amp;无常损失</div></div><div class="info-2"><div class="info-item-1">  前置文章: https://kizzy899.github.io/2025/08/06/Uniswap%E4%B8%93%E9%A1%B9/    项目代码: https://github.com/Uniswap/v2-core/blob/master/contracts/UniswapV2Pair.sol  添加流动性 在 Router.addLiquidity() 流程中：  Router 会先调用 Factory.getPair(tokenA, tokenB) 检查池子是否存在   getPair[token0][token1] 用来查询该交易对是否已经存在 Pair 合约。 如果返回 非零地址，说明这个交易对已经有 Pair 了 → **不会再调用 create2**。 如果返回 零地址，才会用 create2 部署新的 Pair 合约，并初始化。   如果不存在 → Factory.createPair(tokenA, tokenB) 创建一个新的 Pair 合约  然后 Router 才把用户代币转到 Pair 并调用 mint()    mint() : 把用户...</div></div></div></a><a class="pagination-related" href="/2025/09/01/V2%E4%B8%AD%E7%9A%84%E9%97%AA%E7%94%B5%E8%B4%B7%E5%92%8CTWAP/" title="V2中的闪电贷和TWAP"><img class="cover" src="/aaaset/cover_17.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-01</div><div class="info-item-2">V2中的闪电贷和TWAP</div></div><div class="info-2"><div class="info-item-1">Flash Swap什么是闪电贷闪电贷 是一种 无需抵押的贷款机制，主要出现在 DeFi（去中心化金融）协议里。 它的核心特点是：  用户可以瞬间借到大量资金（几乎没有上限，只受池子流动性限制）。 必须在同一个交易（同一个区块内）还清。 如果没有还清，整个交易会直接被回滚（就像从没发生过一样）。 所以协议提供者不会有风险。    闪电贷有什么用？ 套利 不同交易所（比如 Uniswap、SushiSwap、Curve）之间价格差异，瞬间搬运套利。   清算 在借贷协议（比如 Aave、Compound）里，当有人抵押物不足时，你可以用闪电贷借钱去清算，然后赚取奖励。   抵押物替换 假如你在 MakerDAO 抵押 ETH 借了 DAI，但想换成 WBTC 抵押，可以用闪电贷无缝替换，不需要先卖掉 ETH 再买 BTC。   高杠杆操作 利用瞬时借贷，把本金放大很多倍，进行投机或策略。    为什么 Uniswap V2 也能提供闪电贷？ Uniswap V2 引入了一个机制：你可以拿走池子里的代币，只要在交易结束前归还相同数量的代币（或等值代币）。 这正好可以被用来实现 闪电贷...</div></div></div></a><a class="pagination-related" href="/2025/11/05/V3%E4%B8%AD%E5%8D%95%E4%BB%B7%E6%A0%BC%E5%8C%BA%E9%97%B4%E5%86%85%E7%9A%84SWAP/" title="V3中单价格区间内的SWAP"><img class="cover" src="/cover/page.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-05</div><div class="info-item-2">V3中单价格区间内的SWAP</div></div><div class="info-2"><div class="info-item-1">   逻辑流程 ：  用户调用 Router 发起 swap Router 检查授权并转发到 Pool Pool 创建 SwapState Pool 进入 tick-by-tick 的循环 计算当前流动性下可交换的量 判断是否跨 tick 跨 tick 时更新 liquidity 累积手续费 回调向 Router 收取 tokenIn Pool 向用户支付 tokenOut，并更新价格与 tick  1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192939495969798991001011021031041051061071081091101111121131141151161171181191201211221231241251261271281291301311321331341...</div></div></div></a><a class="pagination-related" href="/2025/09/01/V3%E4%B8%AD%E7%9A%84%E9%9B%86%E4%B8%AD%E6%B5%81%E5%8A%A8%E6%80%A7%E5%92%8C%E6%B5%81%E5%8A%A8%E6%80%A7%E8%AE%A1%E7%AE%97/" title="V3中的集中流动性和流动性计算"><img class="cover" src="/cover/cover_13.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-01</div><div class="info-item-2">V3中的集中流动性和流动性计算</div></div><div class="info-2"><div class="info-item-1">集中流动性（Concentrated Liquidity）传统的 AMM 流动性是整个价格曲线连续分布的，而 V3 允许 LP（流动性提供者）把资金集中在某个 价格区间 [P_min, P_max] 内。 1. 背景在 Uniswap V2 中，流动性提供者（LP）是 全价区间流动性 模式：  流动性必须从 0 到 ∞ 的价格范围内均匀分布。 结果是，大部分资本几乎不会被用到（因为实际交易只发生在某个较小的价格区间）。 这导致资本利用率很低。   2. 集中流动性的核心思想集中流动性（Concentrated Liquidity）： 流动性提供者（LP）不再需要把资金放在整个价格区间，而是可以选择 某个价格区间 来提供流动性。 比如：  你可以只在 1000–2000 USDC/ETH 区间提供流动性。 如果 ETH 价格一直在 1500–1800 之间，你的资金就几乎全都在发挥作用。   3. 技术实现Uniswap V3 的做法是：  把价格区间离散化为一系列 ticks（刻度）。 LP 在提交流动性时，要指定一个区间 [tickLower, tickUpper]。 只有当当...</div></div></div></a><a class="pagination-related" href="/2025/08/31/v1-v4%E7%AE%80%E4%BB%8B/" title="Uniswapv1-v4简介"><img class="cover" src="/cover/cover_20.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-31</div><div class="info-item-2">Uniswapv1-v4简介</div></div><div class="info-2"><div class="info-item-1">Uniswap V1 2018年11月2日发布 使用 Vyper 语言编写 仅支持 ERC20-ETH 直接互换或者通过ETH进行互换: 合约地址: Uniswap&#x2F;v1-contracts: Uniswap V1 smartcontracts (github.com)  合约重点：  Exchange——交易逻辑  factory——创建交易对   createchange( )    Uniswap V2 2020年5月发布; 增加 ERC20-ERC20直接互换:。增加 Flash Swap; 增加 Oracle; 改进手续费收取方式; 引爆了 DeFi 赛道; 2020年9月，发行治理代币UNI;   什么是DeFilamaDeFiLlama 是一个 去中心化金融（DeFi）数据聚合平台，主要提供各种区块链 DeFi 协议的统计数据和分析。它的特点是 中立、免费、开源，不像一些由 VC 资助的平台，它更倾向于社区驱动。 DeFiLlama 提供什么功能？ TVL（Total Value Locked）数据 可以看到不同链（以太坊、BSC、Arbitrum、Pol...</div></div></div></a></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">92</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Swap%E6%93%8D%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">Swap操作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EDAI-USDT%E7%9A%84%E5%8D%95%E4%BA%A4%E6%8D%A2"><span class="toc-number">1.1.</span> <span class="toc-text">关于DAI&#x2F;USDT的单交换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9ATokens%E4%B9%8B%E9%97%B4%E7%9A%84%E4%BA%A4%E6%8D%A2"><span class="toc-number">1.2.</span> <span class="toc-text">多Tokens之间的交换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BA%90%E4%BB%A3%E7%A0%81%E9%83%A8%E5%88%86"><span class="toc-number">1.3.</span> <span class="toc-text">源代码部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#getAmountsOut-getAmountsIn"><span class="toc-number">1.4.</span> <span class="toc-text">getAmountsOut( )&amp;getAmountsIn( )</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E6%94%B6%E5%8F%96%E6%89%8B%E7%BB%AD%E8%B4%B9"><span class="toc-number">1.4.1.</span> <span class="toc-text">什么时候收取手续费</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%94%B9-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%A5%97%E5%88%A9%E6%9C%BA%E5%99%A8%E4%BA%BA%E4%BC%9A%E9%80%89%E6%8B%A9%E6%9B%B4%E9%95%BF%E8%B7%AF%E5%BE%84%EF%BC%9F"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">🔹 为什么套利机器人会选择更长路径？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%94%B9-%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">🔹 总结</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%89%8B%E7%BB%AD%E8%B4%B9%E6%9C%BA%E5%88%B6"><span class="toc-number">2.</span> <span class="toc-text">手续费机制</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">补充：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#MEV"><span class="toc-number">3.1.</span> <span class="toc-text">MEV</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%B9-%E4%BB%80%E4%B9%88%E6%98%AF-MEV%EF%BC%9F"><span class="toc-number">3.1.1.</span> <span class="toc-text">🔹 什么是 MEV？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%B9-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E6%9C%89-MEV%EF%BC%9F"><span class="toc-number">3.1.2.</span> <span class="toc-text">🔹 为什么会有 MEV？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%B9-MEV-%E5%B8%B8%E8%A7%81%E7%B1%BB%E5%9E%8B"><span class="toc-number">3.1.3.</span> <span class="toc-text">🔹 MEV 常见类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%B9-MEV-%E4%B8%8E-Uniswap-%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">3.1.4.</span> <span class="toc-text">🔹 MEV 与 Uniswap 的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%B9-MEV-%E7%9A%84%E5%88%A9%E4%B8%8E%E5%BC%8A"><span class="toc-number">3.1.5.</span> <span class="toc-text">🔹 MEV 的利与弊</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%B9-%E5%A6%82%E4%BD%95%E7%BC%93%E8%A7%A3-MEV%EF%BC%9F"><span class="toc-number">3.1.6.</span> <span class="toc-text">🔹 如何缓解 MEV？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E6%98%8E%E6%B2%BB%E6%94%BB%E5%87%BB"><span class="toc-number">3.1.7.</span> <span class="toc-text">三明治攻击</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%94%B9-%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%89%E6%98%8E%E6%B2%BB%E6%94%BB%E5%87%BB%EF%BC%9F"><span class="toc-number">3.1.7.1.</span> <span class="toc-text">🔹 什么是三明治攻击？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%94%B9-%E4%BE%8B%E5%AD%90%E7%90%86%E8%A7%A3"><span class="toc-number">3.1.7.2.</span> <span class="toc-text">🔹 例子理解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%F0%9F%94%B9-%E7%89%B9%E7%82%B9"><span class="toc-number">3.1.7.3.</span> <span class="toc-text">🔹 特点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MEV-%E4%B8%89%E6%98%8E%E6%B2%BB%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">3.2.</span> <span class="toc-text">MEV 三明治攻击流程图</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'kizzy899/kizzy899.github.io',
+      'data-repo-id': 'R_kgDONCC1iQ',
+      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

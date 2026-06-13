@@ -1,0 +1,850 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>EIGHTJIU | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Eightjiu              * {           margin: 0;           padding: 0;           box-sizing: border-box;         }          body {           font-family: -apple-system, BlinkMacSystemFo">
+<meta property="og:type" content="website">
+<meta property="og:title" content="EIGHTJIU">
+<meta property="og:url" content="https://kizzy899.github.io/search/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="Eightjiu              * {           margin: 0;           padding: 0;           box-sizing: border-box;         }          body {           font-family: -apple-system, BlinkMacSystemFo">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/img/aaaset/touxiang.png">
+<meta property="article:published_time" content="2025-09-12T01:44:48.053Z">
+<meta property="article:modified_time" content="2025-08-05T08:25:21.323Z">
+<meta property="article:author" content="kizy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/img/aaaset/touxiang.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/search/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'EIGHTJIU',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">92</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/cover9.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title"></h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eightjiu</title>
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          background: linear-gradient(135deg, #87ceeb 0%, #b0e0e6 50%, #e0f6ff 100%);
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          color: #333;
+        }
+
+        /* Header */
+        .header {
+          padding: 15px 20px;
+        }
+
+        .nav {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          gap: 15px;
+        }
+
+        .nav-link {
+          color: #2c5282;
+          text-decoration: none;
+          font-size: 14px;
+          padding: 8px 12px;
+          border-radius: 4px;
+          transition: background-color 0.2s;
+        }
+
+        .nav-link:hover {
+          background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-btn {
+          background: none;
+          border: none;
+          color: #2c5282;
+          cursor: pointer;
+          padding: 8px;
+          border-radius: 50%;
+          transition: background-color 0.2s;
+        }
+
+        .profile-btn:hover {
+          background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Content */
+        .main {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          margin-top: -80px;
+        }
+
+        .logo-container {
+          margin-bottom: 35px;
+        }
+
+        .logo {
+          font-size: 90px;
+          font-weight: 400;
+          color: #1e40af;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+          letter-spacing: -2px;
+        }
+
+        /* Search Container */
+        .search-container {
+          width: 100%;
+          max-width: 584px;
+          margin-bottom: 35px;
+        }
+
+        .search-box {
+          position: relative;
+          display: flex;
+          align-items: center;
+          background: white;
+          border: 2px solid #4a90e2;
+          border-radius: 24px;
+          padding: 0 16px;
+          height: 48px;
+          box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+          transition: all 0.3s ease;
+        }
+
+        .search-box:hover {
+          box-shadow: 0 6px 16px rgba(74, 144, 226, 0.3);
+          border-color: #357abd;
+        }
+
+        .search-box:focus-within {
+          box-shadow: 0 6px 16px rgba(74, 144, 226, 0.4);
+          border-color: #2563eb;
+        }
+
+        .search-icon {
+          color: #6b7280;
+          margin-right: 12px;
+          flex-shrink: 0;
+        }
+
+        .search-input {
+          flex: 1;
+          border: none;
+          outline: none;
+          font-size: 16px;
+          color: #333;
+          background: transparent;
+        }
+
+        .search-input::placeholder {
+          color: #9ca3af;
+        }
+
+        .voice-search,
+        .camera-search {
+          background: none;
+          border: none;
+          color: #4a90e2;
+          cursor: pointer;
+          padding: 8px;
+          margin-left: 8px;
+          border-radius: 4px;
+          transition: background-color 0.2s;
+        }
+
+        .voice-search:hover,
+        .camera-search:hover {
+          background-color: #f3f4f6;
+        }
+
+        .search-buttons {
+          display: flex;
+          justify-content: center;
+          gap: 14px;
+          margin-top: 30px;
+        }
+
+        .search-btn {
+          background: white;
+          border: 1px solid #4a90e2;
+          color: #2563eb;
+          padding: 10px 20px;
+          border-radius: 6px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 2px 4px rgba(74, 144, 226, 0.1);
+        }
+
+        .search-btn:hover {
+          background: #f0f8ff;
+          border-color: #357abd;
+          box-shadow: 0 4px 8px rgba(74, 144, 226, 0.2);
+        }
+
+        /* 清空按钮样式 */
+        .clear-search {
+          background: none;
+          border: none;
+          color: #6b7280;
+          cursor: pointer;
+          padding: 8px;
+          margin-left: 4px;
+          border-radius: 4px;
+          transition: all 0.2s;
+        }
+
+        .clear-search:hover {
+          background-color: #f3f4f6;
+          color: #4a90e2;
+        }
+
+        /* 搜索结果容器 */
+        .search-results {
+          width: 100%;
+          max-width: 584px;
+          margin-top: 20px;
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+          max-height: 400px;
+          overflow-y: auto;
+          display: none;
+        }
+
+        .search-results:not(:empty) {
+          display: block;
+          padding: 16px 0;
+        }
+
+        /* 搜索结果项 */
+        .search-item {
+          padding: 12px 20px;
+          border-bottom: 1px solid #f1f5f9;
+          transition: background-color 0.2s;
+        }
+
+        .search-item:last-child {
+          border-bottom: none;
+        }
+
+        .search-item:hover {
+          background-color: #f8fafc;
+        }
+
+        .search-item h3 {
+          margin: 0;
+          font-size: 16px;
+          font-weight: 500;
+          line-height: 1.4;
+        }
+
+        .search-item a {
+          color: #2563eb;
+          text-decoration: none;
+          transition: color 0.2s;
+        }
+
+        .search-item a:hover {
+          color: #1d4ed8;
+          text-decoration: underline;
+        }
+
+        /* 搜索关键词高亮 */
+        .search-keyword {
+          padding: 2px 4px;
+          border-radius: 3px;
+          font-weight: 600;
+          color: #1f2937;
+        }
+
+        /* 无结果提示 */
+        .search-results p {
+          text-align: center;
+          color: #64748b;
+          font-size: 14px;
+          padding: 20px;
+          margin: 0;
+        }
+
+        /* 搜索结果滚动条样式 */
+        .search-results::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .search-results::-webkit-scrollbar-track {
+          background: #f1f5f9;
+          border-radius: 3px;
+        }
+
+        .search-results::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 3px;
+        }
+
+        .search-results::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+          .logo {
+            font-size: 60px;
+          }
+
+          .search-container {
+            max-width: 90%;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .logo {
+            font-size: 48px;
+          }
+
+          .search-buttons {
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .search-btn {
+            width: 200px;
+          }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="profile-menu">
+                <button class="profile-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM6,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM6,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM16,6c0,1.1 0.9,2 2,2s2,-0.9 2,-2 -0.9,-2 -2,-2 -2,0.9 -2,2zM12,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM18,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM18,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2z"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="logo-container">
+            <h1 class="logo">Eightjiu</h1>
+        </div>
+
+        <div class="search-container">
+            <form class="search-form">
+                <div class="search-box">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" class="search-input" id="local-search-input" placeholder="输入你想了解的关键词" autocomplete="off">
+                    <button type="button" class="clear-search" id="search-clear-btn" style="display: none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+            <div class="search-buttons">
+            </div>
+            <div id="local-search-result" class="search-results"></div>
+        </div>
+    </main>
+
+    <script>
+        ;(() => {
+          const input = document.getElementById("local-search-input")
+          const resultContainer = document.getElementById("local-search-result")
+          const clearBtn = document.getElementById("search-clear-btn")
+          const searchPath = "/search.xml"
+          let searchData = []
+
+          // 天蓝色主题的高亮颜色
+          const colors = ["#87ceeb", "#4a90e2", "#5dade2", "#85c1e9", "#aed6f1"]
+          const randomColor = () => colors[Math.floor(Math.random() * colors.length)]
+
+          // 高亮匹配词
+          const highlight = (text, keyword) => {
+            const regex = new RegExp(`(${keyword})`, "gi")
+            return text.replace(regex, `<span class="search-keyword" style="background:${randomColor()}">$1</span>`)
+          }
+
+          // 防抖函数
+          const debounce = (func, delay) => {
+            let timer
+            return function (...args) {
+              clearTimeout(timer)
+              timer = setTimeout(() => func.apply(this, args), delay)
+            }
+          }
+
+          // 汉字转拼音 (简单首字母匹配)
+          const toPinyin = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+
+          // 加载 search.xml
+          fetch(searchPath)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("搜索数据加载失败")
+              }
+              return response.text()
+            })
+            .then((str) => new window.DOMParser().parseFromString(str, "text/xml"))
+            .then((data) => {
+              const entries = data.getElementsByTagName("entry")
+              if (entries.length === 0) {
+                console.warn("搜索数据为空")
+                return
+              }
+
+              searchData = Array.from(entries)
+                .map((entry) => {
+                  const titleEl = entry.getElementsByTagName("title")[0]
+                  const urlEl = entry.getElementsByTagName("url")[0]
+                  const contentEl = entry.getElementsByTagName("content")[0]
+
+                  return {
+                    title: titleEl ? titleEl.textContent : "",
+                    url: urlEl ? urlEl.textContent : "",
+                    content: contentEl ? contentEl.textContent : "",
+                  }
+                })
+                .filter((item) => item.title && item.url) // 过滤掉无效数据
+
+              console.log(`已加载 ${searchData.length} 条搜索数据`)
+            })
+            .catch((error) => {
+              console.error("搜索数据加载错误:", error)
+              // 可以在这里添加用户友好的错误提示
+            })
+
+          // 清空按钮事件
+          clearBtn.addEventListener("click", () => {
+            input.value = ""
+            resultContainer.innerHTML = ""
+            clearBtn.style.display = "none"
+            input.focus() // 重新聚焦到输入框
+          })
+
+          // 搜索函数
+          const doSearch = () => {
+            const keyword = input.value.trim().toLowerCase()
+
+            // 清空结果
+            resultContainer.innerHTML = ""
+
+            if (!keyword) {
+              clearBtn.style.display = "none"
+              return
+            }
+
+            // 显示清空按钮
+            clearBtn.style.display = "block"
+
+            // 检查搜索数据是否已加载
+            if (searchData.length === 0) {
+              resultContainer.innerHTML = "<p>搜索数据加载中，请稍后再试...</p>"
+              return
+            }
+
+            const keywords = keyword.split(/\s+/).filter((kw) => kw.length > 0)
+            const results = []
+
+            searchData.forEach((item) => {
+              const title = item.title.toLowerCase()
+              const content = item.content.toLowerCase()
+              const titlePinyin = toPinyin(title)
+              const contentPinyin = toPinyin(content)
+              let score = 0
+
+              keywords.forEach((kw) => {
+                // 标题匹配权重更高
+                if (title.includes(kw) || titlePinyin.includes(kw)) score += 5
+                // 内容匹配
+                if (content.includes(kw) || contentPinyin.includes(kw)) score += 1
+                // 完全匹配额外加分
+                if (title === kw || content.includes(kw)) score += 2
+              })
+
+              if (score > 0) {
+                let displayTitle = item.title
+
+                // 高亮关键词
+                keywords.forEach((kw) => {
+                  displayTitle = highlight(displayTitle, kw)
+                })
+
+                results.push({
+                  score,
+                  title: displayTitle,
+                  url: item.url,
+                })
+              }
+            })
+
+            // 显示结果
+            if (results.length === 0) {
+              resultContainer.innerHTML = "<p>sry,没有相关内容 可以下方留言让我补充！</p>"
+              return
+            }
+
+            // 按分数排序
+            results.sort((a, b) => b.score - a.score)
+
+            // 限制显示结果数量
+            const maxResults = 15
+            const displayResults = results.slice(0, maxResults)
+
+            const html = displayResults
+              .map(
+                (r) => `
+  <div class="search-item">
+    <a href="${r.url}"><h3>${r.title}</h3></a>
+  </div>
+`,
+              )
+              .join("")
+
+            resultContainer.innerHTML = html
+
+            // 如果结果被截断，显示提示
+            if (results.length > maxResults) {
+              resultContainer.innerHTML += `<p style="text-align: center; color: #4a90e2; font-size: 12px; padding: 10px;">显示前 ${maxResults} 条结果，共找到 ${results.length} 条</p>`
+            }
+          }
+
+          // 输入事件监听
+          input.addEventListener("input", debounce(doSearch, 300))
+
+          // 回车键搜索
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              e.preventDefault()
+              doSearch()
+            }
+          })
+
+          // 点击搜索按钮
+          const searchButtons = document.querySelectorAll(".search-btn")
+          searchButtons.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              e.preventDefault()
+              if (input.value.trim()) {
+                doSearch()
+              } else {
+                input.focus()
+              }
+            })
+          })
+
+          // 点击页面其他地方隐藏搜索结果
+          document.addEventListener("click", (e) => {
+            if (!e.target.closest(".search-container")) {
+              // 可以选择是否隐藏结果，这里注释掉以保持结果可见
+              // resultContainer.innerHTML = '';
+              // clearBtn.style.display = 'none';
+            }
+          })
+        })()
+    </script>
+</body>
+</html>
+</div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">92</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/RUST/" style="font-size: 1.1em; color: #999">RUST</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 1.5em; color: #99a9bf">学习笔记</a> <a href="/tags/AI/" style="font-size: 1.3em; color: #99a1ac">AI</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 1.23em; color: #999ea6">学习记录</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8/" style="font-size: 1.1em; color: #999">区块链安全</a> <a href="/tags/DeFi/" style="font-size: 1.23em; color: #999ea6">DeFi</a> <a href="/tags/%E4%BC%A0%E7%BB%9F%E5%AE%89%E5%85%A8/" style="font-size: 1.17em; color: #999c9f">传统安全</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 1.43em; color: #99a6b9">区块链</a> <a href="/tags/Solidity/" style="font-size: 1.1em; color: #999">Solidity</a> <a href="/tags/%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1/" style="font-size: 1.23em; color: #999ea6">合约审计</a> <a href="/tags/solidity/" style="font-size: 1.17em; color: #999c9f">solidity</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size: 1.3em; color: #99a1ac">分布式系统</a> <a href="/tags/Uniswap/" style="font-size: 1.37em; color: #99a4b2">Uniswap</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E6%97%A5%E8%AE%B0/" style="font-size: 1.1em; color: #999">学习日记</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/06/">
+            <span class="card-archive-list-date">
+              六月 2026
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">8</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/10/">
+            <span class="card-archive-list-date">
+              十月 2025
+            </span>
+            <span class="card-archive-list-count">8</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">92</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-06-13T06:15:32.431Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'kizzy899/kizzy899.github.io',
+      'data-repo-id': 'R_kgDONCC1iQ',
+      'data-category-id': 'DIC_kwDONCC1ic4CtwTu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

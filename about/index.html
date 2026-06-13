@@ -1,0 +1,111 @@
+<div class="page-show">
+    <!-- 返回按钮 -->
+    <a href="https://kizzy899.github.io/" class="back-home">Back</a>
+
+    <h1 class="title">ABOUT ME</h1>
+
+    <div class="container">
+        <div class="box"><img src="/img/aaaset/cover_12.jpg" alt=""></div>
+        <div class="box"><img src="/img/aaaset/cover_13.jpg" alt=""></div>
+        <div class="box"><img src="/img/aaaset/cover_14.jpg" alt=""></div>
+        <div class="box"><img src="/img/aaaset/cover_15.jpg" alt=""></div>
+        <div class="box"><img src="/img/aaaset/cover_16.jpg" alt=""></div>
+        <div class="box"><img src="/img/aaaset/cover_17.jpg" alt=""></div>
+        <div class="box"><img src="/img/aaaset/cover_18.jpg" alt=""></div>
+    </div>
+</div>
+
+<style>
+.page-show {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - var(--header-height, 0px));
+    background-color: #1a252c;
+    background-size: cover; /* 铺满 */
+    padding: 50px 20px;
+    position: relative;
+}
+
+/* 返回按钮样式 */
+.page-show .back-home {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(45deg, #91a7e4, #b9dceb);
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+.page-show .back-home:hover {
+    background: linear-gradient(45deg, #6e8de6, #a2c1f0);
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* 标题样式 */
+.page-show .title {
+    font-size: 48px;
+    color: #ffffff;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 50px;
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
+/* 容器布局 */
+.page-show .container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-style: preserve-3d;
+}
+
+/* 图片盒子 */
+.page-show .container .box {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    transition: .5s;
+    -webkit-box-reflect: below 1px linear-gradient(transparent,#000200);
+}
+
+.page-show .container .box img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 悬停特效 */
+.page-show .container:hover > :not(:hover) {
+    margin: 0 -20px;
+    filter: drop-shadow(0 0 25px #000)
+            drop-shadow(0 0 45px #000);
+    transform: perspective(500px) rotateY(45deg) scale(0.95);
+}
+
+.page-show .container .box:hover ~ .box {
+    transform: perspective(500px) rotateY(-45deg) scale(0.95);
+}
+
+.page-show .container .box:hover {
+    transform: perspective(500px) rotateY(0) scale(1.5);
+}
+
+body {
+    background-color: #1a252c; /* 与.page-show相同 */
+    margin: 0;
+    padding: 0;
+}
+</style>
