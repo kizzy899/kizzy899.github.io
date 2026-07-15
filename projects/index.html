@@ -1,0 +1,244 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Projects | EIGHTJIU</title><meta name="author" content="kizy"><meta name="copyright" content="kizy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="EIGHTJIU Projects项目展示把 Web3、后端工程、数据分析和 AI Agent 的学习与实践收束成一个清晰入口。  Web3 &#x2F; DeFiBuildingPerp DEX围绕永续合约、AMM、链上交易和智能合约安全展开的 DeFi 项目方向，适合作为 Web3 技术身份的核心展示。SolidityEthereumDeFiAMMPerpetualMoreGithub Backend">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Projects">
+<meta property="og:url" content="https://kizzy899.github.io/projects/index.html">
+<meta property="og:site_name" content="EIGHTJIU">
+<meta property="og:description" content="EIGHTJIU Projects项目展示把 Web3、后端工程、数据分析和 AI Agent 的学习与实践收束成一个清晰入口。  Web3 &#x2F; DeFiBuildingPerp DEX围绕永续合约、AMM、链上交易和智能合约安全展开的 DeFi 项目方向，适合作为 Web3 技术身份的核心展示。SolidityEthereumDeFiAMMPerpetualMoreGithub Backend">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kizzy899.github.io/img/aaaset/touxiang.png">
+<meta property="article:published_time" content="2026-07-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-15T22:24:52.657Z">
+<meta property="article:author" content="kizy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kizzy899.github.io/img/aaaset/touxiang.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/tubiao.png"><link rel="canonical" href="https://kizzy899.github.io/projects/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Projects',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><link rel="stylesheet" href="/css/_custom/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(/img/aaaset/page.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">113</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/projects/"><i class="fa-fw fas fa-code"></i><span> Projects</span></a></div><div class="menus_item"><a class="site-page" href="/lab/"><i class="fa-fw fas fa-flask"></i><span> Lab</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/cover9.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">EIGHTJIU</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/projects/"><i class="fa-fw fas fa-code"></i><span> Projects</span></a></div><div class="menus_item"><a class="site-page" href="/lab/"><i class="fa-fw fas fa-flask"></i><span> Lab</span></a></div><div class="menus_item"><a class="site-page" href="/search/"><i class="fa-fw fas fa-search"></i><span> Search</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> link</span></a></li><li><a class="site-page child" href="/star/"><i class="fa-fw fas fa-star"></i><span> star</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">Projects</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><div class="projects-page">
+<section class="projects-hero"><p class="projects-kicker">EIGHTJIU Projects</p><h1>项目展示</h1><p>把 Web3、后端工程、数据分析和 AI Agent 的学习与实践收束成一个清晰入口。</p></section>
+<section class="projects-grid" aria-label="Projects">
+<article class="project-card project-card-featured"><div class="project-card-top"><span class="project-domain">Web3 / DeFi</span><span class="project-status">Building</span></div><h2>Perp DEX</h2><p>围绕永续合约、AMM、链上交易和智能合约安全展开的 DeFi 项目方向，适合作为 Web3 技术身份的核心展示。</p><div class="project-tags"><span>Solidity</span><span>Ethereum</span><span>DeFi</span><span>AMM</span><span>Perpetual</span></div><div class="project-links"><a href="/2025/03/29/DEX/" rel="noopener">More</a><a href="https://github.com/kizzy899" target="_blank" rel="noopener">Github</a></div></article>
+<article class="project-card"><div class="project-card-top"><span class="project-domain">Backend</span><span class="project-status">Documented</span></div><h2>O2O 顺风车</h2><p>基于 Spring Cloud 微服务和 OpenResty 动静分离的出行类系统，覆盖网关、订单、支付、行程和用户服务。</p><div class="project-tags"><span>Spring Cloud</span><span>OpenResty</span><span>Gateway</span><span>Microservices</span></div><div class="project-links"><a href="/2026/05/03/项目笔记/" rel="noopener">More</a><a href="https://github.com/kizzy899" target="_blank" rel="noopener">Github</a></div></article>
+<article class="project-card"><div class="project-card-top"><span class="project-domain">Data</span><span class="project-status">Learning</span></div><h2>Spark 数据分析</h2><p>面向批处理、数据管道、质量校验和分析报表的工程实践，用来沉淀数据分析与数据工程能力。</p><div class="project-tags"><span>Spark</span><span>Data Pipeline</span><span>Batch Processing</span><span>Analysis</span></div><div class="project-links"><a href="/2026/05/11/DataPipeline/" rel="noopener">More</a><a href="https://github.com/kizzy899" target="_blank" rel="noopener">Github</a></div></article>
+<article class="project-card"><div class="project-card-top"><span class="project-domain">AI</span><span class="project-status">Exploring</span></div><h2>AI Knowledge Agent</h2><p>围绕知识流、RAG、MCP 和文件产物管理构建的 Agent 实验方向，强调工具调用与工程落地。</p><div class="project-tags"><span>Agent</span><span>RAG</span><span>OSS</span><span>MCP</span><span>Knowledge Flow</span></div><div class="project-links"><a href="/2026/04/28/OSS学习记录（Agent项目中）/" rel="noopener">More</a><a href="https://github.com/kizzy899" target="_blank" rel="noopener">Github</a></div></article>
+<article class="project-card"><div class="project-card-top"><span class="project-domain">Storage</span><span class="project-status">Prototype</span></div><h2>MALT / IPFS</h2><p>面向去中心化存储、链下数据和 Web3 基础设施的实验项目，用来连接 IPFS、0G、对象存储与链上证明。</p><div class="project-tags"><span>Web3</span><span>IPFS</span><span>Storage</span><span>Experiment</span></div><div class="project-links"><a href="/2025/11/13/0G进阶课/" rel="noopener">More</a><a href="https://github.com/kizzy899" target="_blank" rel="noopener">Github</a></div></article>
+</section>
+</div>
+
+<style>
+.projects-page{--project-blue:#2563eb;--project-ink:#1f2937;--project-muted:#64748b;--project-line:rgba(37,99,235,.16);--project-bg:rgba(255,255,255,.78);color:var(--project-ink)}.projects-page *{box-sizing:border-box}.projects-hero{padding:10px 0 28px}.projects-kicker{margin:0 0 10px;color:var(--project-blue);font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.projects-hero h1{margin:0 0 12px;font-size:2.1rem;line-height:1.2}.projects-hero p:last-child{max-width:680px;margin:0;color:var(--project-muted);font-size:1rem;line-height:1.8}.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}.project-card{display:flex;min-height:300px;flex-direction:column;padding:22px;border:1px solid var(--project-line);border-radius:12px;background:var(--project-bg);box-shadow:0 12px 28px rgba(37,99,235,.08);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}.project-card:hover{transform:translateY(-4px);border-color:rgba(37,99,235,.32);box-shadow:0 18px 36px rgba(37,99,235,.14)}.project-card-featured{background:linear-gradient(145deg,rgba(239,246,255,.95),rgba(255,255,255,.86))}.project-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.project-domain,.project-status{display:inline-flex;align-items:center;min-height:28px;padding:5px 10px;border-radius:999px;font-size:.76rem;font-weight:700;line-height:1.2}.project-domain{color:#1d4ed8;background:rgba(219,234,254,.85)}.project-status{color:#475569;background:rgba(241,245,249,.9)}.project-card h2{margin:0 0 12px;font-size:1.24rem;line-height:1.35}.project-card p{margin:0 0 18px;color:var(--project-muted);font-size:.95rem;line-height:1.75}.project-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:8px}.project-tags span{padding:5px 9px;border:1px solid rgba(148,163,184,.24);border-radius:7px;color:#334155;background:rgba(248,250,252,.86);font-size:.78rem;line-height:1.2}.project-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.project-links a{display:inline-flex;align-items:center;min-height:34px;padding:7px 12px;border-radius:8px;color:#fff;background:var(--project-blue);font-size:.88rem;font-weight:700;text-decoration:none}.project-links a+a{color:#1d4ed8;background:rgba(219,234,254,.9)}[data-theme="dark"] .projects-page,.dark .projects-page{--project-ink:#e5e7eb;--project-muted:#cbd5e1;--project-line:rgba(147,197,253,.24);--project-bg:rgba(15,23,42,.72)}[data-theme="dark"] .project-status,.dark .project-status,[data-theme="dark"] .project-tags span,.dark .project-tags span{color:#dbeafe;background:rgba(30,41,59,.9)}@media (max-width:640px){.projects-hero h1{font-size:1.75rem}.projects-grid{grid-template-columns:1fr}.project-card{min-height:auto;padding:18px}}
+</style></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/aaaset/touxiang.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">kizy</div><div class="author-info-description">rainbow</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">113</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/kizzy899"><i class="fab fa-github"></i><span>my github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/kizzy899" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Sampre avanti</div></div><div class="sticky_layout"><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/DeFi/" style="font-size: 1.23em; color: #999ea6">DeFi</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" style="font-size: 1.43em; color: #99a6b9">区块链</a> <a href="/tags/%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1/" style="font-size: 1.23em; color: #999ea6">合约审计</a> <a href="/tags/Uniswap/" style="font-size: 1.37em; color: #99a4b2">Uniswap</a> <a href="/tags/AI/" style="font-size: 1.3em; color: #99a1ac">AI</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 1.5em; color: #99a9bf">学习记录</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/" style="font-size: 1.3em; color: #99a1ac">分布式系统</a> <a href="/tags/Solidity/" style="font-size: 1.1em; color: #999">Solidity</a> <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE%E5%AE%89%E5%85%A8/" style="font-size: 1.1em; color: #999">区块链安全</a> <a href="/tags/RUST/" style="font-size: 1.1em; color: #999">RUST</a> <a href="/tags/%E4%BC%A0%E7%BB%9F%E5%AE%89%E5%85%A8/" style="font-size: 1.17em; color: #999c9f">传统安全</a> <a href="/tags/solidity/" style="font-size: 1.17em; color: #999c9f">solidity</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/06/">
+            <span class="card-archive-list-date">
+              六月 2026
+            </span>
+            <span class="card-archive-list-count">9</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/05/">
+            <span class="card-archive-list-date">
+              五月 2026
+            </span>
+            <span class="card-archive-list-count">14</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">8</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/02/">
+            <span class="card-archive-list-date">
+              二月 2026
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">4</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">113</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-07-15T22:30:12.658Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/aaaset/title.png);"><div class="footer-other"><div class="footer-copyright"></div><div class="footer_custom_text">-899</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="8,9,小,金" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
